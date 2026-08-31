@@ -160,7 +160,7 @@ button{font-family:inherit;}
 }
 .ghost-btn:hover{background:rgba(255,255,255,0.08);}
 
-.main{flex:1; min-width:0; position:relative; padding:0 0 80px 0;}
+.main{flex:1; min-width:0; position:relative; padding:0 0 36px 0;}
 .content{max-width:760px; margin:0 auto; padding:40px 44px 40px 58px; position:relative;}
 .page-rule-line{
   position:absolute; left:34px; top:0; bottom:0; width:1px; background:var(--rule-strong);
@@ -464,6 +464,20 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
 .prompt-chip{background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:8px 12px; font-size:13px;}
 .prompt-chip .mono{color:var(--accent); margin-right:7px; font-size:11.5px;}
 
+/* ============ KOLOPHON ============ */
+/* An der Textspalte ausgerichtet wie der Rest der Seite, unterhalb des
+   linierten Bereichs — der Fuss des Heftblatts. */
+.site-foot{max-width:760px; margin:0 auto; padding:12px 44px 0 58px;}
+.site-foot .colophon{
+  display:flex; align-items:center; gap:5px;
+  margin:0; padding-top:15px;
+  border-top:1px solid var(--rule);
+  font-size:12.5px; color:var(--ink-faint);
+}
+.site-foot b{font-weight:600; color:var(--ink-soft);}
+.site-foot .fh{width:12px; height:12px; color:var(--accent); flex:0 0 auto;}
+.site-foot .fh svg{width:100%; height:100%; display:block;}
+
 /* ============ MOBILE ============ */
 
 @media (max-width: 860px){
@@ -539,7 +553,13 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
   .ghost-btn{padding:11px 10px; font-size:13px;}
 
   /* --- Inhalt --- */
-  .main{padding-bottom:56px;}
+  .main{padding-bottom:26px;}
+  .site-foot{
+    padding:8px 16px 0 28px;
+    padding-left:calc(28px + env(safe-area-inset-left));
+    padding-right:calc(16px + env(safe-area-inset-right));
+    padding-bottom:env(safe-area-inset-bottom);
+  }
   .content{
     padding:22px 16px 22px 28px;
     padding-left:calc(28px + env(safe-area-inset-left));
@@ -625,6 +645,12 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
   <main class="main">
     <div class="page-rule-line"></div>
     <div class="content" id="content"></div>
+    <footer class="site-foot">
+      <p class="colophon" lang="en">Made with
+        <span class="fh" role="img" aria-label="love"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.7-9.5-9.2C1 8.4 3 5 6.5 5c2 0 3.6 1.2 4.4 2.4C11.9 6.2 13.4 5 15.4 5 18.9 5 21 8.4 19.5 11.8 17.5 16.3 12 21 12 21z"/></svg></span>
+        by <b>Levinator</b>
+      </p>
+    </footer>
   </main>
 </div>
 
