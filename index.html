@@ -1,0 +1,2217 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Interaktive Referenz und Trainer fuer franzoesische Grammatik: Verben, Genre &amp; Nombre, Adjektive, Adjektiv-Stellung, Steigerung.">
+<meta name="theme-color" content="#232838">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128216;</text></svg>">
+
+<style>
+/* Basis-Reset (im Artifact liefert das die Plattform, hier machen wir es selbst) */
+:root{color-scheme:light;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){color-scheme:dark;} }
+:root[data-theme="dark"]{color-scheme:dark;}
+:root[data-theme="light"]{color-scheme:light;}
+html,body{margin:0; padding:0;}
+img{max-width:100%;}
+[hidden]{display:none !important;}
+</style>
+<title>Cahier de Grammaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500;1,6..72,600&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --ink:#232838;
+  --ink-soft:#5b6178;
+  --ink-faint:#8b8f9f;
+  --paper:#F3F0E6;
+  --paper-raised:#FFFEF9;
+  --paper-sunken:#EAE6D8;
+  --rule:#D9D2BE;
+  --rule-strong:#C7BEA3;
+  --accent:#B5342C;
+  --accent-ink:#ffffff;
+  --accent-soft:#F4E0DD;
+  --good:#2E7D5B;
+  --good-soft:#DEEFE6;
+  --gold:#93690E;
+  --gold-soft:#F3E7CC;
+  --focus:#2159C9;
+  --shadow: 0 1px 2px rgba(35,40,56,0.06), 0 6px 20px -8px rgba(35,40,56,0.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#ECE9DE;
+    --ink-soft:#ABAFC4;
+    --ink-faint:#767a8c;
+    --paper:#1B1C22;
+    --paper-raised:#232530;
+    --paper-sunken:#15161B;
+    --rule:#383A46;
+    --rule-strong:#484B5A;
+    --accent:#E28880;
+    --accent-ink:#241012;
+    --accent-soft:#3A2426;
+    --good:#7BCBA6;
+    --good-soft:#1D3128;
+    --gold:#D9B65B;
+    --gold-soft:#332911;
+    --focus:#7FA6F2;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -8px rgba(0,0,0,0.5);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#ECE9DE;
+  --ink-soft:#ABAFC4;
+  --ink-faint:#767a8c;
+  --paper:#1B1C22;
+  --paper-raised:#232530;
+  --paper-sunken:#15161B;
+  --rule:#383A46;
+  --rule-strong:#484B5A;
+  --accent:#E28880;
+  --accent-ink:#241012;
+  --accent-soft:#3A2426;
+  --good:#7BCBA6;
+  --good-soft:#1D3128;
+  --gold:#D9B65B;
+  --gold-soft:#332911;
+  --focus:#7FA6F2;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -8px rgba(0,0,0,0.5);
+}
+
+/* ============ RESET & BASE ============ */
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Public Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:15px;
+  line-height:1.55;
+  min-height:100vh;
+}
+h1,h2,h3,h4{font-family:'Newsreader',Georgia,serif; text-wrap:balance; margin:0; color:var(--ink);}
+p{margin:0 0 .8em 0;}
+a{color:inherit;}
+button{font-family:inherit;}
+::selection{background:var(--accent-soft);}
+:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:2px;}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+}
+
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums;}
+
+/* ============ APP SHELL ============ */
+.app{
+  display:flex;
+  min-height:100vh;
+  max-width:1180px;
+  margin:0 auto;
+}
+.sidebar{
+  flex:0 0 232px;
+  background:var(--ink);
+  color:var(--paper);
+  display:flex;
+  flex-direction:column;
+  padding:26px 20px;
+  position:sticky;
+  top:0;
+  height:100vh;
+}
+.brand{display:flex; align-items:center; gap:10px; margin-bottom:28px;}
+.brand-mark{
+  font-family:'Newsreader',serif; font-style:italic; font-weight:600; font-size:26px;
+  width:38px;height:38px;border-radius:50%;
+  background:var(--accent); color:var(--accent-ink);
+  display:flex;align-items:center;justify-content:center;
+  flex:0 0 auto;
+}
+.brand-title{font-family:'Newsreader',serif; font-style:italic; font-size:19px; line-height:1.15; color:var(--paper);}
+.brand-title b{font-style:normal; font-weight:600;}
+
+.nav{display:flex; flex-direction:column; gap:2px; flex:1;}
+.nav-item{
+  display:flex; align-items:baseline; gap:10px;
+  padding:9px 10px; border-radius:5px;
+  background:none; border:none; color:var(--paper); opacity:.68;
+  font-size:14.5px; text-align:left; cursor:pointer;
+  font-family:'Public Sans',sans-serif;
+}
+.nav-item .num{font-family:'IBM Plex Mono',monospace; font-size:12px; opacity:.7; width:16px; flex:0 0 auto;}
+.nav-item:hover{opacity:1; background:rgba(255,255,255,0.06);}
+.nav-item.active{opacity:1; background:rgba(255,255,255,0.1); font-weight:600;}
+.nav-item .stat{margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; opacity:.6;}
+
+.sidebar-foot{border-top:1px solid rgba(255,255,255,0.14); padding-top:16px; margin-top:12px; font-size:12.5px; opacity:.85;}
+.sidebar-foot .row{display:flex; justify-content:space-between; margin-bottom:6px;}
+.bar-track{height:5px; background:rgba(255,255,255,0.16); border-radius:3px; overflow:hidden; margin:8px 0 12px 0;}
+.bar-fill{height:100%; background:var(--accent); border-radius:3px;}
+.ghost-btn{
+  width:100%; padding:7px 10px; border-radius:5px; border:1px solid rgba(255,255,255,0.25);
+  background:transparent; color:var(--paper); font-size:12.5px; cursor:pointer;
+}
+.ghost-btn:hover{background:rgba(255,255,255,0.08);}
+
+.main{flex:1; min-width:0; position:relative; padding:0 0 80px 0;}
+.content{max-width:760px; margin:0 auto; padding:40px 44px 40px 58px; position:relative;}
+.page-rule-line{
+  position:absolute; left:34px; top:0; bottom:0; width:1px; background:var(--rule-strong);
+  pointer-events:none;
+}
+.content::before{
+  content:"";
+  position:absolute; left:0; right:0; top:0; height:100%;
+  background-image:repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px);
+  opacity:.35; pointer-events:none; z-index:0;
+}
+.content > *{position:relative; z-index:1;}
+
+/* ============ MOBILE ============ */
+@media (max-width: 860px){
+  .app{flex-direction:column;}
+  .sidebar{position:sticky; top:0; height:auto; flex-direction:row; align-items:center; padding:12px 14px; z-index:20; gap:14px;}
+  .brand{margin-bottom:0;}
+  .brand-title{display:none;}
+  .nav{flex-direction:row; overflow-x:auto; gap:4px; flex:1; -webkit-overflow-scrolling:touch;}
+  .nav-item{white-space:nowrap; flex:0 0 auto;}
+  .nav-item .stat{display:none;}
+  .sidebar-foot{display:none;}
+  .content{padding:26px 20px 26px 34px;}
+  .page-rule-line{left:16px;}
+}
+
+/* ============ TYPE ============ */
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--accent); font-weight:600; margin-bottom:6px; display:block;
+}
+.page-title{font-size:32px; font-weight:600; margin-bottom:6px;}
+.page-lede{color:var(--ink-soft); font-size:15.5px; max-width:56ch; margin-bottom:28px;}
+.section-title{font-size:21px; font-weight:600; margin:36px 0 4px 0;}
+.section-lede{color:var(--ink-soft); font-size:14px; margin-bottom:14px; max-width:60ch;}
+
+/* ============ CARDS & GRID ============ */
+.grid{display:grid; gap:12px;}
+.grid-2{grid-template-columns:1fr 1fr;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+@media (max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+.card{
+  background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px;
+  padding:16px 18px;
+}
+.card h4{font-size:14.5px; font-weight:600; margin-bottom:4px; font-family:'Public Sans',sans-serif;}
+.card .ex{color:var(--ink-soft); font-size:13.5px; font-family:'IBM Plex Mono',monospace; line-height:1.7;}
+
+.topic-card{
+  display:flex; gap:14px; align-items:flex-start; text-align:left;
+  background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px;
+  padding:16px 18px; cursor:pointer; width:100%;
+}
+.topic-card:hover{border-color:var(--rule-strong); box-shadow:var(--shadow);}
+.topic-card .badge{
+  font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px;
+  width:30px; height:30px; border-radius:50%; flex:0 0 auto;
+  background:var(--paper-sunken); color:var(--ink-soft);
+  display:flex; align-items:center; justify-content:center;
+}
+.topic-card h4{margin-bottom:2px;}
+.topic-card p{margin:0; color:var(--ink-soft); font-size:13.5px;}
+.topic-card .chip{margin-top:8px;}
+
+.chip{
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 8px; border-radius:20px;
+  background:var(--paper-sunken); color:var(--ink-soft);
+}
+.chip.exc{background:var(--accent-soft); color:var(--accent);}
+.chip.ok{background:var(--good-soft); color:var(--good);}
+.chip.gold{background:var(--gold-soft); color:var(--gold);}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+/* ============ TABLES ============ */
+.tablewrap{overflow-x:auto; border:1px solid var(--rule); border-radius:6px; margin:10px 0 18px 0;}
+table{width:100%; border-collapse:collapse; font-size:13.5px; background:var(--paper-raised);}
+th{
+  background:var(--paper-sunken); color:var(--ink-soft); text-align:left; padding:8px 10px;
+  font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.03em;
+  white-space:nowrap; border-bottom:1px solid var(--rule);
+}
+td{padding:7px 10px; border-bottom:1px solid var(--rule); vertical-align:top; font-family:'IBM Plex Mono',monospace; font-size:13px;}
+tr:last-child td{border-bottom:none;}
+td.exc, .exc-form{color:var(--accent); font-weight:600;}
+td.person{font-family:'Public Sans',sans-serif; color:var(--ink-soft); font-weight:500; white-space:nowrap;}
+td.dot-yes{color:var(--accent); text-align:center;}
+td.dot-no{color:var(--ink-faint); text-align:center; opacity:.5;}
+
+/* ============ VERB LIST ============ */
+.verb-list{display:flex; flex-direction:column; gap:8px; margin-bottom:8px;}
+.verb-row{
+  display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+  background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px;
+  padding:10px 14px; cursor:pointer;
+}
+.verb-row:hover{border-color:var(--rule-strong);}
+.verb-row .inf{font-family:'Newsreader',serif; font-style:italic; font-weight:600; font-size:17px; width:100px; flex:0 0 auto;}
+.verb-row .de{color:var(--ink-soft); font-size:13px; flex:1;}
+.verb-row .excdots{display:flex; gap:3px;}
+.verb-row .excdots span{width:6px;height:6px;border-radius:50%; background:var(--rule-strong);}
+.verb-row .excdots span.on{background:var(--accent);}
+.group-label{
+  font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--ink-faint); margin:22px 0 8px 0;
+}
+.verb-detail{background:var(--paper-raised); border:1px solid var(--rule-strong); border-radius:6px; padding:16px 18px; margin-bottom:14px;}
+.verb-detail .vd-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:10px; flex-wrap:wrap;}
+.verb-detail .vd-head h3{font-size:20px;}
+.verb-note{background:var(--gold-soft); border-left:3px solid var(--gold); border-radius:0 4px 4px 0; padding:8px 12px; font-size:13px; color:var(--ink); margin-top:8px;}
+.verb-note.warn{background:var(--accent-soft); border-left-color:var(--accent);}
+.back-link{background:none; border:none; color:var(--ink-soft); font-size:13px; cursor:pointer; padding:0; margin-bottom:14px; display:inline-flex; align-items:center; gap:4px;}
+.back-link:hover{color:var(--ink);}
+
+/* ============ CONTROLS ============ */
+.controls-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; align-items:center;}
+.toggle{
+  padding:6px 12px; border-radius:20px; border:1px solid var(--rule-strong);
+  background:var(--paper-raised); color:var(--ink-soft); font-size:12.5px; cursor:pointer;
+}
+.toggle.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+.searchbox{
+  flex:1; min-width:160px; padding:8px 12px; border-radius:20px; border:1px solid var(--rule-strong);
+  background:var(--paper-raised); color:var(--ink); font-size:13.5px; font-family:inherit;
+}
+
+/* ============ QUIZ ============ */
+.quiz-panel{
+  background:var(--paper-raised); border:1px solid var(--rule-strong); border-radius:8px;
+  padding:24px 26px; box-shadow:var(--shadow); margin-top:10px; position:relative; overflow:hidden;
+}
+.quiz-panel::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--accent);}
+.quiz-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:12.5px; color:var(--ink-soft);}
+.quiz-score{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+.quiz-prompt-label{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); margin-bottom:6px;}
+.quiz-prompt{font-size:19px; margin-bottom:16px; font-weight:500;}
+.quiz-prompt .hint{color:var(--ink-soft); font-weight:400; font-size:14px; display:block; margin-top:4px;}
+.quiz-input-row{display:flex; gap:10px; margin-bottom:6px;}
+.quiz-input{
+  flex:1; padding:12px 14px; border-radius:6px; border:1.5px solid var(--rule-strong);
+  background:var(--paper); color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:16px;
+}
+.quiz-input:focus{border-color:var(--focus);}
+.quiz-input.correct{border-color:var(--good); background:var(--good-soft);}
+.quiz-input.wrong{border-color:var(--accent); background:var(--accent-soft);}
+.btn{
+  padding:11px 20px; border-radius:6px; border:1px solid var(--ink); background:var(--ink); color:var(--paper);
+  font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap;
+}
+.btn:hover{opacity:.88;}
+.btn.secondary{background:transparent; color:var(--ink); border-color:var(--rule-strong);}
+.btn.accent{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+.mc-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
+.mc-btn{
+  padding:11px 18px; border-radius:6px; border:1.5px solid var(--rule-strong); background:var(--paper);
+  color:var(--ink); font-size:14.5px; cursor:pointer; font-family:inherit;
+}
+.mc-btn:hover{border-color:var(--ink-soft);}
+.mc-btn.correct{background:var(--good-soft); border-color:var(--good); color:var(--good);}
+.mc-btn.wrong{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
+.feedback{margin-top:12px; padding:12px 14px; border-radius:6px; font-size:13.5px; display:none;}
+.feedback.show{display:block;}
+.feedback.correct{background:var(--good-soft); color:var(--good);}
+.feedback.wrong{background:var(--accent-soft); color:var(--accent);}
+.feedback .answer{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+.feedback .explain{color:var(--ink); opacity:.85; margin-top:4px; font-size:13px;}
+.quiz-actions{display:flex; justify-content:space-between; align-items:center; margin-top:14px;}
+
+.exam-summary{background:var(--paper-raised); border:1px solid var(--rule-strong); border-radius:8px; padding:22px; margin-top:16px;}
+.exam-summary .big{font-family:'Newsreader',serif; font-size:44px; font-weight:600;}
+.cat-bar-row{display:flex; align-items:center; gap:10px; margin:8px 0; font-size:13px;}
+.cat-bar-row .label{width:150px; flex:0 0 auto; color:var(--ink-soft);}
+.cat-bar-track{flex:1; height:8px; background:var(--paper-sunken); border-radius:4px; overflow:hidden;}
+.cat-bar-fill{height:100%; background:var(--good);}
+.cat-bar-row .frac{width:44px; text-align:right; font-family:'IBM Plex Mono',monospace; color:var(--ink-soft); flex:0 0 auto;}
+
+.callout{border-radius:6px; padding:12px 16px; font-size:13.5px; margin:14px 0;}
+.callout.tip{background:var(--gold-soft); border-left:3px solid var(--gold);}
+.callout.warn{background:var(--accent-soft); border-left:3px solid var(--accent);}
+.callout.ok{background:var(--good-soft); border-left:3px solid var(--good);}
+
+.home-hero{margin-bottom:8px;}
+.home-stats{display:flex; gap:10px; flex-wrap:wrap; margin:18px 0 30px 0;}
+.stat-tile{background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:12px 16px; flex:1; min-width:120px;}
+.stat-tile .n{font-family:'Newsreader',serif; font-size:26px; font-weight:600; display:block;}
+.stat-tile .l{font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+
+/* ============ TEXT-HILFSKLASSEN ============ */
+.muted{color:var(--ink-faint);}
+td.sans, .sans{font-family:'Public Sans',sans-serif;}
+td.b, .b{font-weight:600;}
+th.th-exc{color:var(--accent);}
+.th-sub{display:block; font-weight:400; text-transform:none; letter-spacing:0; font-size:11px; opacity:.75;}
+.link-btn{background:none; border:none; color:var(--ink-faint); font-size:12.5px; cursor:pointer; padding:0; font-family:inherit;}
+.link-btn:hover{color:var(--accent);}
+
+/* ============ LEVEL / XP ============ */
+.lvl-row{display:flex; justify-content:space-between; align-items:center; margin-bottom:7px;}
+.lvl-badge{background:var(--accent); color:var(--accent-ink); border-radius:4px; padding:1px 7px;
+  font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:600;}
+.level-card{background:var(--paper-raised); border:1px solid var(--rule-strong); border-radius:8px; padding:18px 20px; margin:18px 0 8px 0;}
+.level-card .lc-left{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+.level-card .lc-lv{font-family:'Newsreader',serif; font-size:24px; font-weight:600;}
+.level-card .lc-xp{font-size:13px; color:var(--ink-soft);}
+.level-card .lc-bar{height:8px; background:var(--paper-sunken); border-radius:4px; overflow:hidden;}
+.level-card .lc-bar i{display:block; height:100%; background:var(--accent);}
+.level-card .lc-stats{display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; font-size:13px; color:var(--ink-soft);}
+.level-card .lc-stats b{color:var(--ink); font-size:14px;}
+.level-card .lc-stats span + span{border-left:1px solid var(--rule); padding-left:14px;}
+
+/* ============ MODUS-KARTEN ============ */
+.mode-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:14px 0 18px 0;}
+@media (max-width:640px){.mode-grid{grid-template-columns:1fr;}}
+.mode-card{display:flex; flex-direction:column; align-items:flex-start; gap:6px; text-align:left;
+  background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:16px 18px; cursor:pointer;}
+.mode-card:hover{border-color:var(--accent); box-shadow:var(--shadow);}
+.mode-card .mc-icon{width:22px; height:22px; color:var(--accent);}
+.mode-card .mc-icon svg{width:100%; height:100%; display:block;}
+.mode-card .mc-title{font-family:'Public Sans',sans-serif; font-weight:600; font-size:15px;}
+.mode-card .mc-desc{font-size:12.5px; color:var(--ink-soft); line-height:1.45;}
+
+/* ============ KONFIG-PANEL ============ */
+.config-panel{background:var(--paper-sunken); border:1px solid var(--rule); border-radius:6px; padding:14px 16px; margin-bottom:14px;}
+.cfg-label{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--ink-faint); margin:0 0 8px 0;}
+.config-panel .cfg-label:not(:first-child){margin-top:14px;}
+.chip-row{display:flex; gap:7px; flex-wrap:wrap;}
+.chip-btn{padding:5px 11px; border-radius:20px; border:1px solid var(--rule-strong); background:var(--paper-raised);
+  color:var(--ink-soft); font-size:12.5px; cursor:pointer; font-family:inherit;}
+.chip-btn:hover{border-color:var(--ink-soft);}
+.chip-btn.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+.chip-btn .x{opacity:.7; margin-left:3px;}
+
+/* ============ SESSION-METER ============ */
+.meter-row{display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-soft);}
+.meter-label b{color:var(--ink);}
+.meter-bar{flex:1; min-width:70px; height:5px; background:var(--paper-sunken); border-radius:3px; overflow:hidden;}
+.meter-bar i{display:block; height:100%; background:var(--accent); transition:width .25s linear;}
+.meter-score{font-weight:600; color:var(--ink);}
+.timer{font-size:17px; font-weight:600; color:var(--ink);}
+.timer.low{color:var(--accent);}
+.hearts{display:flex; gap:4px;}
+.hearts .heart{width:16px; height:16px; color:var(--accent);}
+.hearts .heart svg{width:100%; height:100%; display:block;}
+.hearts .heart.off{color:var(--rule-strong);}
+.combo-chip{display:inline-flex; align-items:center; gap:4px; background:var(--gold-soft); color:var(--gold);
+  border-radius:20px; padding:2px 9px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:600;}
+.combo-chip svg{width:12px; height:12px;}
+
+/* ============ FRAGE ============ */
+.q-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px;}
+.q-label{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint);}
+.q-hint{font-size:13.5px; color:var(--ink-soft); margin:-8px 0 16px 0;}
+.quiz-prompt i{font-family:'Newsreader',serif; font-style:italic; font-weight:600;}
+.fb-head{display:flex; justify-content:space-between; align-items:center; gap:10px; font-weight:600; margin-bottom:4px;}
+.xp-pop{font-size:12px; font-weight:600;}
+.feedback .answer{display:block; font-family:'IBM Plex Mono',monospace; font-weight:600; margin-top:2px;}
+
+/* ============ ERGEBNIS ============ */
+.result-panel{background:var(--paper-raised); border:1px solid var(--rule-strong); border-radius:8px; padding:24px 26px; box-shadow:var(--shadow);}
+.result-top{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;}
+.result-score{font-family:'Newsreader',serif; font-size:42px; font-weight:600; line-height:1.1;}
+.stars{display:flex; gap:5px;}
+.stars .star{width:24px; height:24px; color:var(--gold);}
+.stars .star svg{width:100%; height:100%; display:block;}
+.stars .star.off{color:var(--rule);}
+.result-meta{display:flex; gap:18px; flex-wrap:wrap; margin-top:10px; font-size:13px; color:var(--ink-soft); align-items:center;}
+.result-meta b{color:var(--ink);}
+.result-bars{margin-top:16px;}
+.result-actions{display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;}
+
+/* ============ KORREKTUR-LISTE ============ */
+.review-list{border-top:1px solid var(--rule);}
+.review-item{display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--rule);}
+.review-item .ri-num{flex:0 0 24px; height:24px; border-radius:50%; background:var(--accent-soft); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:600;}
+.review-item.ok .ri-num{background:var(--good-soft); color:var(--good);}
+.review-item .ri-body{flex:1; min-width:0;}
+.review-item .ri-prompt{font-size:13.5px; margin-bottom:4px;}
+.review-item .ri-answers{display:flex; flex-direction:column; gap:2px;}
+.ra{font-family:'IBM Plex Mono',monospace; font-size:13px;}
+.ra.bad{color:var(--accent); text-decoration:line-through;}
+.ra.good{color:var(--good); font-weight:600;}
+.ri-explain{font-size:12.5px; color:var(--ink-soft); margin-top:4px;}
+
+/* ============ BAGS + BEDEUTUNGSTABELLE ============ */
+.bags-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:12px 0 6px 0;}
+@media (max-width:640px){.bags-grid{grid-template-columns:1fr;}}
+.bags-card{background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:14px 16px;}
+.bags-card h4{font-family:'Public Sans',sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--accent); margin-bottom:8px;}
+table.mini{background:none;}
+table.mini td{border:none; padding:2px 10px 2px 0; font-size:13.5px;}
+table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+.mc-table td.fig{background:var(--accent-soft);}
+.mc-table th.th-fig{background:var(--accent-soft); color:var(--accent);}
+
+/* ============ STEIGERUNG ============ */
+.comp-card{position:relative; padding-top:20px;}
+.comp-card .sign{position:absolute; top:12px; right:14px; font-family:'IBM Plex Mono',monospace; font-weight:600;
+  font-size:15px; color:var(--accent);}
+.comp-card .formula{font-family:'IBM Plex Mono',monospace; font-size:12.5px; background:var(--paper-sunken);
+  border-radius:4px; padding:5px 9px; display:inline-block; margin:2px 0 8px 0;}
+.comp-card .mini-note{font-size:12.5px; color:var(--ink-soft); margin-top:8px; border-top:1px dashed var(--rule); padding-top:7px;}
+.comp-card .mini-note b{font-family:'IBM Plex Mono',monospace;}
+.prompt-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+@media (max-width:640px){.prompt-grid{grid-template-columns:1fr;}}
+.prompt-chip{background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:8px 12px; font-size:13px;}
+.prompt-chip .mono{color:var(--accent); margin-right:7px; font-size:11.5px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">C</span>
+      <div class="brand-title"><b>Cahier</b><br>de Grammaire</div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-foot">
+      <div class="lvl-row"><span class="lvl-badge" id="statLevel">Lv 1</span><span class="mono" id="statXp">0 / 150 XP</span></div>
+      <div class="bar-track"><div class="bar-fill" id="xpBar" style="width:0%"></div></div>
+      <div class="row"><span>Heute geübt</span><span class="mono" id="statToday">0</span></div>
+      <div class="row"><span>Trefferquote</span><span class="mono" id="statAcc">–</span></div>
+      <button class="ghost-btn" id="themeToggle" type="button">Helles / dunkles Thema</button>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="page-rule-line"></div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ================================================================
+   DATA — transcribed 1:1 from "5_Verb_Bibel" and "4_Eselsbruecken"
+   ================================================================ */
+
+var PERSONS = ["je","tu","il/elle/on","nous","vous","ils/elles"];
+var TENSES = [
+  {key:"pr", label:"Présent"},
+  {key:"im", label:"Imparfait"},
+  {key:"pc", label:"Passé composé"},
+  {key:"pq", label:"Plus-que-parfait"},
+  {key:"fu", label:"Futur simple"},
+  {key:"co", label:"Conditionnel I"}
+];
+
+function V(inf, de, forms, exc, note, warn){
+  return {inf:inf, de:de, forms:forms, exc:exc||{}, note:note||"", warn:!!warn};
+}
+
+var VERBS = {
+  avoir: V("avoir","haben",{
+    pr:["ai","as","a","avons","avez","ont"],
+    im:["avais","avais","avait","avions","aviez","avaient"],
+    pc:["ai eu","as eu","a eu","avons eu","avez eu","ont eu"],
+    pq:["avais eu","avais eu","avait eu","avions eu","aviez eu","avaient eu"],
+    fu:["aurai","auras","aura","aurons","aurez","auront"],
+    co:["aurais","aurais","aurait","aurions","auriez","auraient"]
+  },{pr:1,im:1,pc:1,pq:1,fu:1,co:1}, "Komplett unregelmässig — als Hilfsverb ständig gebraucht.", true),
+
+  etre: V("être","sein",{
+    pr:["suis","es","est","sommes","êtes","sont"],
+    im:["étais","étais","était","étions","étiez","étaient"],
+    pc:["ai été","as été","a été","avons été","avez été","ont été"],
+    pq:["avais été","avais été","avait été","avions été","aviez été","avaient été"],
+    fu:["serai","seras","sera","serons","serez","seront"],
+    co:["serais","serais","serait","serions","seriez","seraient"]
+  },{pr:1,im:1,pc:1,pq:1,fu:1,co:1}, "Partizip ist immer été — das ändert sich nie.", true),
+
+  parler: V("parler","sprechen",{
+    pr:["parle","parles","parle","parlons","parlez","parlent"],
+    im:["parlais","parlais","parlait","parlions","parliez","parlaient"],
+    pc:["ai parlé","as parlé","a parlé","avons parlé","avez parlé","ont parlé"],
+    pq:["avais parlé","avais parlé","avait parlé","avions parlé","aviez parlé","avaient parlé"],
+    fu:["parlerai","parleras","parlera","parlerons","parlerez","parleront"],
+    co:["parlerais","parlerais","parlerait","parlerions","parleriez","parleraient"]
+  },{}, "Modell für alle regelmässigen -ER-Verben."),
+
+  finir: V("finir","beenden",{
+    pr:["finis","finis","finit","finissons","finissez","finissent"],
+    im:["finissais","finissais","finissait","finissions","finissiez","finissaient"],
+    pc:["ai fini","as fini","a fini","avons fini","avez fini","ont fini"],
+    pq:["avais fini","avais fini","avait fini","avions fini","aviez fini","avaient fini"],
+    fu:["finirai","finiras","finira","finirons","finirez","finiront"],
+    co:["finirais","finirais","finirait","finirions","finiriez","finiraient"]
+  },{}, "Modell für alle regelmässigen -IR-Verben."),
+
+  lancer: V("lancer","werfen / starten",{
+    pr:["lance","lances","lance","lançons","lancez","lancent"],
+    im:["lançais","lançais","lançait","lancions","lanciez","lançaient"],
+    pc:["ai lancé","as lancé","a lancé","avons lancé","avez lancé","ont lancé"],
+    pq:["avais lancé","avais lancé","avait lancé","avions lancé","aviez lancé","avaient lancé"],
+    fu:["lancerai","lanceras","lancera","lancerons","lancerez","lanceront"],
+    co:["lancerais","lancerais","lancerait","lancerions","lanceriez","lanceraient"]
+  },{pr:1,im:1}, "c→ç nur vor a/o (weicher Klang) — nie vor e/i."),
+
+  manger: V("manger","essen",{
+    pr:["mange","manges","mange","mangeons","mangez","mangent"],
+    im:["mangeais","mangeais","mangeait","mangions","mangiez","mangeaient"],
+    pc:["ai mangé","as mangé","a mangé","avons mangé","avez mangé","ont mangé"],
+    pq:["avais mangé","avais mangé","avait mangé","avions mangé","aviez mangé","avaient mangé"],
+    fu:["mangerai","mangeras","mangera","mangerons","mangerez","mangeront"],
+    co:["mangerais","mangerais","mangerait","mangerions","mangeriez","mangeraient"]
+  },{pr:1,im:1}, "Zusätzliches e nur vor a/o (weicher „g“-Klang) — nie vor e/i."),
+
+  acheter: V("acheter","kaufen",{
+    pr:["achète","achètes","achète","achetons","achetez","achètent"],
+    im:["achetais","achetais","achetait","achetions","achetiez","achetaient"],
+    pc:["ai acheté","as acheté","a acheté","avons acheté","avez acheté","ont acheté"],
+    pq:["avais acheté","avais acheté","avait acheté","avions acheté","aviez acheté","avaient acheté"],
+    fu:["achèterai","achèteras","achètera","achèterons","achèterez","achèteront"],
+    co:["achèterais","achèterais","achèterait","achèterions","achèteriez","achèteraient"]
+  },{pr:1,fu:1,co:1}, "è nie bei nous/vous im Présent — aber in Futur/Cond. immer."),
+
+  esperer: V("espérer","hoffen",{
+    pr:["espère","espères","espère","espérons","espérez","espèrent"],
+    im:["espérais","espérais","espérait","espérions","espériez","espéraient"],
+    pc:["ai espéré","as espéré","a espéré","avons espéré","avez espéré","ont espéré"],
+    pq:["avais espéré","avais espéré","avait espéré","avions espéré","aviez espéré","avaient espéré"],
+    fu:["espérerai","espéreras","espérera","espérerons","espérerez","espéreront"],
+    co:["espérerais","espérerais","espérerait","espérerions","espéreriez","espéreraient"]
+  },{pr:1}, "⚠ Anders als acheter: Futur/Cond. bleiben bei é (espérerai, NICHT espèrerai)!"),
+
+  appeler: V("appeler","anrufen / nennen",{
+    pr:["appelle","appelles","appelle","appelons","appelez","appellent"],
+    im:["appelais","appelais","appelait","appelions","appeliez","appelaient"],
+    pc:["ai appelé","as appelé","a appelé","avons appelé","avez appelé","ont appelé"],
+    pq:["avais appelé","avais appelé","avait appelé","avions appelé","aviez appelé","avaient appelé"],
+    fu:["appellerai","appelleras","appellera","appellerons","appellerez","appelleront"],
+    co:["appellerais","appellerais","appellerait","appellerions","appelleriez","appelleraient"]
+  },{pr:1,fu:1,co:1}, "Konsonant verdoppelt sich (ausser bei nous/vous)."),
+
+  jeter: V("jeter","werfen",{
+    pr:["jette","jettes","jette","jetons","jetez","jettent"],
+    im:["jetais","jetais","jetait","jetions","jetiez","jetaient"],
+    pc:["ai jeté","as jeté","a jeté","avons jeté","avez jeté","ont jeté"],
+    pq:["avais jeté","avais jeté","avait jeté","avions jeté","aviez jeté","avaient jeté"],
+    fu:["jetterai","jetteras","jettera","jetterons","jetterez","jetteront"],
+    co:["jetterais","jetterais","jetterait","jetterions","jetteriez","jetteraient"]
+  },{pr:1,fu:1,co:1}, "Gleiches Muster wie appeler — nur mit t statt l."),
+
+  payer: V("payer","bezahlen",{
+    pr:[["paie","paye"],["paies","payes"],["paie","paye"],["payons"],["payez"],["paient","payent"]],
+    im:["payais","payais","payait","payions","payiez","payaient"],
+    pc:["ai payé","as payé","a payé","avons payé","avez payé","ont payé"],
+    pq:["avais payé","avais payé","avait payé","avions payé","aviez payé","avaient payé"],
+    fu:[["paierai","payerai"],["paieras","payeras"],["paiera","payera"],["paierons","payerons"],["paierez","payerez"],["paieront","payeront"]],
+    co:[["paierais","payerais"],["paierais","payerais"],["paierait","payerait"],["paierions","payerions"],["paieriez","payeriez"],["paieraient","payeraient"]]
+  },{pr:1,fu:1,co:1}, "y→i ist optional — beide Schreibweisen sind richtig (nie bei nous/vous)."),
+
+  envoyer: V("envoyer","schicken",{
+    pr:["envoie","envoies","envoie","envoyons","envoyez","envoient"],
+    im:["envoyais","envoyais","envoyait","envoyions","envoyiez","envoyaient"],
+    pc:["ai envoyé","as envoyé","a envoyé","avons envoyé","avez envoyé","ont envoyé"],
+    pq:["avais envoyé","avais envoyé","avait envoyé","avions envoyé","aviez envoyé","avaient envoyé"],
+    fu:["enverrai","enverras","enverra","enverrons","enverrez","enverront"],
+    co:["enverrais","enverrais","enverrait","enverrions","enverriez","enverraient"]
+  },{pr:1,fu:1,co:1}, "⚠ y→i ist bei envoyer PFLICHT (nicht optional wie bei payer). Futur/Cond. Sonderstamm enverr-."),
+
+  aller: V("aller","gehen",{
+    pr:["vais","vas","va","allons","allez","vont"],
+    im:["allais","allais","allait","allions","alliez","allaient"],
+    pc:[["suis allé","suis allée"],["es allé","es allée"],["est allé","est allée"],["sommes allés","sommes allées"],["êtes allé","êtes allée","êtes allés","êtes allées"],["sont allés","sont allées"]],
+    pq:[["étais allé","étais allée"],["étais allé","étais allée"],["était allé","était allée"],["étions allés","étions allées"],["étiez allé","étiez allée","étiez allés","étiez allées"],["étaient allés","étaient allées"]],
+    fu:["irai","iras","ira","irons","irez","iront"],
+    co:["irais","irais","irait","irions","iriez","iraient"]
+  },{pr:1,im:1,pc:1,pq:1,fu:1,co:1}, "Passé composé/Plus-que-parfait mit être! Imparfait ist eigentlich regelmässig gebildet (Stamm all-).", true),
+
+  hair: V("haïr","hassen",{
+    pr:["hais","hais","hait","haïssons","haïssez","haïssent"],
+    im:["haïssais","haïssais","haïssait","haïssions","haïssiez","haïssaient"],
+    pc:["ai haï","as haï","a haï","avons haï","avez haï","ont haï"],
+    pq:["avais haï","avais haï","avait haï","avions haï","aviez haï","avaient haï"],
+    fu:["haïrai","haïras","haïra","haïrons","haïrez","haïront"],
+    co:["haïrais","haïrais","haïrait","haïrions","haïriez","haïraient"]
+  },{pr:1,im:1,pc:1,pq:1,fu:1,co:1}, "Tréma (¨) fehlt NUR bei je/tu/il im Présent — sonst steht es immer.", true),
+
+  courir: V("courir","laufen / rennen",{
+    pr:["cours","cours","court","courons","courez","courent"],
+    im:["courais","courais","courait","courions","couriez","couraient"],
+    pc:["ai couru","as couru","a couru","avons couru","avez couru","ont couru"],
+    pq:["avais couru","avais couru","avait couru","avions couru","aviez couru","avaient couru"],
+    fu:["courrai","courras","courra","courrons","courrez","courront"],
+    co:["courrais","courrais","courrait","courrions","courriez","courraient"]
+  },{pr:1,pc:1,pq:1,fu:1,co:1}, "Kein -iss- im Présent (anders als finir!), Partizip auf -u, doppeltes r in Futur/Cond."),
+
+  fuir: V("fuir","fliehen",{
+    pr:["fuis","fuis","fuit","fuyons","fuyez","fuient"],
+    im:["fuyais","fuyais","fuyait","fuyions","fuyiez","fuyaient"],
+    pc:["ai fui","as fui","a fui","avons fui","avez fui","ont fui"],
+    pq:["avais fui","avais fui","avait fui","avions fui","aviez fui","avaient fui"],
+    fu:["fuirai","fuiras","fuira","fuirons","fuirez","fuiront"],
+    co:["fuirais","fuirais","fuirait","fuirions","fuiriez","fuiraient"]
+  },{pr:1,im:1,pc:1,pq:1}, "y taucht auf, wo eine ausgesprochene Endung folgt. Futur/Cond. sind ganz regelmässig!")
+};
+
+var VERB_GROUPS = [
+  {title:"Die Hilfsverben", sub:"Unregelmässig, aber unentbehrlich", verbs:["avoir","etre"]},
+  {title:"Die Modell-Verben", sub:"100% regelmässig — dein Ankerpunkt", verbs:["parler","finir"]},
+  {title:"Kleine Stammänderung", sub:"Endungen bleiben immer normal", verbs:["lancer","manger","acheter","esperer","appeler","jeter","payer","envoyer"]},
+  {title:"Komplett unregelmässig", sub:"Hier musst du am meisten auswendig lernen", verbs:["aller","hair","courir","fuir"]}
+];
+
+var FEMININE_PATTERNS = [
+  {rule:"Regelfall: +e", ex:["patient → patiente","marié → mariée"]},
+  {rule:"-eux → -euse", ex:["heureux → heureuse","chanteur → chanteuse *"]},
+  {rule:"-f → -ve", ex:["sportif → sportive","veuf → veuve"]},
+  {rule:"-er → -ère", ex:["boulanger → boulangère","policier → policière"]},
+  {rule:"-teur → -trice", ex:["acteur → actrice","agriculteur → agricultrice"]},
+  {rule:"-ien → -ienne", ex:["musicien → musicienne","canadien → canadienne"]},
+  {rule:"-on/-an → -onne/-anne", ex:["champion → championne","paysan → paysanne"]},
+  {rule:"-s/-t → -sse/-tte", ex:["gros → grosse","muet → muette"]},
+  {rule:"schon -e → keine Änderung", ex:["collègue","triste"]}
+];
+var IRREGULAR_PAIRS = [
+  ["homme","femme"],["monsieur","madame"],["mari","femme"],["garçon","fille"],
+  ["père","mère"],["frère","sœur"],["fils","fille"],["oncle","tante"],
+  ["copain","copine"],["roi","reine"],["fiancé","fiancée"]
+];
+var PLURAL_PATTERNS = [
+  {rule:"Normalfall: +s", ex:"un ami → des amis"},
+  {rule:"endet auf -s/-x/-z → keine Änderung", ex:"un Français → des Français · un gaz → des gaz"},
+  {rule:"-al → -aux", ex:"un journal → des journaux"},
+  {rule:"-au / -eau / -eu → +x", ex:"un bateau → des bateaux · un cheveu → des cheveux"},
+  {rule:"unregelmässig", ex:"madame → mesdames · monsieur → messieurs · un œil → des yeux"}
+];
+var ADJ3 = [
+  {m:"beau", mv:"bel", f:"belle", exM:"un beau jardin", exV:"un bel hôtel", exF:"une belle maison"},
+  {m:"nouveau", mv:"nouvel", f:"nouvelle", exM:"un nouveau vélo", exV:"un nouvel appartement", exF:"une nouvelle voiture"},
+  {m:"vieux", mv:"vieil", f:"vieille", exM:"un vieux pull", exV:"un vieil homme", exF:"une vieille dame"},
+  {m:"fou", mv:"fol", f:"folle", exM:"un fou rire", exV:"un fol ami", exF:"une folle idée"}
+];
+var POSSESSIFS = [
+  {owner:"ich (1 Besitzer)", m:"mon", f:"ma", pl:"mes"},
+  {owner:"du (1 Besitzer)", m:"ton", f:"ta", pl:"tes"},
+  {owner:"er/sie (1 Besitzer)", m:"son", f:"sa", pl:"ses"},
+  {owner:"wir (mehrere Besitzer)", m:"notre", f:"notre", pl:"nos"},
+  {owner:"ihr (mehrere Besitzer)", m:"votre", f:"votre", pl:"vos"},
+  {owner:"sie (mehrere Besitzer)", m:"leur", f:"leur", pl:"leurs"}
+];
+var ETRE_PAIRS = [["aller","venir"],["arriver","partir"],["entrer","sortir"],["monter","descendre"],["naître","mourir"]];
+var ETRE_SINGLE = ["rester","tomber","retourner","devenir","revenir"];
+var AVOIR_SAMPLE = ["parler","manger","finir","voir","faire","acheter","danser","chanter"];
+
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+function norm(s){
+  if(s==null) return "";
+  return String(s).toLowerCase()
+    .replace(/œ/g,"oe").replace(/æ/g,"ae")
+    .normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .replace(/[’‘`]/g,"'")
+    .replace(/\s+/g," ")
+    .trim();
+}
+function startsVowelSound(s){ return /^[aeiouhàâäéèêëîïôöùûü]/i.test(s); }
+/* haïr has an h aspiré: no elision, ever (je hais — not j'hais). It's the
+   only h-initial verb in this set, so a verb-key check is enough. */
+function pronounForm(personIdx, form, noElision){
+  if(personIdx===0){
+    return (!noElision && startsVowelSound(form)) ? "j'"+form : "je "+form;
+  }
+  var labels = ["","tu","il/elle/on","nous","vous","ils/elles"];
+  return labels[personIdx] + " " + form;
+}
+function cellArr(cell){ return Array.isArray(cell) ? cell.slice() : [cell]; }
+/* For persons other than je, accept the bare verb form AND any one of the
+   valid pronouns in front of it — il/elle/on only needs ONE of the three. */
+var PRONOUN_ACCEPT = [null, ["tu"], ["il","elle","on"], ["nous"], ["vous"], ["ils","elles"]];
+function acceptableFor(personIdx, cell, noElision){
+  var base = cellArr(cell);
+  var out = [];
+  base.forEach(function(f){
+    out.push(f);
+    if(personIdx===0){
+      if(!noElision && startsVowelSound(f)) out.push("j'"+f);
+      out.push("je "+f);
+    } else {
+      PRONOUN_ACCEPT[personIdx].forEach(function(pr){ out.push(pr+" "+f); });
+    }
+  });
+  return out;
+}
+function checkAnswer(userInput, personIdx, cell, noElision){
+  var accept = acceptableFor(personIdx, cell, noElision).map(norm);
+  return accept.indexOf(norm(userInput)) !== -1;
+}
+function displayForm(personIdx, cell, noElision){
+  return cellArr(cell).map(function(f){ return pronounForm(personIdx, f, noElision); }).join(" / ");
+}
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
+  return a;
+}
+
+/* ================================================================
+   FORTSCHRITT & GAMIFICATION
+   ================================================================ */
+var STORE_KEY = "cahier_progress_v2";
+var XP_PER_LEVEL = 150;
+
+function defaultStore(){
+  return {xp:0, byTopic:{}, verbsSeen:{}, best:{}, lastDay:"", today:{correct:0,total:0}};
+}
+function loadStore(){
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw){
+      var s = JSON.parse(raw), d = defaultStore(), k;
+      for(k in d){ if(!(k in s)) s[k] = d[k]; }
+      return s;
+    }
+  }catch(e){}
+  return defaultStore();
+}
+function saveStore(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(STATE.store)); }catch(e){} }
+function todayKey(){ var d = new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
+function levelInfo(){
+  var xp = STATE.store.xp || 0;
+  var into = xp % XP_PER_LEVEL;
+  return {level: Math.floor(xp/XP_PER_LEVEL)+1, into:into, need:XP_PER_LEVEL, pct: Math.round(100*into/XP_PER_LEVEL)};
+}
+function recordAnswer(topic, correct, verbKey, xpGain){
+  var s = STATE.store, tk = todayKey();
+  if(s.lastDay !== tk){ s.lastDay = tk; s.today = {correct:0,total:0}; }
+  s.today.total++; if(correct) s.today.correct++;
+  if(!s.byTopic[topic]) s.byTopic[topic] = {correct:0,total:0};
+  s.byTopic[topic].total++; if(correct) s.byTopic[topic].correct++;
+  if(verbKey) s.verbsSeen[verbKey] = true;
+  s.xp = (s.xp||0) + (xpGain||0);
+  saveStore();
+  renderSidebarStats();
+}
+function topicAcc(key){
+  var c = STATE.store.byTopic[key];
+  if(!c || !c.total) return null;
+  return Math.round(100*c.correct/c.total);
+}
+function getBest(key){ return (STATE.store.best||{})[key] || 0; }
+function setBest(key, val){
+  if(!STATE.store.best) STATE.store.best = {};
+  if(val > (STATE.store.best[key]||0)){ STATE.store.best[key] = val; saveStore(); return true; }
+  return false;
+}
+function renderSidebarStats(){
+  var li = levelInfo(), t = STATE.store.today || {correct:0,total:0};
+  var el;
+  if((el = document.getElementById("statLevel"))) el.textContent = "Lv " + li.level;
+  if((el = document.getElementById("statXp"))) el.textContent = li.into + " / " + li.need + " XP";
+  if((el = document.getElementById("xpBar"))) el.style.width = li.pct + "%";
+  if((el = document.getElementById("statToday"))) el.textContent = t.total;
+  if((el = document.getElementById("statAcc"))){
+    el.textContent = t.total ? Math.round(100*t.correct/t.total) + "%" : "–";
+  }
+}
+
+/* ================================================================
+   DATEN — 2.10 Stellung des Adjektivs / 3 Steigerung
+   ================================================================ */
+
+/* Die 13 Adjektive, die VOR dem Nomen stehen — gruppiert nach BAGS */
+var BAGS = [
+  {group:"Beauté — Schönheit", items:[
+    {m:"beau", f:"belle", de:"schön"},
+    {m:"joli", f:"jolie", de:"hübsch"}
+  ]},
+  {group:"Âge — Alter", items:[
+    {m:"jeune", f:"jeune", de:"jung"},
+    {m:"vieux", f:"vieille", de:"alt"},
+    {m:"nouveau", f:"nouvelle", de:"neu"}
+  ]},
+  {group:"Bonté — Wert / Charakter", items:[
+    {m:"bon", f:"bonne", de:"gut"},
+    {m:"mauvais", f:"mauvaise", de:"schlecht"},
+    {m:"gentil", f:"gentille", de:"nett"}
+  ]},
+  {group:"Grandeur — Grösse", items:[
+    {m:"grand", f:"grande", de:"gross"},
+    {m:"petit", f:"petite", de:"klein"},
+    {m:"gros", f:"grosse", de:"dick"},
+    {m:"long", f:"longue", de:"lang"}
+  ]},
+  {group:"Und noch eines", items:[
+    {m:"autre", f:"autre", de:"andere(r)"}
+  ]}
+];
+var PRE_NOUN = (function(){
+  var out = [];
+  BAGS.forEach(function(g){ g.items.forEach(function(it){ out.push(it); }); });
+  return out;
+})();
+/* typische Adjektive, die NACH dem Nomen stehen */
+var POST_NOUN = [
+  ["passionné","begeistert"],["paresseux","faul"],["aimable","liebenswürdig"],["joyeux","fröhlich"],
+  ["appliqué","fleissig"],["courageux","mutig"],["sympathique","sympathisch"],["poli","höflich"],
+  ["modeste","bescheiden"],["intéressant","interessant"],["célèbre","berühmt"],["fatigué","müde"],
+  ["élégant","elegant"],["naturel","natürlich"],["content","zufrieden"],["curieux","neugierig"],
+  ["moderne","modern"],["riche","reich"],["séduisant","verführerisch"],["doux","sanft"]
+];
+/* 2.10.3 — Bedeutungswechsel je nach Stellung */
+var MEANING_CHANGE = [
+  {adj:"ancien",
+   after:{de:"alt", ex:["les maisons anciennes","les civilisations anciennes"]},
+   before:{de:"ehemalig", ex:["mon ancienne copine","mon ancienne maison"]}},
+  {adj:"cher",
+   after:{de:"teuer", ex:["une maison très chère","un restaurant pas trop cher"]},
+   before:{de:"lieb, wertvoll", ex:["cher Alain","ma chère amie"]}},
+  {adj:"dernier",
+   after:{de:"letzter (zeitlich, von jetzt an)", ex:["la semaine dernière","le semestre dernier"]},
+   before:{de:"letzter (von mehreren)", ex:["la dernière semaine du mois","le dernier livre que j'ai lu"]}},
+  {adj:"grand",
+   after:{de:"gross (Körpergrösse)", ex:["un homme grand"]},
+   before:{de:"gross (Bedeutung)", ex:["une grande femme"]}},
+  {adj:"prochain",
+   after:{de:"nächster (zeitlich, von jetzt an)", ex:["la semaine prochaine"]},
+   before:{de:"nächster (von mehreren)", ex:["le prochain bus","le prochain examen"]}},
+  {adj:"pauvre",
+   after:{de:"arm, geldlos", ex:["les familles pauvres"]},
+   before:{de:"arm, erbärmlich, glücklos", ex:["mon pauvre ami","je suis un pauvre rien du tout !"]}},
+  {adj:"propre",
+   after:{de:"sauber", ex:["une maison très propre","des doigts propres"]},
+   before:{de:"eigen", ex:["ma propre maison","mange ta propre glace !"]}},
+  {adj:"sacré",
+   after:{de:"heilig", ex:["un livre sacré"]},
+   before:{de:"unglaublich", ex:["une sacrée occasion"]}},
+  {adj:"seul",
+   after:{de:"allein, einsam", ex:["un homme seul"]},
+   before:{de:"nur ein, einzig", ex:["j'ai un seul ami","la seule chose qui m'intéresse"]}},
+  {adj:"vrai",
+   after:{de:"wahr", ex:["c'est une histoire vraie"]},
+   before:{de:"echt", ex:["c'est un vrai problème"]}}
+];
+
+/* 3.1 — Vergleichsformen */
+var COMPARATIF = [
+  {key:"moins", sign:"–", title:"Infériorité", form:"moins + ADJEKTIV + que",
+   ex:["Il est moins sympathique qu'elle.","Jeanne est moins grande que sa sœur."]},
+  {key:"aussi", sign:"=", title:"Égalité", form:"aussi + ADJEKTIV + que",
+   ex:["Elle est aussi jolie que Sylvie.","Mon chien est aussi rusé qu'un renard."]},
+  {key:"plus", sign:"+", title:"Supériorité", form:"plus + ADJEKTIV + que",
+   ex:["Julie est plus organisée que Luc.","La tarte de ma mère est plus réussie que celle du pâtissier."]}
+];
+var SUPERLATIF = [
+  {key:"moins", sign:"–", title:"Infériorité", form:"le / la / les moins + ADJEKTIV",
+   ex:["le vélo le moins cher","les montagnes les moins dangereuses"],
+   pre:"la moins jeune de mes amies"},
+  {key:"plus", sign:"+", title:"Supériorité", form:"le / la / les plus + ADJEKTIV",
+   ex:["l'homme le plus riche","les villes les plus intéressantes"],
+   pre:"la plus belle maison"}
+];
+var IRREG_COMP = [
+  {pos:"bon", comp:"meilleur(e)", sup:"le / la meilleur(e)", exPos:"une bonne idée", exComp:"une meilleure idée", exSup:"la meilleure idée"},
+  {pos:"mauvais", comp:"pire", sup:"le / la pire", exPos:"un mauvais film", exComp:"un pire film", exSup:"le pire film"}
+];
+/* Übung 4 aus dem Buch — freies Sprechen, nicht abgefragt */
+var FR_CH_PROMPTS = [
+  ["la richesse naturelle","riche"],["la criminalité","criminel"],["la gentillesse","gentil"],
+  ["la population","nombreux"],["la modernité","moderne"],["les traditions","traditionnel"],
+  ["la beauté du pays","beau"],["l'importance politique","important"],["la richesse économique","riche"]
+];
+
+/* ================================================================
+   FRAGEN-BAUSTEINE
+   ================================================================ */
+function normLoose(s){
+  return norm(s).replace(/\s*[.!?]+\s*$/,"").replace(/\s+/g," ").trim();
+}
+function isAcceptable(value, accept){
+  var n = normLoose(value);
+  if(!n) return false;
+  for(var i=0;i<accept.length;i++){ if(normLoose(accept[i]) === n) return true; }
+  return false;
+}
+function inputQ(topic, label, prompt, hint, accept, display, explain){
+  return {topic:topic, kind:"input", label:label, prompt:prompt, hint:hint||"",
+          accept:accept, display:display||accept[0], explain:explain||""};
+}
+function choiceQ(topic, label, prompt, hint, choices, answer, explain){
+  return {topic:topic, kind:"choice", label:label, prompt:prompt, hint:hint||"",
+          choices:choices, answer:answer, display:answer, explain:explain||""};
+}
+
+/* ---------- 01 VERBEN ---------- */
+function tenseByKey(k){
+  for(var i=0;i<TENSES.length;i++){ if(TENSES[i].key===k) return TENSES[i]; }
+  return TENSES[0];
+}
+function verbDistractors(v, tk, pi, correct){
+  var pool = [], p;
+  for(p=0;p<6;p++){ if(p!==pi) pool.push(cellArr(v.forms[tk][p])[0]); }
+  TENSES.forEach(function(t){ if(t.key!==tk) pool.push(cellArr(v.forms[t.key][pi])[0]); });
+  var uniq = [], seen = {};
+  shuffle(pool).forEach(function(f){
+    var n = norm(f);
+    if(n !== norm(correct) && !seen[n]){ seen[n] = 1; uniq.push(f); }
+  });
+  return uniq.slice(0,3);
+}
+function verbKeysFor(cfg){
+  cfg = cfg || {};
+  if(cfg.focus && VERBS[cfg.focus]) return [cfg.focus];
+  if(cfg.filter === "aux") return ["avoir","etre"];
+  var keys = Object.keys(VERBS);
+  if(cfg.filter === "exc") keys = keys.filter(function(k){ return Object.keys(VERBS[k].exc).length > 0; });
+  return keys;
+}
+function randomVerbQuestion(cfg){
+  cfg = cfg || {};
+  var keys = verbKeysFor(cfg);
+  var tenseKeys = (cfg.tenses && cfg.tenses.length) ? cfg.tenses : TENSES.map(function(t){ return t.key; });
+  var vk = pick(keys), v = VERBS[vk];
+  var tk = pick(tenseKeys), t = tenseByKey(tk);
+  var pi = Math.floor(Math.random()*6);
+  var cell = v.forms[tk][pi];
+  var noEl = (vk === "hair");
+  var label = t.label + (v.exc[tk] ? " · Ausnahme" : "");
+  var promptHtml = '<i>'+v.inf+'</i> <span class="muted">— '+v.de+'</span>';
+  if(Math.random() < 0.3){
+    var correct = cellArr(cell)[0];
+    var opts = shuffle([correct].concat(verbDistractors(v, tk, pi, correct)));
+    var q = choiceQ("verbs", label, promptHtml, "Welche Form passt zu <b>"+PERSONS[pi]+"</b>?", opts, correct, v.note);
+    q.vk = vk; return q;
+  }
+  var q2 = inputQ("verbs", label, promptHtml, "Person: <b>"+PERSONS[pi]+"</b>",
+                  acceptableFor(pi, cell, noEl), displayForm(pi, cell, noEl), v.note);
+  q2.vk = vk; return q2;
+}
+
+/* ---------- 02 GENRE & NOMBRE ---------- */
+function buildGenderBank(){
+  var bank = [];
+  FEMININE_PATTERNS.forEach(function(p){
+    p.ex.forEach(function(pair){
+      var parts = pair.split("→").map(function(s){ return s.replace(/\*/,"").trim(); });
+      if(parts.length === 2){
+        bank.push(inputQ("gender","Männlich → weiblich", parts[0], "Setz das Wort ins Feminine.", [parts[1]], parts[1], p.rule));
+        bank.push(inputQ("gender","Weiblich → männlich", parts[1], "Setz das Wort ins Maskuline.", [parts[0]], parts[0], p.rule));
+      }
+    });
+  });
+  IRREGULAR_PAIRS.forEach(function(pair){
+    var why = pair[0]+" ↔ "+pair[1]+" — kein Muster, das lernst du auswendig.";
+    bank.push(inputQ("gender","Unregelmässiges Paar", pair[0], "Wie heisst die weibliche Form?", [pair[1]], pair[1], why));
+    bank.push(inputQ("gender","Unregelmässiges Paar", pair[1], "Wie heisst die männliche Form?", [pair[0]], pair[0], why));
+  });
+  PLURAL_PATTERNS.forEach(function(p){
+    p.ex.split("·").forEach(function(seg){
+      var parts = seg.split("→").map(function(s){ return s.trim(); });
+      if(parts.length === 2 && parts[0] && parts[1]){
+        bank.push(inputQ("gender","Singular → Plural", parts[0], "Setz den Ausdruck in den Plural.", [parts[1]], parts[1], p.rule));
+      }
+    });
+  });
+  var extra = [
+    ["un nouvel ami","des nouveaux amis","le nombre","nouvel gilt nur im Singular vor Vokal — im Plural immer nouveaux."],
+    ["un cheval fatigué","des chevaux fatigués","le nombre","-al → -aux, wie journal → journaux."],
+    ["l'actrice célèbre","l'acteur célèbre","le genre","-trice → -teur; célèbre endet auf -e und bleibt gleich."],
+    ["un vieil homme","une vieille femme","le genre","vieil → vieille, dazu das unregelmässige Paar homme/femme."],
+    ["des jumelles curieuses","une jumelle curieuse","le nombre","Singular: -s bei Nomen und Adjektiv weglassen."],
+    ["le roi puissant","la reine puissante","le genre","roi/reine ist ein unregelmässiges Paar; puissant → puissante."],
+    ["un homme canadien","des hommes canadiens","le nombre","Regelmässiger Plural bei Nomen und Adjektiv."],
+    ["des sœurs gentilles","une sœur gentille","le nombre","Singular: -s weg."],
+    ["le beau bus","les beaux bus","le nombre","bus endet auf -s und bleibt gleich; beau → beaux."],
+    ["une collègue sportive","un collègue sportif","le genre","-ve → -f in der Gegenrichtung."],
+    ["le policier heureux","la policière heureuse","le genre","-ier → -ière und -eux → -euse."],
+    ["des femmes tristes","des hommes tristes","le genre","homme/femme ist ein unregelmässiges Paar; triste bleibt gleich."]
+  ];
+  extra.forEach(function(e){
+    bank.push(inputQ("gender","Changez … "+e[2], e[0], "Ändere "+e[2]+".", [e[1]], e[1], e[3]));
+  });
+  return bank;
+}
+
+/* ---------- 03 ADJEKTIVE & POSSESSIV ---------- */
+function buildAdjBank(){
+  var bank = [];
+  ADJ3.forEach(function(a){
+    bank.push(inputQ("adj","3 Formen", a.exM.replace(a.m,"____"), a.m+" / "+a.mv+" / "+a.f,
+      [a.m, a.exM], a.exM, "Vor Konsonant: die normale maskuline Form."));
+    bank.push(inputQ("adj","3 Formen", a.exV.replace(a.mv,"____"), a.m+" / "+a.mv+" / "+a.f,
+      [a.mv, a.exV], a.exV, "Vor Vokal oder stummem h im Singular: die dritte Form "+a.mv+"."));
+    bank.push(inputQ("adj","3 Formen", a.exF.replace(a.f,"____"), a.m+" / "+a.mv+" / "+a.f,
+      [a.f, a.exF], a.exF, "Feminin: die normale weibliche Form."));
+    bank.push(choiceQ("adj","3 Formen · Plural", "zwei "+a.exV.replace(/^un |^une /,"")+" → Plural?", "",
+      shuffle([a.m+"x", a.mv+"s"]).slice(0,2), a.m==="vieux" ? "vieuxx" : a.m+"x", ""));
+  });
+  bank = bank.filter(function(q){ return q.label !== "3 Formen · Plural"; });
+  var poss = [
+    ["(ich) ____ frère","mon","mon vor maskulinem Nomen."],
+    ["(ich) ____ sœur","ma","ma vor femininem Nomen mit Konsonant am Anfang."],
+    ["(ich) ____ amie","mon","Falle! amie beginnt mit Vokal → mon statt ma, nur wegen der Aussprache."],
+    ["(du) ____ parents","tes","Plural → tes."],
+    ["(er) ____ chien","son","son vor maskulinem Nomen."],
+    ["(sie, 1 Person) ____ histoire","son","Falle! histoire beginnt mit stummem h → son statt sa."],
+    ["(wir) ____ maison","notre","notre gilt für maskulin und feminin im Singular."],
+    ["(wir) ____ enfants","nos","Plural → nos."],
+    ["(ihr) ____ voiture","votre","votre gilt für maskulin und feminin im Singular."],
+    ["(sie, mehrere) ____ enfants","leurs","Plural → leurs."],
+    ["(du) ____ école","ton","Falle! école beginnt mit Vokal → ton statt ta."],
+    ["(sie, mehrere) ____ maison","leur","Ein Objekt, mehrere Besitzer → leur ohne -s."]
+  ];
+  poss.forEach(function(p){
+    bank.push(inputQ("adj","Possessivbegleiter", p[0], "Setz den passenden Begleiter ein.", [p[1]], p[1], p[2]));
+  });
+  return bank;
+}
+
+/* ---------- 04 ADJEKTIV-STELLUNG ---------- */
+function buildPlacePosition(){
+  var bank = [];
+  PRE_NOUN.forEach(function(a){
+    bank.push(choiceQ("place","Devant ou derrière ?", "<i>"+a.m+"</i> <span class=\"muted\">— "+a.de+"</span>",
+      "Wo steht dieses Adjektiv?", ["devant le nom","derrière le nom"], "devant le nom",
+      a.m+" gehört zu den 13 Adjektiven, die vor dem Nomen stehen (BAGS)."));
+  });
+  POST_NOUN.forEach(function(a){
+    bank.push(choiceQ("place","Devant ou derrière ?", "<i>"+a[0]+"</i> <span class=\"muted\">— "+a[1]+"</span>",
+      "Wo steht dieses Adjektiv?", ["devant le nom","derrière le nom"], "derrière le nom",
+      "Der Normalfall: Adjektive stehen hinter dem Nomen. Nur die 13 BAGS-Adjektive stehen davor."));
+  });
+  return bank;
+}
+function buildPlacePhrase(){
+  var items = [
+    ["un livre","petit","un petit livre","petit gehört zu den 13 — es steht vor dem Nomen."],
+    ["une femme","paresseux","une femme paresseuse","Normalfall: hinter dem Nomen, feminine Endung -euse."],
+    ["un homme","passionné","un homme passionné","Normalfall: hinter dem Nomen."],
+    ["les garçons","joyeux","les garçons joyeux","Normalfall; -eux bleibt im Plural gleich."],
+    ["deux filles","appliqué + courageux","deux filles appliquées et courageuses","Zwei Adjektive hinter dem Nomen werden mit et verbunden."],
+    ["la humeur","mauvais","la mauvaise humeur","mauvais gehört zu den 13 — davor, mit femininer Form."],
+    ["deux amis","bon + gros + vieux","deux bons gros vieux amis","Alle drei gehören zu den 13 und stehen ohne et vor dem Nomen."],
+    ["les maisons","beau + grand","les belles grandes maisons","Beide gehören zu den 13 — beide davor."],
+    ["une histoire","autre + long","une autre longue histoire","autre und long stehen beide vor dem Nomen."],
+    ["un livre","nouveau + petit","un nouveau petit livre","Zwei BAGS-Adjektive hintereinander, beide davor."],
+    ["un homme","vieux + sympathique + poli","un vieil homme sympathique et poli","vieux → vieil vor Vokal; die anderen beiden stehen hinter dem Nomen."],
+    ["une aventure","beau + intéressant","une belle aventure intéressante","belle davor, intéressante dahinter."],
+    ["deux amies","jeune + bon + modeste","deux jeunes bonnes amies modestes","jeune und bonnes davor, modestes dahinter."],
+    ["un hôtel","beau","un bel hôtel","Vor Vokal wird beau zu bel."],
+    ["une étudiante","particulièrement + bon","une étudiante particulièrement bonne","Mit langem Adverb rutscht sogar ein BAGS-Adjektiv hinter das Nomen."],
+    ["des journées","incroyablement + beau","des journées incroyablement belles","Auch hier zwingt das lange Adverb das Adjektiv nach hinten."]
+  ];
+  return items.map(function(it){
+    return inputQ("place","Groupe nominal bauen", it[0]+' <span class="muted">('+it[1]+')</span>',
+      "Setz das Adjektiv an die richtige Stelle — mit der richtigen Endung.", [it[2]], it[2], it[3]);
+  });
+}
+function buildPlaceMeaning(){
+  var bank = [];
+  MEANING_CHANGE.forEach(function(m){
+    var choices = [m.after.de, m.before.de];
+    bank.push(choiceQ("place","Bedeutung", "<b>"+m.before.ex[0]+"</b>", "Was heisst das?",
+      shuffle(choices), m.before.de, "Vor dem Nomen: "+m.before.de+". Hinter dem Nomen wäre es „"+m.after.de+"“."));
+    bank.push(choiceQ("place","Bedeutung", "<b>"+m.after.ex[0]+"</b>", "Was heisst das?",
+      shuffle(choices.slice()), m.after.de, "Hinter dem Nomen: "+m.after.de+". Vor dem Nomen wäre es „"+m.before.de+"“."));
+  });
+  var reverse = [
+    ["mein eigenes Haus","ma propre maison","ma maison propre","propre vor dem Nomen = eigen."],
+    ["ein sauberes Haus","une maison propre","une propre maison","propre hinter dem Nomen = sauber."],
+    ["meine ehemalige Freundin","mon ancienne copine","ma copine ancienne","ancien vor dem Nomen = ehemalig."],
+    ["die alten Häuser","les maisons anciennes","les anciennes maisons","ancien hinter dem Nomen = alt."],
+    ["meine liebe Freundin","ma chère amie","mon amie chère","cher vor dem Nomen = lieb."],
+    ["ein teures Restaurant","un restaurant cher","un cher restaurant","cher hinter dem Nomen = teuer."],
+    ["letzte Woche (die vergangene)","la semaine dernière","la dernière semaine","dernier hinter dem Nomen = zeitlich von jetzt aus."],
+    ["die letzte Woche des Monats","la dernière semaine du mois","la semaine dernière du mois","dernier vor dem Nomen = die letzte von mehreren."],
+    ["nächste Woche","la semaine prochaine","la prochaine semaine","prochain hinter dem Nomen = zeitlich von jetzt aus."],
+    ["der nächste Bus","le prochain bus","le bus prochain","prochain vor dem Nomen = der nächste von mehreren."],
+    ["ein grossgewachsener Mann","un homme grand","un grand homme","grand hinter dem Nomen = Körpergrösse."],
+    ["eine bedeutende Frau","une grande femme","une femme grande","grand vor dem Nomen = bedeutend."],
+    ["mein armer Freund (bemitleidenswert)","mon pauvre ami","mon ami pauvre","pauvre vor dem Nomen = erbärmlich, glücklos."],
+    ["die armen Familien (ohne Geld)","les familles pauvres","les pauvres familles","pauvre hinter dem Nomen = geldlos."],
+    ["ich habe nur einen Freund","j'ai un seul ami","j'ai un ami seul","seul vor dem Nomen = nur ein, einzig."],
+    ["ein einsamer Mann","un homme seul","un seul homme","seul hinter dem Nomen = allein, einsam."],
+    ["ein echtes Problem","un vrai problème","un problème vrai","vrai vor dem Nomen = echt."],
+    ["eine wahre Geschichte","une histoire vraie","une vraie histoire","vrai hinter dem Nomen = wahr."]
+  ];
+  reverse.forEach(function(r){
+    bank.push(choiceQ("place","Übersetzung", r[0], "Welche Stellung ist richtig?", shuffle([r[1], r[2]]), r[1], r[3]));
+  });
+  return bank;
+}
+function buildPlaceSpecial(){
+  var items = [
+    ["eine besonders gute Studentin","une étudiante particulièrement bonne","une particulièrement bonne étudiante",
+     "Langes Adverb → das Adjektiv rutscht hinter das Nomen, auch wenn es zu den 13 gehört."],
+    ["der beste Film","le meilleur film","le film le meilleur",
+     "meilleur, moindre und pire stehen immer vor dem Nomen."],
+    ["der schlechteste Schauspieler","le pire acteur","l'acteur le pire",
+     "pire steht immer vor dem Nomen."],
+    ["nicht die geringste Ahnung","je n'ai pas la moindre idée","je n'ai pas l'idée moindre",
+     "moindre steht immer vor dem Nomen."],
+    ["Ich wünsche Ihnen einen ausgezeichneten Abend!","une excellente soirée","une soirée excellente",
+     "Vor dem Nomen wirkt das Adjektiv subjektiv verstärkt — genau das ist hier gemeint."],
+    ["Das ist wirklich eine tolle Idee!","une fameuse idée","une idée fameuse",
+     "Auch hier: davor = starke subjektive Verstärkung."]
+  ];
+  var bank = items.map(function(it){
+    return choiceQ("place","Spezialfall", it[0], "Welche Variante passt?", shuffle([it[1], it[2]]), it[1], it[3]);
+  });
+  bank.push(choiceQ("place","Spezialfall", "c'est la plus grande ville", "Ist das richtig oder falsch?",
+    ["richtig","falsch"], "richtig",
+    "Im Superlativ darfst du wählen: c'est la plus grande ville = c'est la ville la plus grande."));
+  return bank;
+}
+
+/* ---------- 05 STEIGERUNG ---------- */
+function buildCompComparatif(){
+  var items = [
+    ["Norman mesure 1,78 m, Paul mesure 1,83 m. <span class=\"muted\">(grand)</span>","Norman est …",
+     ["moins grand que Paul"],"moins grand que Paul","Kleinere Grösse → moins + Adjektiv + que."],
+    ["Mon immeuble a neuf étages, l'immeuble de Sandrine a huit étages. <span class=\"muted\">(haut)</span>","Mon immeuble est …",
+     ["plus haut que l'immeuble de Sandrine","plus haut que celui de Sandrine"],"plus haut que l'immeuble de Sandrine","Mehr Stockwerke → plus + Adjektiv + que."],
+    ["Ce paquet pèse 35 kg, cette valise pèse 26 kg. <span class=\"muted\">(lourd)</span>","Ce paquet est …",
+     ["plus lourd que cette valise"],"plus lourd que cette valise","Mehr Gewicht → plus … que."],
+    ["Pierre a 78 ans, Clément a 79 ans. <span class=\"muted\">(âgé)</span>","Pierre est …",
+     ["moins âgé que Clément"],"moins âgé que Clément","Pierre ist jünger → moins âgé que."],
+    ["Un jean, un short. <span class=\"muted\">(long)</span>","Un jean est …",
+     ["plus long qu'un short"],"plus long qu'un short","Vor Vokal wird que zu qu'."],
+    ["En Suisse, en Allemagne. <span class=\"muted\">(faire chaud) (=)</span>","En Suisse, il fait …",
+     ["aussi chaud qu'en Allemagne"],"aussi chaud qu'en Allemagne","Gleichheit → aussi … que, hier mit Elision qu'en."],
+    ["La chemise 200 F, le chemisier 250 F. <span class=\"muted\">(être cher)</span>","La chemise est …",
+     ["moins chère que le chemisier"],"moins chère que le chemisier","chemise ist feminin → chère."],
+    ["Les chapeaux 100 F, les bérets 100 F. <span class=\"muted\">(être cher) (=)</span>","Les chapeaux sont …",
+     ["aussi chers que les bérets"],"aussi chers que les bérets","Gleicher Preis → aussi; Plural maskulin → chers."],
+    ["Cette jupe bleue, cette robe noire. <span class=\"muted\">(long) — die blaue ist länger</span>","Cette jupe bleue est …",
+     ["plus longue que cette robe noire"],"plus longue que cette robe noire","jupe ist feminin → longue."],
+    ["Les bottes, les sandales. <span class=\"muted\">(grand) (=)</span>","Les bottes sont …",
+     ["aussi grandes que les sandales"],"aussi grandes que les sandales","Feminin Plural → grandes."]
+  ];
+  return items.map(function(it){
+    return inputQ("comp","Übung 1 · Comparatif", it[0], it[1]+" <span class=\"muted\">(ergänze)</span>", it[2], it[3], it[4]);
+  });
+}
+function buildCompSuperlatif(){
+  var items = [
+    ["un sourire éclatant","le sourire le plus éclatant","éclatant steht hinter dem Nomen → le sourire le plus éclatant."],
+    ["un regard séduisant","le regard le plus séduisant","séduisant steht hinter dem Nomen."],
+    ["des cheveux naturels","les cheveux les plus naturels","Plural maskulin → les … les plus …"],
+    ["une peau douce","la peau la plus douce","Feminin → la … la plus …"],
+    ["un patron gentil","le patron le plus gentil","gentil darf auch davor stehen: le plus gentil patron."],
+    ["des mains fines","les mains les plus fines","Feminin Plural → les … les plus …"],
+    ["une robe élégante","la robe la plus élégante","élégante steht hinter dem Nomen."],
+    ["un bon ami","le meilleur ami","Falle! bon hat den unregelmässigen Superlativ le meilleur."]
+  ];
+  return items.map(function(it){
+    return inputQ("comp","Übung 2 · Superlatif", it[0], "Setz den Ausdruck in den Superlativ (+).", [it[1]], it[1], it[2]);
+  });
+}
+function buildCompPhrases(){
+  var items = [
+    ["Le Sahara / désert / vaste / planète <span class=\"muted\">(+)</span>",
+     ["Le Sahara est le désert le plus vaste de la planète","Le Sahara est le plus vaste désert de la planète"],
+     "Le Sahara est le désert le plus vaste de la planète.","Nach dem Superlativ steht de + Ort: de la planète."],
+    ["L'Amazonie / forêt / grande / terre <span class=\"muted\">(+)</span>",
+     ["L'Amazonie est la forêt la plus grande de la terre","L'Amazonie est la plus grande forêt de la terre"],
+     "L'Amazonie est la plus grande forêt de la terre.","grand darf vor oder hinter dem Nomen stehen — beides ist richtig."],
+    ["La Sibérie / endroit / peuplé / Asie <span class=\"muted\">(–)</span>",
+     ["La Sibérie est l'endroit le moins peuplé d'Asie"],
+     "La Sibérie est l'endroit le moins peuplé d'Asie.","Minus → le moins; vor Vokal wird de zu d'."],
+    ["Le Nil / fleuve / long / Afrique <span class=\"muted\">(+)</span>",
+     ["Le Nil est le fleuve le plus long d'Afrique","Le Nil est le plus long fleuve d'Afrique"],
+     "Le Nil est le fleuve le plus long d'Afrique.","d'Afrique mit Elision."],
+    ["L'Antarctique / région / visitée / monde <span class=\"muted\">(–)</span>",
+     ["L'Antarctique est la région la moins visitée du monde"],
+     "L'Antarctique est la région la moins visitée du monde.","de + le monde → du monde."],
+    ["Los Angeles / ville / cosmopolite / États-Unis <span class=\"muted\">(+)</span>",
+     ["Los Angeles est la ville la plus cosmopolite des États-Unis"],
+     "Los Angeles est la ville la plus cosmopolite des États-Unis.","de + les États-Unis → des États-Unis."]
+  ];
+  return items.map(function(it){
+    return inputQ("comp","Übung 3 · Sätze", it[0], "Bau einen ganzen Satz im Superlativ.", it[1], it[2], it[3]);
+  });
+}
+function buildCompTranslate(){
+  var items = [
+    ["Sie ist genauso faul wie ich.",["Elle est aussi paresseuse que moi"],"Elle est aussi paresseuse que moi.","genauso … wie → aussi … que; nach que steht moi, nicht je."],
+    ["Er ist sehr viel spontaner als sie.",["Il est beaucoup plus spontané qu'elle","Il est bien plus spontané qu'elle"],"Il est beaucoup plus spontané qu'elle.","sehr viel mehr → beaucoup plus; qu' vor Vokal."],
+    ["Die Strassen in Bern sind enger als in Zürich.",["Les rues de Berne sont plus étroites qu'à Zurich","Les rues de Berne sont plus étroites que les rues de Zurich"],"Les rues de Berne sont plus étroites qu'à Zurich.","rues ist feminin Plural → étroites."],
+    ["Du bist weniger geduldig als er.",["Tu es moins patient que lui","Tu es moins patiente que lui"],"Tu es moins patient que lui.","weniger → moins; nach que steht lui."],
+    ["Er gibt eine bessere Antwort als wir.",["Il donne une meilleure réponse que nous"],"Il donne une meilleure réponse que nous.","bon → meilleur, hier feminin: meilleure."],
+    ["Das ist ein schlechterer Platz als letztes Mal.",["C'est une pire place que la dernière fois","C'est une plus mauvaise place que la dernière fois"],"C'est une pire place que la dernière fois.","mauvais → pire; la dernière fois = das letzte Mal."],
+    ["Ich bin mindestens genauso gut wie du!",["Je suis au moins aussi bon que toi","Je suis au moins aussi bonne que toi"],"Je suis au moins aussi bon que toi !","mindestens → au moins; nach que steht toi."]
+  ];
+  return items.map(function(it){
+    return inputQ("comp","Übung 5 · Übersetzen", it[0], "Übersetze ins Französische.", it[1], it[2], it[3]);
+  });
+}
+function buildCompForms(){
+  var bank = [];
+  bank.push(choiceQ("comp","Formen & Fallen","une bonne idée → Komparativ","Welche Form ist richtig?",
+    shuffle(["une meilleure idée","une plus bonne idée"]),"une meilleure idée","bon wird unregelmässig gesteigert: meilleur(e). „plus bon“ gibt es nicht."));
+  bank.push(choiceQ("comp","Formen & Fallen","un mauvais film → Komparativ","Welche Form lernst du hier?",
+    shuffle(["un pire film","un plus mauvais film"]),"un pire film","mauvais → pire (unregelmässig)."));
+  bank.push(choiceQ("comp","Formen & Fallen","Superlativ von bon, feminin Singular","Welche Form ist richtig?",
+    shuffle(["la meilleure","la plus bonne"]),"la meilleure","le/la meilleur(e) — nie „la plus bonne“."));
+  bank.push(choiceQ("comp","Formen & Fallen","Wo steht meilleur?","Stellung im Satz",
+    ["immer vor dem Nomen","immer hinter dem Nomen"],"immer vor dem Nomen","meilleur, moindre und pire stehen immer vor dem Nomen."));
+  bank.push(inputQ("comp","Formen & Fallen","le vélo ____ cher <span class=\"muted\">(Superlativ –)</span>","Ergänze die zwei Wörter.",
+    ["le moins"],"le moins","Superlativ der Unterlegenheit: le / la / les moins + Adjektiv."));
+  bank.push(inputQ("comp","Formen & Fallen","les villes ____ intéressantes <span class=\"muted\">(Superlativ +)</span>","Ergänze die zwei Wörter.",
+    ["les plus"],"les plus","Plural feminin: les … les plus + Adjektiv."));
+  bank.push(inputQ("comp","Formen & Fallen","Elle est ____ jolie ____ Sylvie. <span class=\"muted\">(=)</span>","Ergänze beide Lücken (aussi … que).",
+    ["aussi que","aussi … que","aussi / que"],"aussi … que","Gleichheit: aussi + Adjektiv + que."));
+  bank.push(choiceQ("comp","Formen & Fallen","Mon chien est aussi rusé ____ un renard.","Was steht in der Lücke?",
+    shuffle(["qu'","que"]),"qu'","Vor Vokal wird que zu qu' — qu'un renard."));
+  return bank;
+}
+
+/* ---------- 06 ÊTRE & INVERSION ---------- */
+function buildEtreBank(){
+  var bank = [];
+  ETRE_PAIRS.forEach(function(p){
+    var why = p[0]+" ↔ "+p[1]+" — Bewegungspaar mit être.";
+    bank.push(choiceQ("etre","avoir oder être?", "<i>"+p[0]+"</i>", "Passé composé mit …?", ["avoir","être"], "être", why));
+    bank.push(choiceQ("etre","avoir oder être?", "<i>"+p[1]+"</i>", "Passé composé mit …?", ["avoir","être"], "être", why));
+  });
+  ETRE_SINGLE.forEach(function(v){
+    bank.push(choiceQ("etre","avoir oder être?", "<i>"+v+"</i>", "Passé composé mit …?", ["avoir","être"], "être",
+      v+" gehört zu den être-Verben."));
+  });
+  bank.push(choiceQ("etre","avoir oder être?", "<i>se lever</i>", "Passé composé mit …?", ["avoir","être"], "être",
+    "Alle reflexiven Verben (se …) bilden das Passé composé mit être."));
+  AVOIR_SAMPLE.forEach(function(v){
+    bank.push(choiceQ("etre","avoir oder être?", "<i>"+v+"</i>", "Passé composé mit …?", ["avoir","être"], "avoir",
+      v+" ist ein ganz normales avoir-Verb."));
+  });
+  bank.push(choiceQ("etre","avoir oder être?", "<i>divorcer</i>", "Passé composé mit …?", ["avoir","être"], "avoir",
+    "Falle! divorcer ist kein être-Verb: il a divorcé."));
+  var inv = [
+    ["Il a un vélo.",["A-t-il un vélo ?","A-t-il un vélo"],"A-t-il un vélo ?","a endet auf einen Vokal und il folgt → -t- einschieben."],
+    ["Elle parle français.",["Parle-t-elle français ?"],"Parle-t-elle français ?","parle endet auf Vokal, elle folgt → -t-."],
+    ["Tu as faim.",["As-tu faim ?"],"As-tu faim ?","as endet auf einen Konsonantenlaut → kein -t- nötig."],
+    ["On va au cinéma.",["Va-t-on au cinéma ?"],"Va-t-on au cinéma ?","va endet auf Vokal, on folgt → -t-."],
+    ["Vous avez faim.",["Avez-vous faim ?"],"Avez-vous faim ?","vous braucht nie ein -t-."],
+    ["Elle a un chat.",["A-t-elle un chat ?"],"A-t-elle un chat ?","a + elle → -t-."],
+    ["Il joue au tennis.",["Joue-t-il au tennis ?"],"Joue-t-il au tennis ?","joue endet auf Vokal, il folgt → -t-."],
+    ["Nous sommes prêts.",["Sommes-nous prêts ?"],"Sommes-nous prêts ?","nous braucht nie ein -t-."],
+    ["Elle joue du piano.",["Joue-t-elle du piano ?"],"Joue-t-elle du piano ?","jouer + de + Instrument: du piano."],
+    ["Il aime le chocolat.",["Aime-t-il le chocolat ?"],"Aime-t-il le chocolat ?","aime endet auf Vokal, il folgt → -t-."]
+  ];
+  inv.forEach(function(it){
+    bank.push(inputQ("etre","Inversionsfrage", it[0], "Stell die Frage mit Inversion.", it[1], it[2], it[3]));
+  });
+  return bank;
+}
+
+/* ================================================================
+   THEMEN-REGISTER
+   ================================================================ */
+var TOPICS = [
+  {key:"verbs", num:"01", label:"Verben", short:"Verben",
+   sub:"16 Verben × 6 Zeitformen", random:true, sets:[]},
+  {key:"gender", num:"02", label:"Genre &amp; Nombre", short:"Genre & Nombre",
+   sub:"Feminin, Plural, unregelmässige Paare",
+   sets:[{key:"all", label:"Alles gemischt", build:buildGenderBank}]},
+  {key:"adj", num:"03", label:"Adjektive &amp; Possessiv", short:"Adjektive & Possessiv",
+   sub:"beau/bel/belle, mon/ma/mes",
+   sets:[{key:"all", label:"Alles gemischt", build:buildAdjBank}]},
+  {key:"place", num:"04", label:"Adjektiv-Stellung", short:"Adjektiv-Stellung",
+   sub:"Die 13 BAGS-Adjektive und der Bedeutungswechsel",
+   sets:[
+     {key:"pos", label:"Devant ou derrière ?", build:buildPlacePosition},
+     {key:"phrase", label:"Groupe nominal bauen", build:buildPlacePhrase},
+     {key:"sense", label:"Bedeutungswechsel", build:buildPlaceMeaning},
+     {key:"spec", label:"Spezialfälle", build:buildPlaceSpecial}
+   ]},
+  {key:"comp", num:"05", label:"Steigerung", short:"Steigerung",
+   sub:"Comparatif und superlatif",
+   sets:[
+     {key:"ex1", label:"Übung 1 · Comparatif", build:buildCompComparatif},
+     {key:"ex2", label:"Übung 2 · Superlatif", build:buildCompSuperlatif},
+     {key:"ex3", label:"Übung 3 · Sätze", build:buildCompPhrases},
+     {key:"ex5", label:"Übung 5 · Übersetzen", build:buildCompTranslate},
+     {key:"forms", label:"Formen & Fallen", build:buildCompForms}
+   ]},
+  {key:"etre", num:"06", label:"Être &amp; Inversion", short:"Être & Inversion",
+   sub:"avoir oder être, Fragen mit Bindestrich",
+   sets:[{key:"all", label:"Alles gemischt", build:buildEtreBank}]}
+];
+function topicByKey(k){
+  for(var i=0;i<TOPICS.length;i++){ if(TOPICS[i].key===k) return TOPICS[i]; }
+  return null;
+}
+var BANK_CACHE = {};
+function bankFor(topicKey, setKey){
+  var t = topicByKey(topicKey);
+  if(!t || t.random) return [];
+  var ck = topicKey + "|" + (setKey||"all");
+  if(BANK_CACHE[ck]) return BANK_CACHE[ck];
+  var out = [];
+  t.sets.forEach(function(s){
+    if(!setKey || setKey === "all" || setKey === s.key) out = out.concat(s.build());
+  });
+  BANK_CACHE[ck] = out;
+  return out;
+}
+
+/* ---------- Fragen-Nachschub ---------- */
+function makeFeeder(topicKey, setKey, verbCfg){
+  if(topicKey === "verbs"){
+    return function(){ return randomVerbQuestion(verbCfg||{}); };
+  }
+  var bank = shuffle(bankFor(topicKey, setKey)), i = 0;
+  return function(){
+    if(!bank.length) return null;
+    if(i >= bank.length){ bank = shuffle(bank); i = 0; }
+    return bank[i++];
+  };
+}
+function makeMixedFeeder(verbCfg){
+  var feeders = TOPICS.map(function(t){ return makeFeeder(t.key, "all", verbCfg); });
+  return function(){
+    var f = pick(feeders), q = f();
+    return q || makeFeeder("verbs","all",verbCfg)();
+  };
+}
+function buildPool(cfg, count){
+  var qs = [], i;
+  if(cfg.topic === "all"){
+    var per = Math.ceil((count * 1.5) / TOPICS.length);
+    TOPICS.forEach(function(t){
+      var f = makeFeeder(t.key, "all", cfg.verbCfg);
+      for(i=0;i<per;i++){ var q = f(); if(q) qs.push(q); }
+    });
+  } else {
+    var f2 = makeFeeder(cfg.topic, cfg.set, cfg.verbCfg);
+    for(i=0;i<count*2;i++){ var q2 = f2(); if(q2) qs.push(q2); }
+  }
+  var seen = {}, out = [];
+  shuffle(qs).forEach(function(q){
+    var k = q.topic + "|" + q.prompt + "|" + q.display;
+    if(!seen[k]){ seen[k] = 1; out.push(q); }
+  });
+  while(out.length < count && qs.length){ out.push(pick(qs)); }
+  return out.slice(0, count);
+}
+
+/* ================================================================
+   SVG-ICONS
+   ================================================================ */
+var ICON = {
+  heart: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.7-9.5-9.2C1 8.4 3 5 6.5 5c2 0 3.6 1.2 4.4 2.4C11.9 6.2 13.4 5 15.4 5 18.9 5 21 8.4 19.5 11.8 17.5 16.3 12 21 12 21z"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>',
+  bolt: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>',
+  target: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>',
+  paper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/></svg>'
+};
+
+/* ================================================================
+   STATE / ROUTER
+   ================================================================ */
+var STATE = {
+  store: loadStore(),
+  session: null,
+  verbFocus: null,
+  verbCfg: {filter:"all", focus:null, tenses:[]},
+  tabs: {}
+};
+
+var SECTIONS = [
+  {key:"home", label:"Start"},
+  {key:"verbs", label:"Verben"},
+  {key:"gender", label:"Genre & Nombre"},
+  {key:"adj", label:"Adjektive & Possessiv"},
+  {key:"place", label:"Adjektiv-Stellung"},
+  {key:"comp", label:"Steigerung"},
+  {key:"etre", label:"Être & Inversion"},
+  {key:"test", label:"Prüfung"}
+];
+
+function currentSection(){
+  var h = location.hash.replace(/^#\//,"");
+  for(var i=0;i<SECTIONS.length;i++){ if(SECTIONS[i].key===h) return SECTIONS[i].key; }
+  return "home";
+}
+function renderNav(){
+  var nav = document.getElementById("nav");
+  nav.innerHTML = "";
+  var cur = currentSection();
+  SECTIONS.forEach(function(s, i){
+    var b = document.createElement("button");
+    b.className = "nav-item" + (cur===s.key ? " active" : "");
+    b.innerHTML = '<span class="num">'+String(i).padStart(2,"0")+'</span><span>'+s.label+'</span>';
+    b.onclick = function(){ location.hash = "#/"+s.key; };
+    nav.appendChild(b);
+  });
+}
+function clearSession(){
+  if(STATE.session && STATE.session.timerId){ clearInterval(STATE.session.timerId); }
+  STATE.session = null;
+}
+function go(hash){ location.hash = hash; }
+function navigate(){
+  clearSession();
+  var sec = currentSection();
+  renderNav();
+  var el = document.getElementById("content");
+  if(sec==="home") renderHome(el);
+  else if(sec==="verbs") renderVerbsSection(el);
+  else if(sec==="test") renderTestSection(el);
+  else renderTopicSection(el, sec);
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange", navigate);
+
+/* kleine Helfer für Tabs */
+function tabBar(sectionKey, tabs, onChange){
+  var cur = STATE.tabs[sectionKey] || tabs[0].key;
+  var html = '<div class="controls-row" data-tabbar="'+sectionKey+'">';
+  tabs.forEach(function(t){
+    html += '<button class="toggle'+(cur===t.key?' active':'')+'" data-tab="'+t.key+'">'+t.label+'</button>';
+  });
+  html += '</div>';
+  setTimeout(function(){
+    var bar = document.querySelector('[data-tabbar="'+sectionKey+'"]');
+    if(!bar) return;
+    bar.querySelectorAll("[data-tab]").forEach(function(b){
+      b.onclick = function(){ STATE.tabs[sectionKey] = b.getAttribute("data-tab"); onChange(); };
+    });
+  },0);
+  return html;
+}
+function curTab(sectionKey, fallback){ return STATE.tabs[sectionKey] || fallback; }
+
+/* ================================================================
+   START
+   ================================================================ */
+function renderHome(el){
+  var li = levelInfo();
+  var seen = Object.keys(STATE.store.verbsSeen||{}).length;
+  var totalQ = 0, totalC = 0, k;
+  for(k in STATE.store.byTopic){ totalQ += STATE.store.byTopic[k].total; totalC += STATE.store.byTopic[k].correct; }
+  var html = '';
+  html += '<span class="eyebrow">Français · Prüfungsvorbereitung</span>';
+  html += '<h1 class="page-title">Le Cahier</h1>';
+  html += '<p class="page-lede">Referenz und Training für den ganzen Stoff: Verben, Genre &amp; Nombre, Adjektive, die Stellung des Adjektivs und die Steigerung. Üben bringt XP — und die Prüfung simuliert den Ernstfall.</p>';
+
+  html += '<div class="level-card">'
+    + '<div class="lc-left"><span class="lc-lv">Level '+li.level+'</span>'
+    + '<span class="lc-xp mono">'+li.into+' / '+li.need+' XP</span></div>'
+    + '<div class="lc-bar"><i style="width:'+li.pct+'%"></i></div>'
+    + '<div class="lc-stats">'
+      + '<span><b class="mono">'+totalQ+'</b> Fragen beantwortet</span>'
+      + '<span><b class="mono">'+(totalQ?Math.round(100*totalC/totalQ)+"%":"–")+'</b> Trefferquote</span>'
+      + '<span><b class="mono">'+seen+' / 16</b> Verben geübt</span>'
+    + '</div></div>';
+
+  html += '<div class="section-title">Themen</div>';
+  html += '<div class="grid grid-2" style="margin-top:8px;">';
+  TOPICS.forEach(function(t){
+    var acc = topicAcc(t.key);
+    html += '<button class="topic-card" data-go="#/'+t.key+'">'
+      + '<span class="badge">'+t.num+'</span>'
+      + '<div><h4>'+t.label+'</h4><p>'+t.sub+'</p>'
+      + (acc!==null ? '<span class="chip ok" style="margin-top:8px;"><span class="dot"></span>'+acc+'% richtig</span>'
+                    : '<span class="chip" style="margin-top:8px;">noch nicht geübt</span>')
+      + '</div></button>';
+  });
+  html += '</div>';
+
+  html += '<div class="section-title">Schnellstart</div>';
+  html += '<div class="mode-grid">'
+    + quickCard("bolt","Blitz · 60 Sekunden","Alle Themen gemischt, so viele wie möglich","#/test?quick=blitz")
+    + quickCard("heart","Herzen","Drei Leben, gemischte Fragen","#/test?quick=lives")
+    + quickCard("paper","Prüfung","20 Fragen, Korrektur am Schluss","#/test")
+    + '</div>';
+
+  html += '<div class="callout tip"><b>So holst du am meisten raus:</b> Zuerst die Referenz eines Themas lesen, dann im gleichen Tab auf <i>Üben</i> wechseln. Eine Serie richtiger Antworten gibt einen XP-Multiplikator — und in der Prüfung siehst du am Schluss jede Frage mit deiner und der richtigen Antwort.</div>';
+  el.innerHTML = html;
+  bindGo(el);
+}
+function quickCard(icon, title, desc, hash){
+  return '<button class="mode-card" data-go="'+hash+'">'
+    + '<span class="mc-icon">'+ICON[icon==="heart"?"heart":icon]+'</span>'
+    + '<span class="mc-title">'+title+'</span>'
+    + '<span class="mc-desc">'+desc+'</span></button>';
+}
+function bindGo(root){
+  root.querySelectorAll("[data-go]").forEach(function(b){
+    b.onclick = function(){
+      var h = b.getAttribute("data-go");
+      if(h.indexOf("?quick=") > -1){
+        var parts = h.split("?quick=");
+        STATE.quickMode = parts[1];
+        /* Nur EINMAL navigieren: setzt man den Hash, übernimmt das hashchange-
+           Event das Rendern — ein zusätzlicher navigate()-Aufruf würde die
+           gerade gestartete Session sofort wieder abräumen. */
+        if(location.hash === parts[0]) navigate();
+        else location.hash = parts[0];
+      } else {
+        location.hash = h;
+      }
+    };
+  });
+}
+
+/* ================================================================
+   01 VERBEN
+   ================================================================ */
+function excDots(exc){
+  return ["pr","im","pc","pq","fu","co"].map(function(k){
+    return '<span class="'+(exc[k]?'on':'')+'"></span>';
+  }).join("");
+}
+function renderVerbsSection(el){
+  var tab = curTab("verbs","reference");
+  var html = '<span class="eyebrow">Thema 01</span><h1 class="page-title">Verben</h1>';
+  html += '<p class="page-lede">Alle 16 Verben in allen 6 Zeitformen. Rot markiert heisst: Besonderheit gegenüber dem regulären Muster.</p>';
+  html += tabBar("verbs", [{key:"reference",label:"Referenz"},{key:"drill",label:"Trainer"}], function(){ renderVerbsSection(el); });
+  el.innerHTML = html + '<div id="secBody"></div>';
+  var body = document.getElementById("secBody");
+  if(tab === "reference") renderVerbReference(body);
+  else renderVerbTrainer(body);
+}
+function renderVerbReference(body){
+  if(STATE.verbDetail){ renderVerbDetail(body, STATE.verbDetail); return; }
+  var html = '';
+  VERB_GROUPS.forEach(function(g){
+    html += '<div class="group-label">'+g.title+' — '+g.sub+'</div><div class="verb-list">';
+    g.verbs.forEach(function(vk){
+      var v = VERBS[vk];
+      var seen = STATE.store.verbsSeen[vk];
+      html += '<button class="verb-row" data-verb="'+vk+'">'
+        + '<span class="inf">'+v.inf+'</span>'
+        + '<span class="de">'+v.de+'</span>'
+        + (seen ? '<span class="chip ok"><span class="dot"></span>geübt</span>' : '')
+        + '<span class="excdots">'+excDots(v.exc)+'</span></button>';
+    });
+    html += '</div>';
+  });
+  body.innerHTML = html;
+  body.querySelectorAll("[data-verb]").forEach(function(b){
+    b.onclick = function(){
+      STATE.verbDetail = b.getAttribute("data-verb");
+      STATE.verbFocus = STATE.verbDetail;
+      STATE.verbCfg.focus = STATE.verbDetail;
+      renderVerbsSection(document.getElementById("content"));
+    };
+  });
+}
+function renderVerbDetail(body, vk){
+  var v = VERBS[vk];
+  var html = '<button class="back-link" data-back="1">← Alle Verben</button>';
+  html += '<div class="verb-detail"><div class="vd-head"><h3>'+v.inf+'</h3>'
+    + '<span class="muted">'+v.de+'</span></div>';
+  html += '<div class="tablewrap"><table><tr><th>Person</th>';
+  TENSES.forEach(function(t){ html += '<th'+(v.exc[t.key]?' class="th-exc"':'')+'>'+t.label+'</th>'; });
+  html += '</tr>';
+  PERSONS.forEach(function(p, pi){
+    html += '<tr><td class="person">'+p+'</td>';
+    TENSES.forEach(function(t){
+      html += '<td class="'+(v.exc[t.key]?'exc':'')+'">'+cellArr(v.forms[t.key][pi]).join(" / ")+'</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</table></div>';
+  if(v.note) html += '<div class="verb-note'+(v.warn?' warn':'')+'">'+v.note+'</div>';
+  html += '<div style="margin-top:14px;"><button class="btn accent" data-train="'+vk+'">Nur dieses Verb trainieren →</button></div>';
+  html += '</div>';
+  body.innerHTML = html;
+  body.querySelector("[data-back]").onclick = function(){
+    STATE.verbDetail = null;
+    renderVerbsSection(document.getElementById("content"));
+  };
+  body.querySelector("[data-train]").onclick = function(){
+    STATE.verbFocus = vk;
+    STATE.verbCfg.focus = vk;
+    STATE.verbDetail = null;
+    STATE.tabs["verbs"] = "drill";
+    renderVerbsSection(document.getElementById("content"));
+  };
+}
+function renderVerbTrainer(body){
+  var cfg = STATE.verbCfg;
+  if(!cfg.tenses.length) cfg.tenses = TENSES.map(function(t){ return t.key; });
+  var focusVerb = cfg.focus && VERBS[cfg.focus] ? VERBS[cfg.focus] : null;
+
+  var html = '<div class="config-panel">';
+  html += '<div class="cfg-label">Welche Verben?</div><div class="chip-row">';
+  if(focusVerb){
+    html += '<button class="chip-btn active" data-vfilter="focus">Nur <i>'+focusVerb.inf+'</i> <span class="x">✕</span></button>';
+  }
+  ["all","exc","aux"].forEach(function(f){
+    var lbl = f==="all" ? "Alle 16" : (f==="exc" ? "Nur Ausnahmen" : "Nur avoir + être");
+    var active = !focusVerb && cfg.filter===f;
+    html += '<button class="chip-btn'+(active?' active':'')+'" data-vfilter="'+f+'">'+lbl+'</button>';
+  });
+  html += '</div>';
+
+  html += '<div class="cfg-label">Welche Zeitformen?</div><div class="chip-row">';
+  TENSES.forEach(function(t){
+    var on = cfg.tenses.indexOf(t.key) > -1;
+    html += '<button class="chip-btn'+(on?' active':'')+'" data-tense="'+t.key+'">'+t.label+'</button>';
+  });
+  html += '</div></div>';
+
+  html += modeGrid("verbs");
+  html += '<div id="sessionHost"></div>';
+  body.innerHTML = html;
+
+  body.querySelectorAll("[data-vfilter]").forEach(function(b){
+    b.onclick = function(){
+      var f = b.getAttribute("data-vfilter");
+      if(f === "focus"){ cfg.focus = null; STATE.verbFocus = null; }
+      else { cfg.focus = null; STATE.verbFocus = null; cfg.filter = f; }
+      renderVerbTrainer(body);
+    };
+  });
+  body.querySelectorAll("[data-tense]").forEach(function(b){
+    b.onclick = function(){
+      var k = b.getAttribute("data-tense"), i = cfg.tenses.indexOf(k);
+      if(i > -1){ if(cfg.tenses.length > 1) cfg.tenses.splice(i,1); }
+      else cfg.tenses.push(k);
+      renderVerbTrainer(body);
+    };
+  });
+  bindModeGrid(body, "verbs", null);
+}
+
+/* ================================================================
+   GENERISCHE THEMEN-SEKTION
+   ================================================================ */
+function renderTopicSection(el, key){
+  var t = topicByKey(key);
+  if(!t){ location.hash = "#/home"; return; }
+  var tab = curTab(key, "reference");
+  var html = '<span class="eyebrow">Thema '+t.num+'</span><h1 class="page-title">'+t.label+'</h1>';
+  html += '<p class="page-lede">'+TOPIC_LEDE[key]+'</p>';
+  html += tabBar(key, [{key:"reference",label:"Referenz"},{key:"drill",label:"Üben"}], function(){ renderTopicSection(el, key); });
+  el.innerHTML = html + '<div id="secBody"></div>';
+  var body = document.getElementById("secBody");
+  if(tab === "reference") REFERENCE[key](body);
+  else renderTopicDrill(body, key);
+}
+var TOPIC_LEDE = {
+  gender: "Männlich ↔ weiblich und Singular ↔ Plural: die Muster, die Ausnahmen und was du auswendig können musst.",
+  adj: "Adjektive mit drei Formen und die Possessivbegleiter — samt der Vokal-Falle, die beide betrifft.",
+  place: "Die meisten Adjektive stehen hinter dem Nomen. 13 stehen davor — und einige ändern ihre Bedeutung je nach Stellung.",
+  comp: "Comparatif und superlatif: vergleichen, steigern und die unregelmässigen Formen von bon und mauvais.",
+  etre: "Wer bildet das Passé composé mit être? Und wann braucht die Inversionsfrage ein -t-?"
+};
+function renderTopicDrill(body, key){
+  var t = topicByKey(key);
+  var html = '';
+  if(t.sets.length > 1){
+    var cur = STATE.setChoice && STATE.setChoice[key] ? STATE.setChoice[key] : "all";
+    html += '<div class="config-panel"><div class="cfg-label">Welche Übung?</div><div class="chip-row">';
+    html += '<button class="chip-btn'+(cur==="all"?' active':'')+'" data-set="all">Alles gemischt</button>';
+    t.sets.forEach(function(s){
+      html += '<button class="chip-btn'+(cur===s.key?' active':'')+'" data-set="'+s.key+'">'+s.label+'</button>';
+    });
+    html += '</div></div>';
+  }
+  html += modeGrid(key);
+  html += '<div id="sessionHost"></div>';
+  body.innerHTML = html;
+  body.querySelectorAll("[data-set]").forEach(function(b){
+    b.onclick = function(){
+      if(!STATE.setChoice) STATE.setChoice = {};
+      STATE.setChoice[key] = b.getAttribute("data-set");
+      renderTopicDrill(body, key);
+    };
+  });
+  bindModeGrid(body, key, null);
+}
+
+/* ---------- Modus-Auswahl ---------- */
+function modeGrid(topicKey){
+  var bestBlitz = getBest("blitz|"+topicKey), bestLives = getBest("lives|"+topicKey);
+  return '<div class="mode-grid">'
+    + '<button class="mode-card" data-mode="round"><span class="mc-icon">'+ICON.target+'</span>'
+      + '<span class="mc-title">Runde</span><span class="mc-desc">10 Fragen mit Erklärung nach jeder Antwort</span></button>'
+    + '<button class="mode-card" data-mode="blitz"><span class="mc-icon">'+ICON.bolt+'</span>'
+      + '<span class="mc-title">Blitz</span><span class="mc-desc">60 Sekunden — Tempo zählt'
+      + (bestBlitz?'<br><b class="mono">Rekord: '+bestBlitz+'</b>':'')+'</span></button>'
+    + '<button class="mode-card" data-mode="lives"><span class="mc-icon">'+ICON.heart+'</span>'
+      + '<span class="mc-title">Herzen</span><span class="mc-desc">3 Leben — wie weit kommst du?'
+      + (bestLives?'<br><b class="mono">Rekord: '+bestLives+'</b>':'')+'</span></button>'
+    + '</div>';
+}
+function bindModeGrid(root, topicKey, setKeyOverride){
+  root.querySelectorAll("[data-mode]").forEach(function(b){
+    b.onclick = function(){
+      var host = root.querySelector("#sessionHost") || document.getElementById("sessionHost");
+      var setKey = setKeyOverride || (STATE.setChoice && STATE.setChoice[topicKey]) || "all";
+      startSession(host, {
+        mode: b.getAttribute("data-mode"),
+        topic: topicKey,
+        set: setKey,
+        verbCfg: STATE.verbCfg,
+        back: function(){ navigate(); }
+      });
+      host.scrollIntoView({block:"start", behavior:"smooth"});
+    };
+  });
+  if(STATE.quickMode){
+    var qm = STATE.quickMode; STATE.quickMode = null;
+    var host2 = root.querySelector("#sessionHost") || document.getElementById("sessionHost");
+    if(host2) startSession(host2, {mode:qm, topic:"all", set:"all", verbCfg:STATE.verbCfg, back:function(){ navigate(); }});
+  }
+}
+
+/* ================================================================
+   SESSION-ENGINE
+   ================================================================ */
+var MODES = {
+  round: {key:"round", label:"Runde", count:10},
+  blitz: {key:"blitz", label:"Blitz", seconds:60},
+  lives: {key:"lives", label:"Herzen", hearts:3},
+  test:  {key:"test",  label:"Prüfung", count:20}
+};
+function comboMult(c){ return c>=10 ? 3 : (c>=6 ? 2 : (c>=3 ? 1.5 : 1)); }
+
+function startSession(host, cfg){
+  clearSession();
+  var mode = MODES[cfg.mode];
+  var sess = {
+    host: host, cfg: cfg, mode: mode,
+    queue: null, feeder: null, idx: 0,
+    correct: 0, total: 0, combo: 0, bestCombo: 0,
+    hearts: mode.hearts || 0, xp: 0, answers: [],
+    answered: false, q: null, endsAt: null, timerId: null
+  };
+  if(mode.count) sess.queue = buildPool(cfg, mode.count);
+  else sess.feeder = (cfg.topic === "all") ? makeMixedFeeder(cfg.verbCfg) : makeFeeder(cfg.topic, cfg.set, cfg.verbCfg);
+  STATE.session = sess;
+  if(cfg.mode === "blitz"){
+    sess.endsAt = Date.now() + mode.seconds*1000;
+    sess.timerId = setInterval(function(){ tickTimer(sess); }, 250);
+  }
+  nextQuestion(sess);
+}
+function tickTimer(sess){
+  var left = Math.max(0, sess.endsAt - Date.now());
+  var el = sess.host.querySelector("[data-timer]");
+  if(el){
+    var s = Math.ceil(left/1000);
+    el.textContent = Math.floor(s/60) + ":" + String(s%60).padStart(2,"0");
+    el.className = "timer mono" + (s <= 10 ? " low" : "");
+  }
+  var bar = sess.host.querySelector("[data-timerbar]");
+  if(bar) bar.style.width = (100*left/(sess.mode.seconds*1000)) + "%";
+  if(left <= 0){ clearInterval(sess.timerId); sess.timerId = null; endSession(sess); }
+}
+function nextQuestion(sess){
+  if(sess.mode.hearts && sess.hearts <= 0) return endSession(sess);
+  if(sess.queue){
+    if(sess.idx >= sess.queue.length) return endSession(sess);
+    sess.q = sess.queue[sess.idx];
+  } else {
+    sess.q = sess.feeder();
+    if(!sess.q) return endSession(sess);
+  }
+  sess.answered = false;
+  drawSession(sess);
+}
+function meterHtml(sess){
+  var m = sess.mode, html = '<div class="meter-row">';
+  if(m.key === "round" || m.key === "test"){
+    var n = sess.idx + 1, tot = sess.queue.length;
+    html += '<span class="meter-label">Frage <b class="mono">'+n+'</b> / '+tot+'</span>'
+      + '<span class="meter-bar"><i style="width:'+(100*sess.idx/tot)+'%"></i></span>';
+    if(m.key === "round") html += '<span class="meter-score mono">'+sess.correct+' richtig</span>';
+  } else if(m.key === "blitz"){
+    html += '<span class="timer mono" data-timer>1:00</span>'
+      + '<span class="meter-bar"><i data-timerbar style="width:100%"></i></span>'
+      + '<span class="meter-score mono">'+sess.correct+' richtig</span>';
+  } else if(m.key === "lives"){
+    html += '<span class="hearts">';
+    for(var i=0;i<m.hearts;i++){
+      html += '<span class="heart'+(i < sess.hearts ? '' : ' off')+'">'+ICON.heart+'</span>';
+    }
+    html += '</span><span class="meter-bar" style="visibility:hidden"></span>'
+      + '<span class="meter-score mono">'+sess.correct+' richtig</span>';
+  }
+  if(sess.combo >= 3 && m.key !== "test"){
+    html += '<span class="combo-chip">'+ICON.bolt+' ×'+comboMult(sess.combo)+'</span>';
+  }
+  html += '</div>';
+  return html;
+}
+function drawSession(sess){
+  var q = sess.q, m = sess.mode;
+  var topicLabel = (topicByKey(q.topic) || {short:""}).short;
+  var html = '<div class="quiz-panel">' + meterHtml(sess);
+  html += '<div class="q-head"><span class="q-label">'+q.label+'</span>'
+        + (sess.cfg.topic === "all" ? '<span class="chip">'+topicLabel+'</span>' : '') + '</div>';
+  html += '<div class="quiz-prompt">'+q.prompt+'</div>';
+  if(q.hint) html += '<div class="q-hint">'+q.hint+'</div>';
+  if(q.kind === "input"){
+    html += '<div class="quiz-input-row">'
+      + '<input class="quiz-input" id="ansInput" placeholder="Deine Antwort…" autocomplete="off" autocapitalize="off" spellcheck="false">'
+      + '<button class="btn accent" id="checkBtn">'+(m.key==="test" ? "Weiter" : "Prüfen")+'</button></div>';
+  } else {
+    html += '<div class="mc-row">';
+    q.choices.forEach(function(c){
+      html += '<button class="mc-btn" data-choice="'+String(c).replace(/"/g,"&quot;")+'">'+c+'</button>';
+    });
+    html += '</div>';
+  }
+  html += '<div class="feedback" id="fb"></div>';
+  html += '<div class="quiz-actions"><button class="link-btn" data-abort>Beenden</button>'
+        + '<button class="btn secondary" id="nextBtn" style="display:none;">Weiter →</button></div>';
+  html += '</div>';
+  sess.host.innerHTML = html;
+
+  var input = document.getElementById("ansInput");
+  if(input){
+    input.focus();
+    document.getElementById("checkBtn").onclick = function(){ submitAnswer(sess, input.value); };
+    input.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        e.preventDefault();
+        if(!input.readOnly) submitAnswer(sess, input.value);
+        else { var nb = document.getElementById("nextBtn"); if(nb) nb.click(); }
+      }
+    });
+  }
+  sess.host.querySelectorAll("[data-choice]").forEach(function(b){
+    b.onclick = function(){ submitAnswer(sess, b.getAttribute("data-choice"), b); };
+  });
+  var ab = sess.host.querySelector("[data-abort]");
+  if(ab) ab.onclick = function(){ endSession(sess); };
+  var nb2 = document.getElementById("nextBtn");
+  if(nb2) nb2.onclick = function(){ sess.idx++; nextQuestion(sess); };
+}
+function submitAnswer(sess, value, btn){
+  if(sess.answered) return;
+  var q = sess.q;
+  if(q.kind === "input" && !String(value).trim() && sess.mode.key !== "test") return;
+  sess.answered = true;
+  var ok = (q.kind === "input") ? isAcceptable(value, q.accept) : (normLoose(value) === normLoose(q.answer));
+  sess.total++;
+  if(ok){
+    sess.correct++; sess.combo++;
+    if(sess.combo > sess.bestCombo) sess.bestCombo = sess.combo;
+  } else {
+    sess.combo = 0;
+    if(sess.mode.hearts) sess.hearts--;
+  }
+  var gain = ok ? Math.round(10 * comboMult(sess.combo)) : 0;
+  sess.xp += gain;
+  sess.answers.push({q:q, user:value, ok:ok});
+  recordAnswer(q.topic, ok, q.vk || null, gain);
+
+  if(sess.mode.key === "test"){
+    sess.idx++;
+    nextQuestion(sess);
+    return;
+  }
+  var input = document.getElementById("ansInput");
+  if(input){ input.classList.add(ok?"correct":"wrong"); input.readOnly = true; input.focus(); }
+  var cb = document.getElementById("checkBtn");
+  if(cb) cb.style.display = "none";
+  sess.host.querySelectorAll(".mc-btn").forEach(function(b){
+    b.disabled = true;
+    if(normLoose(b.getAttribute("data-choice")) === normLoose(q.answer)) b.classList.add("correct");
+    else if(b === btn) b.classList.add("wrong");
+  });
+  var fb = document.getElementById("fb");
+  fb.className = "feedback show " + (ok ? "correct" : "wrong");
+  fb.innerHTML = '<div class="fb-head"><span>'+(ok ? "Richtig!" : "Nicht ganz.")+'</span>'
+    + (gain ? '<span class="xp-pop mono">+'+gain+' XP</span>' : '') + '</div>'
+    + '<div class="answer">'+q.display+'</div>'
+    + (q.explain ? '<div class="explain">'+q.explain+'</div>' : '');
+  var nb = document.getElementById("nextBtn");
+  if(nb){
+    nb.style.display = "inline-block";
+    nb.textContent = (sess.mode.hearts && sess.hearts <= 0) ? "Ergebnis ansehen →" : "Weiter →";
+    nb.focus();
+  }
+  var sc = sess.host.querySelector(".meter-score");
+  if(sc) sc.textContent = sess.correct + " richtig";
+}
+function stars(pct){
+  var n = pct >= 90 ? 3 : (pct >= 70 ? 2 : (pct >= 50 ? 1 : 0));
+  var html = '<span class="stars">';
+  for(var i=0;i<3;i++) html += '<span class="star'+(i<n?'':' off')+'">'+ICON.star+'</span>';
+  return html + '</span>';
+}
+function endSession(sess){
+  if(sess.timerId){ clearInterval(sess.timerId); sess.timerId = null; }
+  var pct = sess.total ? Math.round(100*sess.correct/sess.total) : 0;
+  var isTest = sess.mode.key === "test";
+  var bestKey = sess.mode.key + "|" + sess.cfg.topic;
+  var isRecord = false;
+  if(sess.mode.key === "blitz" || sess.mode.key === "lives") isRecord = setBest(bestKey, sess.correct);
+
+  var html = '<div class="result-panel">';
+  html += '<span class="eyebrow">'+(isTest ? "Prüfungsergebnis" : "Ergebnis")+'</span>';
+  html += '<div class="result-top"><div class="result-score mono">'+sess.correct+' / '+sess.total+'</div>'
+    + (isTest || sess.mode.key === "round" ? stars(pct) : '') + '</div>';
+  html += '<div class="result-meta">'
+    + '<span><b class="mono">'+pct+'%</b> richtig</span>'
+    + '<span><b class="mono">+'+sess.xp+'</b> XP</span>'
+    + '<span>längste Serie <b class="mono">'+sess.bestCombo+'</b></span>'
+    + (isRecord ? '<span class="chip gold"><span class="dot"></span>Neuer Rekord</span>' : '')
+    + '</div>';
+
+  var byTopic = {};
+  sess.answers.forEach(function(a){
+    var k = a.q.topic;
+    if(!byTopic[k]) byTopic[k] = {c:0,t:0};
+    byTopic[k].t++; if(a.ok) byTopic[k].c++;
+  });
+  var keys = Object.keys(byTopic);
+  if(keys.length > 1){
+    html += '<div class="result-bars">';
+    keys.forEach(function(k){
+      var t = topicByKey(k), c = byTopic[k], p = Math.round(100*c.c/c.t);
+      html += '<div class="cat-bar-row"><span class="label">'+(t?t.short:k)+'</span>'
+        + '<div class="cat-bar-track"><div class="cat-bar-fill" style="width:'+p+'%"></div></div>'
+        + '<span class="frac mono">'+c.c+'/'+c.t+'</span></div>';
+    });
+    html += '</div>';
+  }
+
+  if(isTest && sess.answers.length){
+    html += '<div class="section-title" style="margin-top:22px;">Korrektur</div><div class="review-list">';
+    sess.answers.forEach(function(a, i){
+      html += '<div class="review-item'+(a.ok?' ok':'')+'">'
+        + '<div class="ri-num mono">'+(i+1)+'</div>'
+        + '<div class="ri-body">'
+          + '<div class="ri-prompt">'+a.q.prompt+(a.q.hint?' <span class="muted">— '+a.q.hint.replace(/<[^>]+>/g,"")+'</span>':'')+'</div>'
+          + '<div class="ri-answers">'
+            + '<span class="ra '+(a.ok?'good':'bad')+'">'+(String(a.user).trim() ? a.user : "—")+'</span>'
+            + (a.ok ? '' : '<span class="ra good">'+a.q.display+'</span>')
+          + '</div>'
+          + (a.ok || !a.q.explain ? '' : '<div class="ri-explain">'+a.q.explain+'</div>')
+        + '</div></div>';
+    });
+    html += '</div>';
+  }
+
+  html += '<div class="result-actions">'
+    + '<button class="btn accent" data-again>Nochmal</button>'
+    + '<button class="btn secondary" data-back>Zur Auswahl</button>'
+    + '</div></div>';
+  sess.host.innerHTML = html;
+  sess.host.querySelector("[data-again]").onclick = function(){ startSession(sess.host, sess.cfg); };
+  sess.host.querySelector("[data-back]").onclick = function(){ clearSession(); sess.cfg.back(); };
+  STATE.session = null;
+}
+
+/* ================================================================
+   07 PRÜFUNG
+   ================================================================ */
+function renderTestSection(el){
+  var html = '<span class="eyebrow">Thema 07</span><h1 class="page-title">Prüfung</h1>';
+  html += '<p class="page-lede">20 zufällige Fragen — aus allen Themen oder gezielt aus einem. Während der Prüfung gibt es keine Korrektur; am Schluss siehst du jede Frage mit deiner und der richtigen Antwort.</p>';
+  html += '<div class="cfg-label">Woraus soll geprüft werden?</div>';
+  html += '<div class="grid grid-2" style="margin-bottom:8px;">';
+  html += '<button class="topic-card" data-test="all"><span class="badge">∑</span>'
+    + '<div><h4>Alle Themen</h4><p>Gemischt aus allen sechs Kapiteln — wie die echte Prüfung</p></div></button>';
+  TOPICS.forEach(function(t){
+    var acc = topicAcc(t.key);
+    html += '<button class="topic-card" data-test="'+t.key+'"><span class="badge">'+t.num+'</span>'
+      + '<div><h4>'+t.label+'</h4><p>'+t.sub+'</p>'
+      + (acc!==null ? '<span class="chip ok" style="margin-top:8px;"><span class="dot"></span>'+acc+'% richtig</span>' : '')
+      + '</div></button>';
+  });
+  html += '</div><div id="sessionHost"></div>';
+  el.innerHTML = html;
+  el.querySelectorAll("[data-test]").forEach(function(b){
+    b.onclick = function(){
+      var host = document.getElementById("sessionHost");
+      startSession(host, {mode:"test", topic:b.getAttribute("data-test"), set:"all",
+        verbCfg:{filter:"all", focus:null, tenses:TENSES.map(function(t){return t.key;})},
+        back:function(){ navigate(); }});
+      host.scrollIntoView({block:"start", behavior:"smooth"});
+    };
+  });
+  if(STATE.quickMode){
+    var qm = STATE.quickMode; STATE.quickMode = null;
+    var host2 = document.getElementById("sessionHost");
+    startSession(host2, {mode:qm, topic:"all", set:"all", verbCfg:STATE.verbCfg, back:function(){ navigate(); }});
+  }
+}
+
+/* ================================================================
+   REFERENZ-SEITEN
+   ================================================================ */
+var REFERENCE = {};
+
+REFERENCE.gender = function(body){
+  var html = '<div class="section-title">Männlich → weiblich</div>';
+  html += '<div class="grid grid-3">';
+  FEMININE_PATTERNS.forEach(function(p){
+    html += '<div class="card"><h4>'+p.rule+'</h4><div class="ex">'+p.ex.join("<br>")+'</div></div>';
+  });
+  html += '</div>';
+  html += '<div class="callout warn"><b>Unregelmässige Paare — kein Muster, einfach auswendig:</b> '
+    + IRREGULAR_PAIRS.map(function(p){ return p[0]+" ↔ "+p[1]; }).join(" · ") + '</div>';
+  html += '<div class="section-title">Singular → Plural</div><div class="tablewrap"><table><tr><th>Regel</th><th>Beispiel</th></tr>';
+  PLURAL_PATTERNS.forEach(function(p){
+    html += '<tr><td class="sans">'+p.rule+'</td><td>'+p.ex+'</td></tr>';
+  });
+  html += '</table></div>';
+  body.innerHTML = html;
+};
+
+REFERENCE.adj = function(body){
+  var html = '<div class="section-title">Adjektive mit 3 Formen</div>';
+  html += '<div class="tablewrap"><table><tr><th>Vor Konsonant</th><th>Vor Vokal / h muet</th><th>Feminin</th><th>Beispiel</th></tr>';
+  ADJ3.forEach(function(a){
+    html += '<tr><td>'+a.m+'</td><td class="exc">'+a.mv+'</td><td>'+a.f+'</td><td class="sans muted">'+a.exV+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<p class="section-lede">Im Plural ganz normal: deux beaux hôtels, deux nouveaux appartements — die Sonderform gilt nur im Singular vor Vokal.</p>';
+  html += '<div class="section-title">Possessivbegleiter</div>';
+  html += '<div class="tablewrap"><table><tr><th>Besitzer</th><th>♂ Singular</th><th>♀ Singular</th><th>Plural</th></tr>';
+  POSSESSIFS.forEach(function(p){
+    html += '<tr><td class="sans">'+p.owner+'</td><td>'+p.m+'</td><td>'+p.f+'</td><td>'+p.pl+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<div class="callout warn"><b>Die Vokal-Falle:</b> Vor einem femininen Wort, das mit Vokal oder stummem h beginnt, nimmst du mon/ton/son statt ma/ta/sa — nur wegen der Aussprache. <span class="mono">mon amie</span>, <span class="mono">son histoire</span>.</div>';
+  body.innerHTML = html;
+};
+
+REFERENCE.place = function(body){
+  var html = '';
+  html += '<div class="callout ok"><b>Grundregel:</b> Die meisten Adjektive stehen <b>hinter</b> dem Nomen. '
+    + '<span class="mono">un homme passionné · une femme paresseuse mais aimable · les garçons joyeux · deux filles appliquées et courageuses</span></div>';
+
+  html += '<div class="section-title">Die 13 Adjektive, die davor stehen</div>';
+  html += '<p class="section-lede">Merk sie dir als <b>BAGS</b>: <i>Beauté, Âge, Bonté, Grandeur</i> — Schönheit, Alter, Wert, Grösse. Alles andere steht hinter dem Nomen.</p>';
+  html += '<div class="bags-grid">';
+  BAGS.forEach(function(g){
+    html += '<div class="bags-card"><h4>'+g.group+'</h4><table class="mini">';
+    g.items.forEach(function(it){
+      html += '<tr><td class="b">'+it.m+'</td><td>'+it.f+'</td><td class="sans muted">'+it.de+'</td></tr>';
+    });
+    html += '</table></div>';
+  });
+  html += '</div>';
+  html += '<div class="callout tip"><b>Beides in einem Satz:</b> Du musst bei jedem Adjektiv einzeln entscheiden. '
+    + '<span class="mono">un vieil homme sympathique et poli · deux jeunes bonnes amies modestes · une belle aventure intéressante</span></div>';
+
+  html += '<div class="section-title">Particularités</div>';
+  html += '<div class="grid grid-3">'
+    + '<div class="card"><h4>Langes Adverb → dahinter</h4><div class="ex">une étudiante particulièrement bonne<br>des journées incroyablement belles</div></div>'
+    + '<div class="card"><h4>Im Superlativ: freie Wahl</h4><div class="ex">c\'est la plus grande ville<br>= c\'est la ville la plus grande</div></div>'
+    + '<div class="card"><h4>Subjektive Verstärkung → davor</h4><div class="ex">une excellente soirée !<br>une fameuse idée !</div></div>'
+    + '</div>';
+  html += '<div class="callout warn"><b>Immer vor dem Nomen:</b> die unregelmässigen Superlative <span class="mono">meilleur</span>, <span class="mono">moindre</span> und <span class="mono">pire</span> — le meilleur film · le pire acteur · je n\'ai pas la moindre idée.</div>';
+
+  html += '<div class="section-title">Bedeutungswechsel je nach Stellung</div>';
+  html += '<p class="section-lede">Hinter dem Nomen gilt die ursprüngliche, konkrete Bedeutung — davor die übertragene, weniger konkrete.</p>';
+  html += '<div class="tablewrap"><table class="mc-table"><tr><th>Adjektiv</th><th>hinter dem Nomen <span class="th-sub">konkret</span></th><th class="th-fig">davor <span class="th-sub">figurativ</span></th></tr>';
+  MEANING_CHANGE.forEach(function(m){
+    html += '<tr><td class="sans b"><i>'+m.adj+'</i></td>'
+      + '<td><span class="sans muted">'+m.after.de+'</span><br>'+m.after.ex.join("<br>")+'</td>'
+      + '<td class="fig"><span class="sans muted">'+m.before.de+'</span><br>'+m.before.ex.join("<br>")+'</td></tr>';
+  });
+  html += '</table></div>';
+  body.innerHTML = html;
+};
+
+REFERENCE.comp = function(body){
+  var html = '<div class="section-title">Le comparatif</div>';
+  html += '<p class="section-lede">Zwei Elemente vergleichen.</p><div class="grid grid-3">';
+  COMPARATIF.forEach(function(c){
+    html += '<div class="card comp-card"><span class="sign">'+c.sign+'</span><h4>'+c.title+'</h4>'
+      + '<div class="formula">'+c.form+'</div><div class="ex">'+c.ex.join("<br>")+'</div></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="section-title">Le superlatif</div>';
+  html += '<p class="section-lede">Mehrere Elemente vergleichen.</p><div class="grid grid-2">';
+  SUPERLATIF.forEach(function(s){
+    html += '<div class="card comp-card"><span class="sign">'+s.sign+'</span><h4>'+s.title+'</h4>'
+      + '<div class="formula">'+s.form+'</div><div class="ex">'+s.ex.join("<br>")+'</div>'
+      + '<div class="mini-note">Adjektiv steht vor dem Nomen: <b>'+s.pre+'</b></div></div>';
+  });
+  html += '</div>';
+  html += '<div class="callout tip"><b>Nach dem Superlativ kommt de:</b> le désert le plus vaste <b>de la</b> planète · le fleuve le plus long <b>d\'</b>Afrique · la région la moins visitée <b>du</b> monde · la ville la plus cosmopolite <b>des</b> États-Unis.</div>';
+
+  html += '<div class="section-title">Unregelmässig: bon und mauvais</div>';
+  html += '<div class="tablewrap"><table><tr><th>Positiv</th><th>Comparatif</th><th>Superlatif</th></tr>';
+  IRREG_COMP.forEach(function(r){
+    html += '<tr><td>'+r.pos+'</td><td class="exc">'+r.comp+'</td><td class="exc">'+r.sup+'</td></tr>'
+      + '<tr><td class="muted">'+r.exPos+'</td><td class="muted">'+r.exComp+'</td><td class="muted">'+r.exSup+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<div class="callout warn"><b>Es gibt kein „plus bon“.</b> bon → meilleur, mauvais → pire. Und: meilleur, moindre und pire stehen immer vor dem Nomen.</div>';
+
+  html += '<div class="section-title">Wendungen aus den Übungen</div>';
+  html += '<div class="grid grid-3">'
+    + '<div class="card"><h4>genauso … wie</h4><div class="ex">aussi … que<br>Elle est aussi paresseuse que moi.</div></div>'
+    + '<div class="card"><h4>sehr viel …er</h4><div class="ex">beaucoup plus …<br>Il est beaucoup plus spontané qu\'elle.</div></div>'
+    + '<div class="card"><h4>mindestens genauso</h4><div class="ex">au moins aussi …<br>Je suis au moins aussi bon que toi !</div></div>'
+    + '</div>';
+  html += '<div class="callout tip"><b>Achtung bei que:</b> vor einem Vokal wird es zu <b>qu\'</b> (qu\'elle, qu\'un short, qu\'à Zurich) — und nach que stehen die betonten Pronomen: moi, toi, lui, elle, nous, vous, eux.</div>';
+
+  html += '<div class="section-title">Sprech-Impulse: France ↔ Suisse</div>';
+  html += '<p class="section-lede">Übung 4 aus dem Buch — laut vergleichen, zum Beispiel: <i>La France est plus grande que la Suisse.</i></p>';
+  html += '<div class="prompt-grid">';
+  FR_CH_PROMPTS.forEach(function(p, i){
+    html += '<div class="prompt-chip"><span class="mono">'+(i+1)+'</span>'+p[0]+' <span class="muted">('+p[1]+')</span></div>';
+  });
+  html += '</div>';
+  body.innerHTML = html;
+};
+
+REFERENCE.etre = function(body){
+  var html = '<div class="section-title">être-Verben im Passé composé</div><div class="grid grid-2">';
+  html += '<div class="card"><h4>In Gegensatzpaaren</h4><div class="ex">'
+    + ETRE_PAIRS.map(function(p){ return p[0]+" ↔ "+p[1]; }).join("<br>") + '</div></div>';
+  html += '<div class="card"><h4>Einzeln + reflexive Verben</h4><div class="ex">'
+    + ETRE_SINGLE.join(", ") + '<br>+ alle „se …“-Verben</div></div></div>';
+  html += '<div class="callout warn"><b>divorcer ist kein être-Verb:</b> il a divorcé — ganz normal mit avoir.</div>';
+  html += '<div class="section-title">Die Inversionsfrage</div>';
+  html += '<div class="callout ok"><b>Regel:</b> Verb und Subjekt tauschen und mit Bindestrich verbinden: '
+    + '<span class="mono">Il a un chien. → A-t-il un chien ?</span><br><br>'
+    + '<b>Achtung:</b> Endet das Verb auf einen Vokal und folgt il/elle/on, schiebst du ein <b>-t-</b> ein: '
+    + '<span class="mono">Elle parle → Parle-t-elle … ?</span> Kein -t- nötig, wenn das Verb schon auf einem Konsonantenlaut endet: '
+    + '<span class="mono">Tu as → As-tu … ?</span></div>';
+  body.innerHTML = html;
+};
+
+/* ================================================================
+   THEME + INIT
+   ================================================================ */
+function initTheme(){
+  var saved = null;
+  try{ saved = localStorage.getItem("cahier_theme"); }catch(e){}
+  if(saved) document.documentElement.setAttribute("data-theme", saved);
+  document.getElementById("themeToggle").onclick = function(){
+    var cur = document.documentElement.getAttribute("data-theme");
+    var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var eff = cur || (prefersDark ? "dark" : "light");
+    var next = eff === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem("cahier_theme", next); }catch(e){}
+  };
+}
+
+initTheme();
+renderSidebarStats();
+navigate();
+
+})();
+</script>
+</body>
+</html>
