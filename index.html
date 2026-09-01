@@ -627,8 +627,8 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
   <div class="scrim" id="scrim"></div>
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <span class="brand-mark">C</span>
-      <div class="brand-title"><b>Cahier</b><br>de Grammaire</div>
+      <span class="brand-mark" id="brandMark">V</span>
+      <div class="brand-title" id="brandTitle"><b>VLKR</b><br>Deine Fächer</div>
       <button class="drawer-close" id="drawerClose" type="button" aria-label="Menü schliessen">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16"/></svg>
       </button>
@@ -1635,23 +1635,62 @@ function subjectByKey(k){
   return null;
 }
 
+/* #/            -> Fach-Wahl
+   #/fr/verbs    -> Fach fr, Abschnitt verbs
+   #/verbs       -> alte einstufige Route, wird auf Französisch gelesen */
+function parseHash(h){
+  var raw = (h === undefined ? location.hash : h).replace(/^#\/?/, "");
+  if(!raw) return {subject:null, section:"home"};
+  var parts = raw.split("/");
+  if(parts.length >= 2){
+    return subjectByKey(parts[0])
+      ? {subject:parts[0], section:parts[1] || "home"}
+      : {subject:null, section:"home"};
+  }
+  /* Einstufig: entweder ein Fach-Schlüssel oder eine alte Französisch-Route. */
+  if(subjectByKey(parts[0])) return {subject:parts[0], section:"home"};
+  for(var i=0;i<FR_SECTIONS.length;i++){
+    if(FR_SECTIONS[i].key === parts[0]) return {subject:"fr", section:parts[0]};
+  }
+  return {subject:null, section:"home"};
+}
+function currentSubject(){ return subjectByKey(parseHash().subject); }
+function goTo(sk, sec){ location.hash = "#/" + sk + "/" + sec; }
+
 function currentSection(){
-  var h = location.hash.replace(/^#\//,"");
-  for(var i=0;i<FR_SECTIONS.length;i++){ if(FR_SECTIONS[i].key===h) return FR_SECTIONS[i].key; }
+  var p = parseHash(), s = subjectByKey(p.subject);
+  if(!s) return "home";
+  for(var i=0;i<s.sections.length;i++){ if(s.sections[i].key === p.section) return p.section; }
   return "home";
+}
+/* Die Schublade trägt das Zeichen des aktiven Fachs; ohne Fach das der App. */
+function renderBrand(){
+  var sub = currentSubject();
+  var mark = document.getElementById("brandMark"), title = document.getElementById("brandTitle");
+  if(!mark || !title) return;
+  if(!sub){
+    mark.textContent = "V";
+    title.innerHTML = '<b>VLKR</b><br>Deine Fächer';
+    return;
+  }
+  mark.textContent = sub.mark;
+  title.innerHTML = '<b>' + sub.title.split(" ")[0] + '</b><br>'
+    + (sub.key === "fr" ? "de Grammaire" : sub.sub);
 }
 function renderNav(){
   var nav = document.getElementById("nav");
   nav.innerHTML = "";
+  var sub = currentSubject();
+  if(!sub) return;
   var cur = currentSection();
-  FR_SECTIONS.forEach(function(s, i){
+  sub.sections.forEach(function(s, i){
     var b = document.createElement("button");
     b.className = "nav-item" + (cur===s.key ? " active" : "");
     b.innerHTML = '<span class="num">'+String(i).padStart(2,"0")+'</span><span>'+s.label+'</span>';
     b.onclick = function(){
       /* Bei bereits aktivem Abschnitt feuert kein hashchange — dann selbst schliessen. */
-      if(location.hash === "#/"+s.key) closeNav();
-      else location.hash = "#/"+s.key;
+      if(location.hash === "#/"+sub.key+"/"+s.key) closeNav();
+      else goTo(sub.key, s.key);
     };
     nav.appendChild(b);
   });
@@ -1712,8 +1751,10 @@ function initNavDrawer(){
 function updateTopbarTitle(sec){
   var el = document.getElementById("topbarTitle");
   if(!el) return;
-  for(var i=0;i<FR_SECTIONS.length;i++){
-    if(FR_SECTIONS[i].key===sec){ el.textContent = FR_SECTIONS[i].label; return; }
+  var sub = currentSubject();
+  if(!sub || sec === null){ el.textContent = "VLKR"; return; }
+  for(var i=0;i<sub.sections.length;i++){
+    if(sub.sections[i].key===sec){ el.textContent = sub.sections[i].label; return; }
   }
 }
 function clearSession(){
@@ -1724,15 +1765,27 @@ function go(hash){ location.hash = hash; }
 function navigate(){
   clearSession();
   closeNav();
-  var sec = currentSection();
-  renderNav();
-  updateTopbarTitle(sec);
+  var p = parseHash(), sub = subjectByKey(p.subject);
   var el = document.getElementById("content");
-  if(sec==="home") renderHome(el);
-  else if(sec==="verbs") renderVerbsSection(el);
-  else if(sec==="test") renderTestSection(el);
+  renderNav();
+  renderBrand();
+  if(!sub){
+    updateTopbarTitle(null);
+    renderSubjectPicker(el);
+    window.scrollTo(0,0);
+    return;
+  }
+  var sec = currentSection();
+  updateTopbarTitle(sec);
+  if(sec === "home") renderHome(el);
+  else if(sec === "verbs") renderVerbsSection(el);
+  else if(sec === "test") renderTestSection(el);
   else renderTopicSection(el, sec);
   window.scrollTo(0,0);
+}
+/* Platzhalter — Task 4 ersetzt das durch die echte Fach-Wahl. */
+function renderSubjectPicker(el){
+  el.innerHTML = '<h1 class="page-title">Fächer</h1>';
 }
 window.addEventListener("hashchange", navigate);
 
@@ -2496,7 +2549,8 @@ window.__VLKR_TEST__ = {
   },
   bankFor: bankFor,
   buildPool: buildPool,
-  makeFeeder: makeFeeder
+  makeFeeder: makeFeeder,
+  parseHash: parseHash
 };
 
 })();

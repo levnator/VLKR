@@ -38,6 +38,28 @@ function runChecks(W, T){
     var bad = T.topicsOf("ge").filter(function(t){ return t.key.indexOf("g-") !== 0; });
     return bad.length === 0 ? true : "ohne Präfix: " + bad.map(function(t){return t.key;}).join(",");
   });
+
+  /* ---- Task 3: zweistufiges Routing ---- */
+  check("Hash #/fr/verbs wird korrekt zerlegt", function(){
+    var p = T.parseHash("#/fr/verbs");
+    return (p.subject === "fr" && p.section === "verbs") ? true : JSON.stringify(p);
+  });
+  check("Leerer Hash ergibt Fach-Wahl", function(){
+    var p = T.parseHash("#/");
+    return (p.subject === null) ? true : JSON.stringify(p);
+  });
+  check("Alte Route #/verbs zeigt auf Französisch", function(){
+    var p = T.parseHash("#/verbs");
+    return (p.subject === "fr" && p.section === "verbs") ? true : JSON.stringify(p);
+  });
+  check("Alte Route #/home zeigt auf Französisch", function(){
+    var p = T.parseHash("#/home");
+    return (p.subject === "fr" && p.section === "home") ? true : JSON.stringify(p);
+  });
+  check("Unbekanntes Fach ergibt Fach-Wahl", function(){
+    var p = T.parseHash("#/xx/verbs");
+    return (p.subject === null) ? true : JSON.stringify(p);
+  });
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;
