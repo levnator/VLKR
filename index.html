@@ -1550,7 +1550,10 @@ var GE_TOPICS = [
 ];
 
 function topicByKey(k){
-  for(var i=0;i<FR_TOPICS.length;i++){ if(FR_TOPICS[i].key===k) return FR_TOPICS[i]; }
+  for(var s=0;s<SUBJECTS.length;s++){
+    var ts = SUBJECTS[s].topics;
+    for(var i=0;i<ts.length;i++){ if(ts[i].key===k) return ts[i]; }
+  }
   return null;
 }
 var BANK_CACHE = {};
@@ -1579,18 +1582,28 @@ function makeFeeder(topicKey, setKey, verbCfg){
     return bank[i++];
   };
 }
-function makeMixedFeeder(verbCfg){
-  var feeders = FR_TOPICS.map(function(t){ return makeFeeder(t.key, "all", verbCfg); });
+/* `topics` ist die Themenliste des aktiven Fachs. Ohne sie würde eine
+   Geschichts-Session Französisch-Fragen einschleusen. */
+function makeMixedFeeder(verbCfg, topics){
+  var list = topics || FR_TOPICS;
+  var feeders = list.map(function(t){ return makeFeeder(t.key, "all", verbCfg); });
   return function(){
     var f = pick(feeders), q = f();
-    return q || makeFeeder("verbs","all",verbCfg)();
+    if(q) return q;
+    for(var i=0;i<feeders.length;i++){ var q2 = feeders[i](); if(q2) return q2; }
+    return null;
   };
+}
+function subjectTopics(cfg){
+  var s = subjectByKey(cfg && cfg.subject);
+  return s ? s.topics : FR_TOPICS;
 }
 function buildPool(cfg, count){
   var qs = [], i;
   if(cfg.topic === "all"){
-    var per = Math.ceil((count * 1.5) / FR_TOPICS.length);
-    FR_TOPICS.forEach(function(t){
+    var list = subjectTopics(cfg);
+    var per = Math.ceil((count * 1.5) / list.length);
+    list.forEach(function(t){
       var f = makeFeeder(t.key, "all", cfg.verbCfg);
       for(i=0;i<per;i++){ var q = f(); if(q) qs.push(q); }
     });
@@ -1870,31 +1883,44 @@ function curTab(sectionKey, fallback){ return STATE.tabs[sectionKey] || fallback
 /* ================================================================
    START
    ================================================================ */
+/* Kopfzeilen und Schnellstart-Text je Fach. Die Struktur der Seite ist
+   dieselbe — nur die Worte und die Themenliste wechseln. */
+var HOME_TEXT = {
+  fr: {eyebrow:"Français · Prüfungsvorbereitung", title:"Le Cahier",
+       lede:"Referenz und Training für den ganzen Stoff: Verben, Genre &amp; Nombre, Adjektive, die Stellung des Adjektivs und die Steigerung. Üben bringt XP — und die Prüfung simuliert den Ernstfall."},
+  ge: {eyebrow:"Geschichte · Staatskunde Schweiz", title:"Vom Staatenbund zum Bundesstaat",
+       lede:"Jahreszahlen, Abläufe und Begriffe aus deinem Dossier — vom Zeitstrahl 1798–1999 über die Volksrechte bis zur Gewaltenteilung. Wer die Reihenfolge kann, kann auch die Jahreszahlen."}
+};
 function renderHome(el){
+  var sub = currentSubject(), txt = HOME_TEXT[sub.key];
   var li = levelInfo();
-  var seen = Object.keys(STATE.store.verbsSeen||{}).length;
-  var totalQ = 0, totalC = 0, k;
-  for(k in STATE.store.byTopic){ totalQ += STATE.store.byTopic[k].total; totalC += STATE.store.byTopic[k].correct; }
+  var totalQ = 0, totalC = 0;
+  sub.topics.forEach(function(t){
+    var r = STATE.store.byTopic[t.key];
+    if(r){ totalQ += r.total; totalC += r.correct; }
+  });
   var html = '';
-  html += '<span class="eyebrow">Français · Prüfungsvorbereitung</span>';
-  html += '<h1 class="page-title">Le Cahier</h1>';
-  html += '<p class="page-lede">Referenz und Training für den ganzen Stoff: Verben, Genre &amp; Nombre, Adjektive, die Stellung des Adjektivs und die Steigerung. Üben bringt XP — und die Prüfung simuliert den Ernstfall.</p>';
+  html += '<span class="eyebrow">'+txt.eyebrow+'</span>';
+  html += '<h1 class="page-title">'+txt.title+'</h1>';
+  html += '<p class="page-lede">'+txt.lede+'</p>';
 
   html += '<div class="level-card">'
     + '<div class="lc-left"><span class="lc-lv">Level '+li.level+'</span>'
     + '<span class="lc-xp mono">'+li.into+' / '+li.need+' XP</span></div>'
     + '<div class="lc-bar"><i style="width:'+li.pct+'%"></i></div>'
     + '<div class="lc-stats">'
-      + '<span><b class="mono">'+totalQ+'</b> Fragen beantwortet</span>'
+      + '<span><b class="mono">'+totalQ+'</b> Fragen in diesem Fach</span>'
       + '<span><b class="mono">'+(totalQ?Math.round(100*totalC/totalQ)+"%":"–")+'</b> Trefferquote</span>'
-      + '<span><b class="mono">'+seen+' / 16</b> Verben geübt</span>'
+      + (sub.key === "fr"
+          ? '<span><b class="mono">'+Object.keys(STATE.store.verbsSeen||{}).length+' / 16</b> Verben geübt</span>'
+          : '<span><b class="mono">'+subjectProgress(sub.key).done+' / '+sub.topics.length+'</b> Themen geübt</span>')
     + '</div></div>';
 
   html += '<div class="section-title">Themen</div>';
   html += '<div class="grid grid-2" style="margin-top:8px;">';
-  FR_TOPICS.forEach(function(t){
+  sub.topics.forEach(function(t){
     var acc = topicAcc(t.key);
-    html += '<button class="topic-card" data-go="#/'+t.key+'">'
+    html += '<button class="topic-card" data-go="#/'+sub.key+'/'+t.key+'">'
       + '<span class="badge">'+t.num+'</span>'
       + '<div><h4>'+t.label+'</h4><p>'+t.sub+'</p>'
       + (acc!==null ? '<span class="chip ok" style="margin-top:8px;"><span class="dot"></span>'+acc+'% richtig</span>'
@@ -1903,11 +1929,12 @@ function renderHome(el){
   });
   html += '</div>';
 
+  var testHash = "#/"+sub.key+"/test";
   html += '<div class="section-title">Schnellstart</div>';
   html += '<div class="mode-grid">'
-    + quickCard("bolt","Blitz · 60 Sekunden","Alle Themen gemischt, so viele wie möglich","#/test?quick=blitz")
-    + quickCard("heart","Herzen","Drei Leben, gemischte Fragen","#/test?quick=lives")
-    + quickCard("paper","Prüfung","20 Fragen, Korrektur am Schluss","#/test")
+    + quickCard("bolt","Blitz · 60 Sekunden","Alle Themen gemischt, so viele wie möglich",testHash+"?quick=blitz")
+    + quickCard("heart","Herzen","Drei Leben, gemischte Fragen",testHash+"?quick=lives")
+    + quickCard("paper","Prüfung","20 Fragen, Korrektur am Schluss",testHash)
     + '</div>';
 
   html += '<div class="callout tip"><b>So holst du am meisten raus:</b> Zuerst die Referenz eines Themas lesen, dann im gleichen Tab auf <i>Üben</i> wechseln. Eine Serie richtiger Antworten gibt einen XP-Multiplikator — und in der Prüfung siehst du am Schluss jede Frage mit deiner und der richtigen Antwort.</div>';
@@ -2070,11 +2097,15 @@ function renderTopicSection(el, key){
   if(!t){ location.hash = "#/home"; return; }
   var tab = curTab(key, "reference");
   var html = '<span class="eyebrow">Thema '+t.num+'</span><h1 class="page-title">'+t.label+'</h1>';
-  html += '<p class="page-lede">'+TOPIC_LEDE[key]+'</p>';
+  html += '<p class="page-lede">'+(TOPIC_LEDE[key]||"")+'</p>';
   html += tabBar(key, [{key:"reference",label:"Referenz"},{key:"drill",label:"Üben"}], function(){ renderTopicSection(el, key); });
   el.innerHTML = html + '<div id="secBody"></div>';
   var body = document.getElementById("secBody");
-  if(tab === "reference") REFERENCE[key](body);
+  /* Ein Thema ohne Referenz zeigt einen Hinweis statt eines Absturzes. */
+  if(tab === "reference"){
+    if(REFERENCE[key]) REFERENCE[key](body);
+    else body.innerHTML = '<div class="callout warn">Für dieses Thema gibt es noch keine Referenz.</div>';
+  }
   else renderTopicDrill(body, key);
 }
 var TOPIC_LEDE = {
@@ -2130,6 +2161,7 @@ function bindModeGrid(root, topicKey, setKeyOverride){
       var setKey = setKeyOverride || (STATE.setChoice && STATE.setChoice[topicKey]) || "all";
       startSession(host, {
         mode: b.getAttribute("data-mode"),
+        subject: currentSubject().key,
         topic: topicKey,
         set: setKey,
         verbCfg: STATE.verbCfg,
@@ -2141,7 +2173,7 @@ function bindModeGrid(root, topicKey, setKeyOverride){
   if(STATE.quickMode){
     var qm = STATE.quickMode; STATE.quickMode = null;
     var host2 = root.querySelector("#sessionHost") || document.getElementById("sessionHost");
-    if(host2) startSession(host2, {mode:qm, topic:"all", set:"all", verbCfg:STATE.verbCfg, back:function(){ navigate(); }});
+    if(host2) startSession(host2, {mode:qm, subject:currentSubject().key, topic:"all", set:"all", verbCfg:STATE.verbCfg, back:function(){ navigate(); }});
   }
 }
 
@@ -2179,7 +2211,7 @@ function startSession(host, cfg){
     answered: false, q: null, endsAt: null, timerId: null
   };
   if(mode.count) sess.queue = buildPool(cfg, mode.count);
-  else sess.feeder = (cfg.topic === "all") ? makeMixedFeeder(cfg.verbCfg) : makeFeeder(cfg.topic, cfg.set, cfg.verbCfg);
+  else sess.feeder = (cfg.topic === "all") ? makeMixedFeeder(cfg.verbCfg, subjectTopics(cfg)) : makeFeeder(cfg.topic, cfg.set, cfg.verbCfg);
   STATE.session = sess;
   if(cfg.mode === "blitz"){
     sess.endsAt = Date.now() + mode.seconds*1000;
@@ -2404,13 +2436,15 @@ function endSession(sess){
    07 PRÜFUNG
    ================================================================ */
 function renderTestSection(el){
-  var html = '<span class="eyebrow">Thema 07</span><h1 class="page-title">Prüfung</h1>';
+  var sub = currentSubject();
+  var n = sub.topics.length;
+  var html = '<span class="eyebrow">'+sub.sub+'</span><h1 class="page-title">Prüfung</h1>';
   html += '<p class="page-lede">20 zufällige Fragen — aus allen Themen oder gezielt aus einem. Während der Prüfung gibt es keine Korrektur; am Schluss siehst du jede Frage mit deiner und der richtigen Antwort.</p>';
   html += '<div class="cfg-label">Woraus soll geprüft werden?</div>';
   html += '<div class="grid grid-2" style="margin-bottom:8px;">';
   html += '<button class="topic-card" data-test="all"><span class="badge">∑</span>'
-    + '<div><h4>Alle Themen</h4><p>Gemischt aus allen sechs Kapiteln — wie die echte Prüfung</p></div></button>';
-  FR_TOPICS.forEach(function(t){
+    + '<div><h4>Alle Themen</h4><p>Gemischt aus allen '+n+' Kapiteln von '+sub.title+' — wie die echte Prüfung</p></div></button>';
+  sub.topics.forEach(function(t){
     var acc = topicAcc(t.key);
     html += '<button class="topic-card" data-test="'+t.key+'"><span class="badge">'+t.num+'</span>'
       + '<div><h4>'+t.label+'</h4><p>'+t.sub+'</p>'
@@ -2422,7 +2456,7 @@ function renderTestSection(el){
   el.querySelectorAll("[data-test]").forEach(function(b){
     b.onclick = function(){
       var host = document.getElementById("sessionHost");
-      startSession(host, {mode:"test", topic:b.getAttribute("data-test"), set:"all",
+      startSession(host, {mode:"test", subject:currentSubject().key, topic:b.getAttribute("data-test"), set:"all",
         verbCfg:{filter:"all", focus:null, tenses:TENSES.map(function(t){return t.key;})},
         back:function(){ navigate(); }});
       host.scrollIntoView({block:"start", behavior:"smooth"});
@@ -2431,7 +2465,7 @@ function renderTestSection(el){
   if(STATE.quickMode){
     var qm = STATE.quickMode; STATE.quickMode = null;
     var host2 = document.getElementById("sessionHost");
-    startSession(host2, {mode:qm, topic:"all", set:"all", verbCfg:STATE.verbCfg, back:function(){ navigate(); }});
+    startSession(host2, {mode:qm, subject:currentSubject().key, topic:"all", set:"all", verbCfg:STATE.verbCfg, back:function(){ navigate(); }});
   }
 }
 

@@ -66,6 +66,19 @@ function runChecks(W, T){
     var p = T.subjectProgress("ge");
     return (p.total === 7) ? true : "erwartet total 7, ist " + p.total;
   });
+
+  /* ---- Task 5: keine Fach-Vermischung ---- */
+  check("Prüfungspool Geschichte enthält keine Französisch-Fragen", function(){
+    var frKeys = T.topicsOf("fr").map(function(t){ return t.key; });
+    var pool = T.buildPool({subject:"ge", topic:"all", set:"all", verbCfg:{}}, 20);
+    var bad = pool.filter(function(q){ return frKeys.indexOf(q.topic) !== -1; });
+    return bad.length === 0 ? true : bad.length + " Fremdfragen, erste: " + bad[0].topic;
+  });
+  check("Prüfungspool Französisch enthält keine Geschichts-Fragen", function(){
+    var pool = T.buildPool({subject:"fr", topic:"all", set:"all", verbCfg:{}}, 20);
+    var bad = pool.filter(function(q){ return q.topic.indexOf("g-") === 0; });
+    return bad.length === 0 ? true : bad.length + " Fremdfragen";
+  });
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;
