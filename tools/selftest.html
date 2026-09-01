@@ -60,6 +60,12 @@ function runChecks(W, T){
     var p = T.parseHash("#/xx/verbs");
     return (p.subject === null) ? true : JSON.stringify(p);
   });
+
+  /* ---- Task 4: Fach-Wahl ---- */
+  check("Fortschritt je Fach zählt nur eigene Themen", function(){
+    var p = T.subjectProgress("ge");
+    return (p.total === 7) ? true : "erwartet total 7, ist " + p.total;
+  });
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;
