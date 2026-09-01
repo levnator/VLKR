@@ -1972,6 +1972,63 @@ function buildDemokratie(){
   return out;
 }
 
+/* ---------- Volksrechte ---------- */
+/* Die drei Instrumente nebeneinander. Die Vergleichstabelle und die
+   Zuordnungsfragen lesen dieselbe Struktur. */
+var VOLKSRECHTE = [
+  {key:"initiative", name:"Volksinitiative",
+   zweck:"Teilrevision der Bundesverfassung, als formulierter Entwurf",
+   quorum:"100'000 Unterschriften", frist:"18 Monate",
+   mehr:"Volks- und Ständemehr"},
+  {key:"fakultativ", name:"Fakultatives Referendum",
+   zweck:"Ein beschlossenes Gesetz nachträglich vors Volk bringen",
+   quorum:"50'000 Unterschriften oder 8 Kantone", frist:"100 Tage ab Veröffentlichung",
+   mehr:"Volksmehr"},
+  {key:"obligatorisch", name:"Obligatorisches Referendum",
+   zweck:"Bestimmte Vorlagen kommen zwingend vor das Volk",
+   quorum:"Keine Unterschriften nötig", frist:"—",
+   mehr:"Volks- und Ständemehr"}
+];
+
+function buildInstrumente(){
+  var namen = VOLKSRECHTE.map(function(v){ return v.name; });
+  var mehrOpt = ["Volks- und Ständemehr","Volksmehr"];
+  var out = [];
+  VOLKSRECHTE.forEach(function(v){
+    out.push(choiceQ("g-volksrechte", "Mehr",
+      "Welches Mehr braucht das folgende Instrument: " + v.name + "?", "",
+      mehrOpt.slice(), v.mehr,
+      v.name + ": " + v.mehr + "."));
+    out.push(choiceQ("g-volksrechte", "Zweck",
+      "Welches Instrument dient diesem Zweck: " + v.zweck + "?", "",
+      namen.slice(), v.name,
+      v.name + " — " + v.zweck + "."));
+    out.push(choiceQ("g-volksrechte", "Quorum",
+      "Welches Instrument verlangt: " + v.quorum + "?", "",
+      namen.slice(), v.name,
+      v.name + ": " + v.quorum + "."));
+  });
+  out.push(choiceQ("g-volksrechte", "Frist",
+    "Welches Instrument hat eine Sammelfrist von 18 Monaten?", "",
+    namen.slice(), "Volksinitiative",
+    "Die Volksinitiative: 100'000 Unterschriften innert 18 Monaten."));
+  out.push(choiceQ("g-volksrechte", "Frist",
+    "Welches Instrument hat eine Frist von 100 Tagen?", "",
+    namen.slice(), "Fakultatives Referendum",
+    "Das fakultative Referendum: 50'000 Unterschriften innert 100 Tagen ab Veröffentlichung des Gesetzes."));
+  out.push(choiceQ("g-volksrechte", "Ständemehr",
+    "Wie viele der 23 Kantonsstimmen braucht das Ständemehr?", "",
+    ["Mindestens 12","Mindestens 8","Mindestens 15","Alle 23"], "Mindestens 12",
+    "Mindestens 12 der 23 Kantonsstimmen."));
+  out.push(choiceQ("g-volksrechte", "Volksinitiative",
+    "Was kann eine Volksinitiative verlangen?", "",
+    ["Eine Teilrevision der Bundesverfassung","Die Aufhebung eines Kantons",
+     "Die Abwahl des Bundesrats","Ein Urteil des Bundesgerichts"],
+    "Eine Teilrevision der Bundesverfassung",
+    "Volksinitiative auf Teilrevision der Bundesverfassung, eingereicht als formulierter Entwurf."));
+  return out;
+}
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
@@ -1994,7 +2051,8 @@ var GE_TOPICS = [
   {key:"g-volksrechte", num:"04", label:"Volksrechte", short:"Volksrechte",
    sub:"Initiative, fakultatives und obligatorisches Referendum",
    sets:[
-     {key:"zahlen", label:"Zahlen &amp; Fristen", build:buildZahlen}
+     {key:"instrumente", label:"Die drei Instrumente", build:buildInstrumente},
+     {key:"zahlen",      label:"Zahlen &amp; Fristen",  build:buildZahlen}
    ]},
   {key:"g-initiative", num:"05", label:"Volksinitiative", short:"Volksinitiative",
    sub:"Der Ablauf in fünf Schritten", sets:[]},
@@ -2571,7 +2629,8 @@ var TOPIC_LEDE = {
   etre: "Wer bildet das Passé composé mit être? Und wann braucht die Inversionsfrage ein -t-?",
   "g-zeitstrahl": "Alle 26 Ereignisse deines Dossiers in der richtigen Reihenfolge. Wer die Reihenfolge kann, kann auch die Jahreszahlen.",
   "g-1848": "Vier Verfassungen in fünfzig Jahren, ein Bürgerkrieg im November 1847 — und am Ende der Schritt vom Staatenbund zum Bundesstaat.",
-  "g-demokratie": "Wie aus der Alleinherrschaft des Freisinns eine Konkordanz wurde — über 1874, 1891 und drei Bundesratssitze."
+  "g-demokratie": "Wie aus der Alleinherrschaft des Freisinns eine Konkordanz wurde — über 1874, 1891 und drei Bundesratssitze.",
+  "g-volksrechte": "Initiative, fakultatives und obligatorisches Referendum nebeneinander: Zweck, Quorum, Frist und das nötige Mehr."
 };
 function renderTopicDrill(body, key){
   var t = topicByKey(key);
@@ -3158,6 +3217,40 @@ REFERENCE["g-demokratie"] = function(body){
   });
   html += '<tr><td class="mono">1959</td><td class="sans">Zauberformel</td><td class="sans">Verteilschlüssel <b class="mono">2:2:2:1</b></td></tr>';
   html += '</table></div>';
+  body.innerHTML = html;
+};
+
+REFERENCE["g-volksrechte"] = function(body){
+  var html = '<div class="section-title">Die drei Instrumente im Vergleich</div>';
+  html += '<p class="section-lede">Vier Zeilen, drei Spalten — mehr braucht es nicht. '
+       + 'Die Zahlen sind der prüfungsrelevante Teil.</p>';
+  html += '<div class="tablewrap"><table><tr><th>&nbsp;</th>';
+  VOLKSRECHTE.forEach(function(v){ html += '<th>'+v.name+'</th>'; });
+  html += '</tr>';
+  [["Zweck","zweck"],["Quorum","quorum"],["Frist","frist"],["Erforderliches Mehr","mehr"]].forEach(function(row){
+    html += '<tr><td class="sans"><b>'+row[0]+'</b></td>';
+    VOLKSRECHTE.forEach(function(v){ html += '<td class="sans">'+v[row[1]]+'</td>'; });
+    html += '</tr>';
+  });
+  html += '</table></div>';
+
+  html += '<div class="callout tip"><b>Bremse und Gaspedal:</b> Das Referendum hält einen bereits gefassten '
+       + 'Beschluss an, die Volksinitiative bringt Neues in Gang.</div>';
+
+  html += '<div class="section-title">Das Ständemehr</div>';
+  html += '<div class="callout ok">Für ein Ständemehr braucht es <b class="mono">mindestens 12</b> der '
+       + '<b class="mono">23</b> Kantonsstimmen. Volksinitiative und obligatorisches Referendum brauchen '
+       + 'Volks- <i>und</i> Ständemehr; beim fakultativen Referendum genügt das Volksmehr.</div>';
+
+  html += '<div class="section-title">Die Zahlen auf einen Blick</div>';
+  html += '<div class="tablewrap"><table><tr><th>Gegenstand</th><th>Wert</th></tr>'
+    + '<tr><td class="sans">Volksinitiative, Unterschriften</td><td class="mono">100\'000</td></tr>'
+    + '<tr><td class="sans">Volksinitiative, Sammelfrist</td><td class="mono">18 Monate</td></tr>'
+    + '<tr><td class="sans">Fakultatives Referendum, Unterschriften</td><td class="mono">50\'000 (oder 8 Kantone)</td></tr>'
+    + '<tr><td class="sans">Fakultatives Referendum, Frist</td><td class="mono">100 Tage</td></tr>'
+    + '<tr><td class="sans">Initiativkomitee</td><td class="mono">7 bis 27 Mitglieder</td></tr>'
+    + '<tr><td class="sans">Ständemehr</td><td class="mono">12 von 23</td></tr>'
+    + '</table></div>';
   body.innerHTML = html;
 };
 
