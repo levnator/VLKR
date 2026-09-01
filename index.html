@@ -2116,6 +2116,156 @@ function buildInitiative(){
   return out;
 }
 
+/* ---------- Weltkrieg & Zwischenkriegszeit ---------- */
+var STREIK_FORDERUNGEN = ["Proporzwahlrecht","Frauenstimmrecht","48-Stunden-Woche","AHV"];
+var KEINE_FORDERUNG = ["Verbot der Todesstrafe","Trennung von Kirche und Staat","Beitritt zum Völkerbund","Einführung des Ständemehrs"];
+
+var STRAFRECHT = [
+  {y:1938, t:"Einheitliches Strafgesetzbuch angenommen", d:"Annahme in der Volksabstimmung."},
+  {y:1940, t:"Letzte zivile Hinrichtung", d:"Hans Vollenweider wird als letzter Zivilist hingerichtet."},
+  {y:1942, t:"Strafgesetzbuch tritt in Kraft", d:"Vier Jahre nach der Annahme."},
+  {y:1999, t:"Verbot der Todesstrafe in der Verfassung", d:"Verfassungsrechtliches Verbot."}
+];
+
+function buildWeltkrieg(){
+  var out = [];
+
+  out.push(choiceQ("g-weltkrieg", "Erster Weltkrieg",
+    "Wer war im Ersten Weltkrieg General der Schweizer Armee?", "",
+    ["Ulrich Wille","Rudolf Minger","Josef Zemp","Hans Vollenweider"], "Ulrich Wille",
+    "General Ulrich Wille — unter ihm kam es zur Obersten-Affäre."));
+  out.push(choiceQ("g-weltkrieg", "Erster Weltkrieg",
+    "Wie heisst der Skandal um die Armeeführung im Ersten Weltkrieg?", "",
+    ["Die Obersten-Affäre","Der Frontenfrühling","Der Kulturkampf","Die Zauberformel"],
+    "Die Obersten-Affäre",
+    "Die Obersten-Affäre belastete das Verhältnis zwischen Armeeführung und Öffentlichkeit."));
+  out.push(choiceQ("g-weltkrieg", "Röstigraben",
+    "Mit welcher Seite sympathisierte die Deutschschweiz im Ersten Weltkrieg?", "",
+    ["Mit Deutschland","Mit Frankreich","Mit Italien","Mit Österreich-Ungarn"], "Mit Deutschland",
+    "Der Röstigraben: Die Deutschschweiz sympathisierte mit Deutschland, die Romandie mit Frankreich."));
+  out.push(choiceQ("g-weltkrieg", "Röstigraben",
+    "Mit welcher Seite sympathisierte die Romandie im Ersten Weltkrieg?", "",
+    ["Mit Frankreich","Mit Deutschland","Mit Italien","Mit Russland"], "Mit Frankreich",
+    "Der Röstigraben: Die Romandie sympathisierte mit Frankreich, die Deutschschweiz mit Deutschland."));
+  out.push(choiceQ("g-weltkrieg", "Röstigraben",
+    "Wie heisst der Riss zwischen Deutschschweiz und Romandie im Ersten Weltkrieg?", "",
+    ["Röstigraben","Kulturkampf","Sonderbund","Frontenfrühling"], "Röstigraben",
+    "Der Röstigraben trennte die beiden Sympathierichtungen."));
+  out.push(choiceQ("g-weltkrieg", "Soziale Lage",
+    "Was fehlte den eingerückten Soldaten im Ersten Weltkrieg?", "",
+    ["Ein Erwerbsersatz","Ein Sold","Eine Uniform","Eine Krankenversicherung"], "Ein Erwerbsersatz",
+    "Es gab keinen Erwerbsersatz — der Dienst bedeutete Verdienstausfall. Die Rationierung kam zudem spät."));
+  out.push(choiceQ("g-weltkrieg", "Soziale Lage",
+    "Wann setzte die Rationierung der Lebensmittel ein?", "",
+    ["Spät","Sofort bei Kriegsbeginn","Erst nach dem Krieg","Gar nicht"], "Spät",
+    "Die Rationierung setzte spät ein und verschärfte die soziale Not."));
+
+  out.push(inputQ("g-weltkrieg", "Landesstreik",
+    "In welchem Jahr fand der Landesstreik statt?", "Vierstellige Jahreszahl",
+    ["1918"], "1918",
+    "Landesweiter Generalstreik im November 1918 unter Führung des Oltener Aktionskomitees."));
+  out.push(choiceQ("g-weltkrieg", "Landesstreik",
+    "Welches Gremium führte den Landesstreik an?", "",
+    ["Das Oltener Aktionskomitee","Der Bundesrat","Die BGB","Die Frontenbewegung"],
+    "Das Oltener Aktionskomitee",
+    "Das Oltener Aktionskomitee führte den landesweiten Generalstreik im November 1918."));
+  out.push(inputQ("g-weltkrieg", "Landesstreik",
+    "Nach wie vielen Tagen wurde der Landesstreik abgebrochen?", "Nur die Zahl",
+    ["3","drei"], "3",
+    "Nach drei Tagen, wegen der Drohung mit der Armee."));
+  out.push(choiceQ("g-weltkrieg", "Landesstreik",
+    "Warum wurde der Landesstreik abgebrochen?", "",
+    ["Wegen der Drohung mit der Armee","Weil alle Forderungen erfüllt waren",
+     "Wegen der Spanischen Grippe","Wegen eines Gerichtsurteils"],
+    "Wegen der Drohung mit der Armee",
+    "Nach drei Tagen wurde der Streik wegen der Armeedrohung abgebrochen."));
+  STREIK_FORDERUNGEN.forEach(function(f){
+    out.push(choiceQ("g-weltkrieg", "Landesstreik",
+      "War das eine Forderung des Landesstreiks: " + f + "?", "",
+      ["Ja","Nein"], "Ja",
+      "Die vier Forderungen: " + STREIK_FORDERUNGEN.join(", ") + "."));
+  });
+  KEINE_FORDERUNG.forEach(function(f){
+    out.push(choiceQ("g-weltkrieg", "Landesstreik",
+      "War das eine Forderung des Landesstreiks: " + f + "?", "",
+      ["Ja","Nein"], "Nein",
+      "Die vier Forderungen waren: " + STREIK_FORDERUNGEN.join(", ") + "."));
+  });
+  out.push(inputQ("g-weltkrieg", "Landesstreik",
+    "Wie viele Forderungen stellte der Landesstreik?", "Nur die Zahl",
+    ["4","vier"], "4",
+    "Proporzwahlrecht, Frauenstimmrecht, 48-Stunden-Woche und AHV."));
+
+  out.push(choiceQ("g-weltkrieg", "Folgen",
+    "Welche Forderung des Landesstreiks wurde 1919 rasch erfüllt?", "",
+    ["Die 48-Stunden-Woche","Das Frauenstimmrecht","Die AHV","Das Verbot der Todesstrafe"],
+    "Die 48-Stunden-Woche",
+    "Die 48-Stunden-Woche wurde 1919 rasch eingeführt."));
+  out.push(inputQ("g-weltkrieg", "Folgen",
+    "In welchem Jahr wurde der Nationalrat erstmals im Proporz gewählt?", "Vierstellige Jahreszahl",
+    ["1919"], "1919",
+    "Die Proporzwahl 1919 beendete die absolute Mehrheit des Freisinns."));
+  out.push(choiceQ("g-weltkrieg", "Folgen",
+    "Was bewirkte die Proporzwahl von 1919?", "",
+    ["Sie beendete die absolute Mehrheit des Freisinns","Sie brachte das Frauenstimmrecht",
+     "Sie führte die AHV ein","Sie schaffte den Ständerat ab"],
+    "Sie beendete die absolute Mehrheit des Freisinns",
+    "Erstmals im Proporz gewählt, verlor der Freisinn seine absolute Mehrheit."));
+  out.push(choiceQ("g-weltkrieg", "Parteien",
+    "Welche Partei wurde 1918 als konservatives Gegengewicht zu SP und Freisinn gegründet?", "",
+    ["Die BGB","Die SP","Die Katholisch-Konservativen","Die Frontenbewegung"], "Die BGB",
+    "Bauern-, Gewerbe- und Bürgerpartei, heute SVP."));
+  out.push(choiceQ("g-weltkrieg", "Parteien",
+    "Wie heisst die 1918 gegründete BGB heute?", "",
+    ["SVP","SP","FDP","Die Mitte"], "SVP",
+    "Bauern-, Gewerbe- und Bürgerpartei — heute SVP."));
+
+  out.push(inputQ("g-weltkrieg", "Fronten",
+    "In welchem Jahr war der Frontenfrühling?", "Vierstellige Jahreszahl",
+    ["1933"], "1933",
+    "1933 erreichte die Frontenbewegung ihren Höhepunkt."));
+  out.push(choiceQ("g-weltkrieg", "Fronten",
+    "Wie deutlich wurde die Totalrevisions-Initiative 1935 verworfen?", "",
+    ["Mit über 70 % Nein","Mit knapp 51 % Nein","Mit über 90 % Nein","Sie wurde angenommen"],
+    "Mit über 70 % Nein",
+    "Die Initiative zur faschistischen Umgestaltung wurde mit über 70 % Nein-Stimmen abgelehnt."));
+  out.push(choiceQ("g-weltkrieg", "Fronten",
+    "Womit antwortete die Schweiz auf die Bedrohung von aussen und innen?", "",
+    ["Mit der Geistigen Landesverteidigung","Mit dem Sonderbund",
+     "Mit dem Kulturkampf","Mit der Zauberformel"],
+    "Mit der Geistigen Landesverteidigung",
+    "Nach der Ablehnung der Totalrevisions-Initiative 1935 antwortete die Schweiz mit der «Geistigen Landesverteidigung»."));
+
+  STRAFRECHT.forEach(function(s){
+    out.push(inputQ("g-weltkrieg", "Strafrecht",
+      "In welchem Jahr: " + s.t + "?", "Vierstellige Jahreszahl",
+      [String(s.y)], String(s.y), s.d));
+  });
+  out.push(choiceQ("g-weltkrieg", "Strafrecht",
+    "Wer wurde 1940 als letzter Zivilist hingerichtet?", "",
+    ["Hans Vollenweider","Ulrich Wille","Josef Zemp","Rudolf Minger"], "Hans Vollenweider",
+    "Die letzte zivile Hinrichtung der Schweiz."));
+  out.push(choiceQ("g-weltkrieg", "Strafrecht",
+    "Wie viele Jahre lagen zwischen Annahme und Inkrafttreten des Strafgesetzbuchs?", "",
+    ["4","1","10","20"], "4",
+    "1938 angenommen, 1942 in Kraft getreten."));
+
+  out.push(choiceQ("g-weltkrieg", "Asylpraxis",
+    "Mit wem wurde 1938 der «J-Stempel» vereinbart?", "",
+    ["Mit NS-Deutschland","Mit Frankreich","Mit Italien","Mit dem Völkerbund"], "Mit NS-Deutschland",
+    "Der «J-Stempel» wurde 1938 mit NS-Deutschland vereinbart."));
+  out.push(choiceQ("g-weltkrieg", "Asylpraxis",
+    "Als was verstand sich die Schweiz an der Konferenz von Évian?", "",
+    ["Rein als Transitland","Als Aufnahmeland","Als Vermittlerin","Als Beobachterin ohne Position"],
+    "Rein als Transitland",
+    "An der Konferenz von Évian 1938 verstand sich die Schweiz rein als Transitland."));
+  out.push(inputQ("g-weltkrieg", "Spanische Grippe",
+    "Wie viele Todesopfer forderte die Spanische Grippe?", "Zahl",
+    ["24'400","24400","24 400"], "24'400",
+    "Über 24'400 Todesopfer 1918/19."));
+  return out;
+}
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
@@ -2145,7 +2295,8 @@ var GE_TOPICS = [
    sub:"Der Ablauf in fünf Schritten",
    sets:[{key:"all", label:"Alles gemischt", build:buildInitiative}]},
   {key:"g-weltkrieg", num:"06", label:"Weltkrieg &amp; Zwischenkriegszeit", short:"Weltkrieg & Zwischenkriegszeit",
-   sub:"Landesstreik, Fronten, Asylpraxis", sets:[]},
+   sub:"Landesstreik, Fronten, Asylpraxis",
+   sets:[{key:"all", label:"Alles gemischt", build:buildWeltkrieg}]},
   {key:"g-staatslehre", num:"07", label:"Staatslehre", short:"Staatslehre",
    sub:"Gewaltenteilung, Glossar, smartspider", sets:[]}
 ];
@@ -2719,7 +2870,8 @@ var TOPIC_LEDE = {
   "g-1848": "Vier Verfassungen in fünfzig Jahren, ein Bürgerkrieg im November 1847 — und am Ende der Schritt vom Staatenbund zum Bundesstaat.",
   "g-demokratie": "Wie aus der Alleinherrschaft des Freisinns eine Konkordanz wurde — über 1874, 1891 und drei Bundesratssitze.",
   "g-volksrechte": "Initiative, fakultatives und obligatorisches Referendum nebeneinander: Zweck, Quorum, Frist und das nötige Mehr.",
-  "g-initiative": "Fünf Schritte von der Vorprüfung bis zur Volksabstimmung — und die drei Kriterien, an denen eine Initiative scheitern kann."
+  "g-initiative": "Fünf Schritte von der Vorprüfung bis zur Volksabstimmung — und die drei Kriterien, an denen eine Initiative scheitern kann.",
+  "g-weltkrieg": "Röstigraben, Landesstreik, Fronten und Asylpraxis: die Jahre, in denen sich entschied, was für ein Land die Schweiz sein wollte."
 };
 function renderTopicDrill(body, key){
   var t = topicByKey(key);
@@ -3370,6 +3522,56 @@ REFERENCE["g-initiative"] = function(body){
     + '</div>';
   html += '<div class="callout tip"><b>Merkhilfe:</b> «Direkt» heisst auf gleicher Höhe wie die Initiative, '
        + 'also in der Verfassung. Alles andere ist indirekt.</div>';
+  body.innerHTML = html;
+};
+
+REFERENCE["g-weltkrieg"] = function(body){
+  var html = '<div class="section-title">Der Erste Weltkrieg</div>';
+  html += '<div class="grid grid-2">'
+    + '<div class="card"><h4>General Ulrich Wille</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
+    + 'Oberbefehlshaber der Armee. Unter ihm kommt es zur <b>Obersten-Affäre</b>.</p></div>'
+    + '<div class="card"><h4>Röstigraben</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
+    + 'Die Deutschschweiz sympathisiert mit <b>Deutschland</b>, die Romandie mit <b>Frankreich</b>.</p></div>'
+    + '</div>';
+  html += '<div class="callout warn"><b>Soziale Not:</b> Es gibt keinen <b>Erwerbsersatz</b> für die eingerückten '
+       + 'Soldaten, und die <b>Rationierung</b> setzt spät ein. Dazu kommt 1918/19 die Spanische Grippe mit '
+       + 'über <b class="mono">24\'400</b> Todesopfern.</div>';
+
+  html += '<div class="section-title">Der Landesstreik 1918</div>';
+  html += '<div class="tablewrap"><table>'
+    + '<tr><th>Wann</th><td class="sans">November 1918</td></tr>'
+    + '<tr><th>Wer</th><td class="sans">Oltener Aktionskomitee</td></tr>'
+    + '<tr><th>Forderungen</th><td class="sans">'+STREIK_FORDERUNGEN.join(" · ")+'</td></tr>'
+    + '<tr><th>Ende</th><td class="sans">Nach drei Tagen abgebrochen — wegen der Drohung mit der Armee</td></tr>'
+    + '</table></div>';
+  html += '<div class="callout ok"><b>Was daraus wurde:</b> Die <b>48-Stunden-Woche</b> kommt 1919 rasch. '
+       + 'Im selben Jahr wird der Nationalrat erstmals im <b>Proporz</b> gewählt — das beendet die absolute '
+       + 'Mehrheit des Freisinns. Ebenfalls 1918 entsteht die <b>BGB</b> (heute SVP) als konservatives '
+       + 'Gegengewicht zu SP und Freisinn.</div>';
+
+  html += '<div class="section-title">Fronten und Geistige Landesverteidigung</div>';
+  html += '<div class="tablewrap"><table><tr><th>Jahr</th><th>Ereignis</th></tr>'
+    + '<tr><td class="mono">1933</td><td class="sans">Frontenfrühling — die Frontenbewegung erreicht ihren Höhepunkt</td></tr>'
+    + '<tr><td class="mono">1935</td><td class="sans">Die Totalrevisions-Initiative zur faschistischen Umgestaltung wird mit über 70 % Nein verworfen</td></tr>'
+    + '</table></div>';
+  html += '<div class="callout tip">Die Antwort auf die Bedrohung heisst <b>Geistige Landesverteidigung</b>.</div>';
+
+  html += '<div class="section-title">Strafrecht und Todesstrafe</div>';
+  html += '<div class="tablewrap"><table><tr><th>Jahr</th><th>Ereignis</th></tr>';
+  STRAFRECHT.forEach(function(s){
+    html += '<tr><td class="mono">'+s.y+'</td><td class="sans">'+s.t+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<div class="callout tip"><b>Vier Jahre Abstand:</b> 1938 angenommen, 1942 in Kraft. '
+       + 'Dazwischen wird 1940 mit Hans Vollenweider der letzte Zivilist hingerichtet.</div>';
+
+  html += '<div class="section-title">Asylpraxis 1938</div>';
+  html += '<div class="grid grid-2">'
+    + '<div class="card"><h4>«J-Stempel»</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
+    + 'Mit NS-Deutschland vereinbart.</p></div>'
+    + '<div class="card"><h4>Konferenz von Évian</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
+    + 'Die Schweiz versteht sich rein als <b>Transitland</b>.</p></div>'
+    + '</div>';
   body.innerHTML = html;
 };
 
