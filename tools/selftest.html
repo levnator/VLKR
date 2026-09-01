@@ -1,0 +1,38 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>VLKR Selbsttest</title>
+<style>body{font:13px ui-monospace,monospace;margin:12px}iframe{width:390px;height:700px;border:1px solid #ccc}</style>
+<iframe id="app" src="../index.html"></iframe>
+<pre id="results">läuft…</pre>
+<script>
+var results = [], fails = 0;
+function check(name, fn){
+  try{
+    var r = fn();
+    if(r === true){ results.push("PASS  " + name); }
+    else { fails++; results.push("FAIL  " + name + " — " + r); }
+  }catch(e){ fails++; results.push("FAIL  " + name + " — " + e.message); }
+}
+function runChecks(W, T){
+  check("Testzugang vorhanden", function(){
+    return T ? true : "window.__VLKR_TEST__ fehlt";
+  });
+  check("Französisch hat 6 Themen", function(){
+    var t = T.topicsOf("fr");
+    return (t && t.length === 6) ? true : "erwartet 6, ist " + (t ? t.length : "null");
+  });
+}
+document.getElementById("app").addEventListener("load", function(){
+  var W = this.contentWindow;
+  setTimeout(function(){
+    var T = W.__VLKR_TEST__;
+    runChecks(W, T);
+    results.push(fails ? ("\n" + fails + " FEHLER") : "\nALL PASS");
+    document.getElementById("results").textContent = results.join("\n");
+  }, 500);
+});
+window.addEventListener("error", function(e){
+  fails++;
+  document.getElementById("results").textContent = "FAIL  Skriptfehler — " + e.message;
+});
+</script>

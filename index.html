@@ -2450,6 +2450,22 @@ initNavDrawer();
 renderSidebarStats();
 navigate();
 
+/* Platzhalter — wird in Task 2 durch das echte SUBJECTS-Register ersetzt. */
+var SUBJECTS = [{key:"fr", topics:TOPICS}];
+
+/* Testzugang für tools/selftest.html. Produktionscode liest das nie. */
+window.__VLKR_TEST__ = {
+  SUBJECTS: SUBJECTS,
+  TIMELINE: (typeof TIMELINE !== "undefined") ? TIMELINE : [],
+  topicsOf: function(sk){
+    for(var i=0;i<SUBJECTS.length;i++){ if(SUBJECTS[i].key===sk) return SUBJECTS[i].topics; }
+    return null;
+  },
+  bankFor: bankFor,
+  buildPool: buildPool,
+  makeFeeder: makeFeeder
+};
+
 })();
 </script>
 </body>
