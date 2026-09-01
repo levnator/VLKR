@@ -48,6 +48,15 @@ function runChecks(W, T){
     var t = T.topicsOf("fr");
     return (t && t.length === 6) ? true : "erwartet 6, ist " + (t ? t.length : "null");
   });
+  /* Fortschritt hängt an STORE_KEY und den Themenschlüsseln. Ändert sich
+     eines davon, ist der bestehende Französisch-Stand verloren. */
+  check("Speicherschlüssel unverändert", function(){
+    return T.STORE_KEY === "cahier_progress_v2" ? true : "ist " + T.STORE_KEY;
+  });
+  check("Französische Themenschlüssel unverändert", function(){
+    var k = T.topicsOf("fr").map(function(t){ return t.key; }).join(",");
+    return k === "verbs,gender,adj,place,comp,etre" ? true : "ist " + k;
+  });
 
   /* ---- Task 2: SUBJECTS-Register ---- */
   check("Zwei Fächer registriert", function(){
@@ -213,14 +222,55 @@ function runChecks(W, T){
     var leer = T.topicsOf("ge").filter(function(t){ return !t.sets || !t.sets.length; });
     return leer.length === 0 ? true : "ohne Set: " + leer.map(function(t){return t.key;}).join(",");
   });
+
+  /* ---- Task 15: Darstellung ---- */
+  check("Kein horizontaler Überlauf im Iframe", function(){
+    var d = W.document;
+    return d.documentElement.scrollWidth <= W.innerWidth + 1
+      ? true
+      : "scrollWidth " + d.documentElement.scrollWidth + " > " + W.innerWidth;
+  });
+}
+
+/* Jede Seite beider Fächer einmal öffnen: Überlauf messen und jeden
+   Skriptfehler im Iframe einsammeln. */
+function runRouteChecks(W, T, done){
+  var routes = ["#/"], errs = [];
+  T.SUBJECTS.forEach(function(s){
+    routes.push("#/" + s.key + "/home");
+    s.sections.forEach(function(sec){ routes.push("#/" + s.key + "/" + sec.key); });
+  });
+  W.addEventListener("error", function(e){ errs.push(W.location.hash + ": " + e.message); });
+  var overflow = [], i = 0;
+  (function step(){
+    if(i >= routes.length){
+      check("Keine Skriptfehler beim Durchgang durch alle Seiten", function(){
+        return errs.length === 0 ? true : errs.join(" | ");
+      });
+      check("Keine Seite läuft bei 390 px horizontal über", function(){
+        return overflow.length === 0 ? true : overflow.join(", ");
+      });
+      done();
+      return;
+    }
+    var r = routes[i++];
+    W.location.hash = r;
+    setTimeout(function(){
+      var sw = W.document.documentElement.scrollWidth;
+      if(sw > W.innerWidth + 1) overflow.push(r + " (" + sw + "px)");
+      step();
+    }, 60);
+  })();
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;
   setTimeout(function(){
     var T = W.__VLKR_TEST__;
     runChecks(W, T);
-    results.push(fails ? ("\n" + fails + " FEHLER") : "\nALL PASS");
-    document.getElementById("results").textContent = results.join("\n");
+    runRouteChecks(W, T, function(){
+      results.push(fails ? ("\n" + fails + " FEHLER") : "\nALL PASS");
+      document.getElementById("results").textContent = results.join("\n");
+    });
   }, 500);
 });
 window.addEventListener("error", function(e){
