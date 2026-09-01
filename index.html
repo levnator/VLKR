@@ -1842,6 +1842,136 @@ function buildSonderbundskrieg(){
   return out;
 }
 
+/* ---------- Demokratie & Konkordanz ---------- */
+
+/* Die drei Schritte, mit denen der Freisinn seine Alleinherrschaft aufgab. */
+var KONKORDANZ = [
+  {y:1891, wer:"Josef Zemp", partei:"Katholisch-Konservative",
+   d:"Erster Nicht-Freisinniger im Bundesrat. Erster Schritt zur Konkordanz."},
+  {y:1929, wer:"Rudolf Minger", partei:"BGB",
+   d:"Einbindung der Bauern-, Gewerbe- und Bürgerpartei in die Regierung. Zweiter Schritt zur Konkordanz."},
+  {y:1943, wer:"die SP", partei:"SP",
+   d:"Die Sozialdemokratische Partei kommt erstmals in den Bundesrat. Dritter Schritt zur Konkordanz."}
+];
+
+/* Die Positionen der beiden Lager. Jede Zeile wird zu einer Frage
+   «Welches Lager stand dafür?». */
+var LAGER = [
+  {pos:"Individuelle Freiheiten", lager:"Radikal-Liberale"},
+  {pos:"Rechtsgleichheit", lager:"Radikal-Liberale"},
+  {pos:"Wirtschaftsfreiheit", lager:"Radikal-Liberale"},
+  {pos:"Trennung von Kirche und Staat", lager:"Radikal-Liberale"},
+  {pos:"Föderalismus", lager:"Katholisch-Konservative"},
+  {pos:"Erhalt der bäuerlichen Strukturen", lager:"Katholisch-Konservative"},
+  {pos:"Einfluss der Kirche", lager:"Katholisch-Konservative"}
+];
+
+function buildDemokratie(){
+  var out = [];
+  var parteien = ["Katholisch-Konservative","BGB","SP","Freisinn"];
+
+  KONKORDANZ.forEach(function(k){
+    out.push(inputQ("g-demokratie", "Konkordanz",
+      "In welchem Jahr kam " + k.wer + " in den Bundesrat?",
+      "Vierstellige Jahreszahl",
+      [String(k.y)], String(k.y), k.d));
+  });
+  out.push(choiceQ("g-demokratie", "Konkordanz",
+    "Welcher Partei gehörte Josef Zemp an?", "",
+    parteien.slice(), "Katholisch-Konservative",
+    "Josef Zemp war 1891 der erste Nicht-Freisinnige im Bundesrat."));
+  out.push(choiceQ("g-demokratie", "Konkordanz",
+    "Welcher Partei gehörte Rudolf Minger an?", "",
+    parteien.slice(), "BGB",
+    "Mit Rudolf Minger wurde 1929 die BGB in die Regierung eingebunden."));
+  out.push(choiceQ("g-demokratie", "Konkordanz",
+    "Wer war 1891 der erste Nicht-Freisinnige im Bundesrat?", "",
+    ["Josef Zemp","Rudolf Minger","Ulrich Wille","Hans Vollenweider"], "Josef Zemp",
+    "Josef Zemp, Katholisch-Konservative — erster Schritt zur Konkordanz."));
+
+  out.push(inputQ("g-demokratie", "Zauberformel",
+    "Wie lautet die Zauberformel?", "Vier Zahlen mit Doppelpunkt",
+    ["2:2:2:1","2 2 2 1","2-2-2-1"], "2:2:2:1",
+    "Seit 1959 der Verteilschlüssel der Bundesratssitze."));
+  out.push(inputQ("g-demokratie", "Zauberformel",
+    "In welchem Jahr wurde die Zauberformel eingeführt?", "Vierstellige Jahreszahl",
+    ["1959"], "1959",
+    "1959, mit der Einbindung der SP nach dem Schlüssel 2:2:2:1."));
+
+  out.push(choiceQ("g-demokratie", "Regierungsmodell",
+    "Wie heisst das Modell, das alle grossen Parteien in die Regierung einbindet?", "",
+    ["Konkordanz","Konkurrenzdemokratie","Kulturkampf","Proporz"], "Konkordanz",
+    "Konkordanz: Die grossen Parteien regieren gemeinsam. Das Gegenmodell ist die Konkurrenzdemokratie."));
+  out.push(choiceQ("g-demokratie", "Regierungsmodell",
+    "Wie heisst das Gegenmodell zur Konkordanz?", "",
+    ["Konkurrenzdemokratie","Konkordanz","Föderalismus","Ständemehr"], "Konkurrenzdemokratie",
+    "In der Konkurrenzdemokratie regiert die Mehrheit, die Unterlegenen bilden die Opposition."));
+
+  out.push(choiceQ("g-demokratie", "Volksrechte",
+    "Welches Volksrecht ist die «Bremse»?", "",
+    ["Das Referendum","Die Volksinitiative","Das Ständemehr","Der Proporz"], "Das Referendum",
+    "Das Referendum bremst einen bereits gefassten Beschluss; die Volksinitiative ist das «Gaspedal»."));
+  out.push(choiceQ("g-demokratie", "Volksrechte",
+    "Welches Volksrecht ist das «Gaspedal»?", "",
+    ["Die Volksinitiative","Das Referendum","Das Ständemehr","Der Proporz"], "Die Volksinitiative",
+    "Die Volksinitiative bringt Neues in Gang; das Referendum ist die «Bremse»."));
+
+  out.push(choiceQ("g-demokratie", "Demokratieform",
+    "Bis wann war die Schweiz eine rein repräsentative Demokratie?", "",
+    ["Bis 1874","Bis 1848","Bis 1891","Bis 1919"], "Bis 1874",
+    "Mit der Totalrevision von 1874 und dem fakultativen Gesetzesreferendum wurde sie halbdirekt."));
+  out.push(choiceQ("g-demokratie", "Demokratieform",
+    "Welches Volksrecht brachte 1874 den Übergang zur halbdirekten Demokratie?", "",
+    ["Das fakultative Gesetzesreferendum","Die Volksinitiative",
+     "Das obligatorische Referendum","Das Ständemehr"], "Das fakultative Gesetzesreferendum",
+    "Die Totalrevision von 1874 führte das fakultative Gesetzesreferendum ein."));
+  out.push(inputQ("g-demokratie", "Volksrechte",
+    "In welchem Jahr wurde die Volksinitiative eingeführt?", "Vierstellige Jahreszahl",
+    ["1891"], "1891",
+    "1891, als Volksinitiative auf Teilrevision der Bundesverfassung in Form eines formulierten Entwurfs."));
+
+  out.push(inputQ("g-demokratie", "Parteien",
+    "In welchem Jahr wurde die SP gegründet?", "Vierstellige Jahreszahl",
+    ["1888"], "1888",
+    "1888, aus der Demokratischen Bewegung und Arbeiterorganisationen."));
+  out.push(choiceQ("g-demokratie", "Parteien",
+    "Aus welchen Kräften formierte sich die SP 1888?", "",
+    ["Aus der Demokratischen Bewegung und Arbeiterorganisationen",
+     "Aus dem Freisinn und den Katholisch-Konservativen",
+     "Aus der BGB und den Bauernverbänden",
+     "Aus der Frontenbewegung"],
+    "Aus der Demokratischen Bewegung und Arbeiterorganisationen",
+    "Die Sozialdemokratische Partei formierte sich 1888 aus der Demokratischen Bewegung und Arbeiterorganisationen."));
+  out.push(choiceQ("g-demokratie", "Parteien",
+    "Wer ging als Sieger aus dem Sonderbundskrieg von 1847 hervor und wurde zur dominierenden Kraft?", "",
+    ["Der Freisinn","Die Katholisch-Konservativen","Die SP","Die BGB"], "Der Freisinn",
+    "Der Freisinn war Sieger von 1847 und blieb lange die dominierende Kraft."));
+  out.push(choiceQ("g-demokratie", "Parteien",
+    "In welche beiden Flügel spaltete sich das freisinnige Lager?", "",
+    ["In Demokraten und Gemässigte","In Radikale und Katholiken",
+     "In Fronten und Gemässigte","In Föderalisten und Zentralisten"],
+    "In Demokraten und Gemässigte",
+    "Das freisinnige Lager spaltete sich in Demokraten und Gemässigte."));
+
+  LAGER.forEach(function(l){
+    out.push(choiceQ("g-demokratie", "Lager",
+      "Welches Lager stand für: " + l.pos + "?", "",
+      ["Radikal-Liberale","Katholisch-Konservative"], l.lager,
+      "Die Radikal-Liberalen standen für individuelle Freiheiten, Rechtsgleichheit, Wirtschaftsfreiheit und die "
+      + "Trennung von Kirche und Staat; die Katholisch-Konservativen für Föderalismus, bäuerliche Strukturen und den Einfluss der Kirche."));
+  });
+
+  out.push(choiceQ("g-demokratie", "Kulturkampf",
+    "Zwischen welchen Kräften verlief der Kulturkampf?", "",
+    ["Zwischen liberalem Staat und katholischer Kirche",
+     "Zwischen Deutschschweiz und Romandie",
+     "Zwischen Arbeitern und Fabrikbesitzern",
+     "Zwischen Stadt und Land"],
+    "Zwischen liberalem Staat und katholischer Kirche",
+    "Der weltanschauliche Konflikt erreichte in den 1870er Jahren seinen Gipfel."));
+  return out;
+}
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
@@ -1859,7 +1989,8 @@ var GE_TOPICS = [
      {key:"sonderbund",   label:"Sonderbund-Kantone", build:buildSonderbund}
    ]},
   {key:"g-demokratie", num:"03", label:"Demokratie &amp; Konkordanz", short:"Demokratie & Konkordanz",
-   sub:"1874, 1891 und der Weg zur Zauberformel", sets:[]},
+   sub:"1874, 1891 und der Weg zur Zauberformel",
+   sets:[{key:"all", label:"Alles gemischt", build:buildDemokratie}]},
   {key:"g-volksrechte", num:"04", label:"Volksrechte", short:"Volksrechte",
    sub:"Initiative, fakultatives und obligatorisches Referendum",
    sets:[
@@ -2439,7 +2570,8 @@ var TOPIC_LEDE = {
   comp: "Comparatif und superlatif: vergleichen, steigern und die unregelmässigen Formen von bon und mauvais.",
   etre: "Wer bildet das Passé composé mit être? Und wann braucht die Inversionsfrage ein -t-?",
   "g-zeitstrahl": "Alle 26 Ereignisse deines Dossiers in der richtigen Reihenfolge. Wer die Reihenfolge kann, kann auch die Jahreszahlen.",
-  "g-1848": "Vier Verfassungen in fünfzig Jahren, ein Bürgerkrieg im November 1847 — und am Ende der Schritt vom Staatenbund zum Bundesstaat."
+  "g-1848": "Vier Verfassungen in fünfzig Jahren, ein Bürgerkrieg im November 1847 — und am Ende der Schritt vom Staatenbund zum Bundesstaat.",
+  "g-demokratie": "Wie aus der Alleinherrschaft des Freisinns eine Konkordanz wurde — über 1874, 1891 und drei Bundesratssitze."
 };
 function renderTopicDrill(body, key){
   var t = topicByKey(key);
@@ -2986,6 +3118,46 @@ REFERENCE["g-1848"] = function(body){
   html += '<div class="callout tip"><b>Der rote Faden:</b> Seit Anfang der 1830er Jahre zielen Liberale und Radikale '
        + 'auf einen zentralen Bundesstaat. 1847 entscheidet der Krieg die Frage, 1848 wird sie in eine Verfassung gegossen — '
        + 'und die Aussöhnung mit den Unterlegenen beginnt erst mit der Totalrevision von 1874.</div>';
+  body.innerHTML = html;
+};
+
+REFERENCE["g-demokratie"] = function(body){
+  var html = '<div class="section-title">Die beiden Lager nach 1848</div>';
+  html += '<p class="section-lede">Der Freisinn ist Sieger von 1847 und lange die dominierende Kraft. '
+       + 'Ihm gegenüber stehen die Katholisch-Konservativen — die Unterlegenen des Sonderbundskriegs.</p>';
+  html += '<div class="grid grid-2">';
+  ["Radikal-Liberale","Katholisch-Konservative"].forEach(function(name){
+    var pos = LAGER.filter(function(l){ return l.lager === name; })
+                   .map(function(l){ return l.pos; });
+    html += '<div class="card"><h4>'+name+'</h4><div class="ex">'+pos.join("<br>")+'</div></div>';
+  });
+  html += '</div>';
+  html += '<div class="callout warn"><b>Spaltung:</b> Das freisinnige Lager teilt sich in <b>Demokraten</b> und '
+       + '<b>Gemässigte</b>. Aus der Demokratischen Bewegung und Arbeiterorganisationen entsteht 1888 die <b>SP</b>.</div>';
+  html += '<div class="callout tip"><b>Kulturkampf (1870er):</b> Der weltanschauliche Konflikt zwischen liberalem Staat '
+       + 'und katholischer Kirche erreicht seinen Gipfel.</div>';
+
+  html += '<div class="section-title">Von repräsentativ zu halbdirekt</div>';
+  html += '<div class="tablewrap"><table>'
+    + '<tr><th>Jahr</th><th>Schritt</th><th>Wirkung</th></tr>'
+    + '<tr><td class="mono">1874</td><td class="sans">Fakultatives Gesetzesreferendum</td>'
+    + '<td class="sans">Übergang von der repräsentativen zur halbdirekten Demokratie — die «Bremse»</td></tr>'
+    + '<tr><td class="mono">1891</td><td class="sans">Volksinitiative auf Teilrevision</td>'
+    + '<td class="sans">Als formulierter Entwurf — das «Gaspedal»</td></tr>'
+    + '</table></div>';
+  html += '<div class="callout tip"><b>Bremse und Gaspedal:</b> Das Referendum hält einen gefassten Beschluss an, '
+       + 'die Volksinitiative bringt Neues in Gang. Zusammen machen sie aus einer repräsentativen eine halbdirekte Demokratie.</div>';
+
+  html += '<div class="section-title">Konkordanz statt Konkurrenz</div>';
+  html += '<p class="section-lede">In der <b>Konkurrenzdemokratie</b> regiert die Mehrheit und die Unterlegenen bilden '
+       + 'die Opposition. Die <b>Konkordanz</b> bindet stattdessen alle grossen Parteien in die Regierung ein — '
+       + 'in drei Schritten.</p>';
+  html += '<div class="tablewrap"><table><tr><th>Jahr</th><th>Wer</th><th>Partei</th></tr>';
+  KONKORDANZ.forEach(function(k){
+    html += '<tr><td class="mono">'+k.y+'</td><td class="sans">'+k.wer+'</td><td class="sans">'+k.partei+'</td></tr>';
+  });
+  html += '<tr><td class="mono">1959</td><td class="sans">Zauberformel</td><td class="sans">Verteilschlüssel <b class="mono">2:2:2:1</b></td></tr>';
+  html += '</table></div>';
   body.innerHTML = html;
 };
 
