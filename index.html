@@ -467,6 +467,19 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
 .prompt-chip{background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:8px 12px; font-size:13px;}
 .prompt-chip .mono{color:var(--accent); margin-right:7px; font-size:11.5px;}
 
+/* ============ NUMMERIERTE SCHRITTE ============ */
+.steps{display:flex; flex-direction:column; gap:2px; margin:14px 0 18px 0;}
+.step{display:flex; gap:14px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--rule);}
+.step:last-child{border-bottom:none;}
+.step-n{
+  flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+  background:var(--accent); color:var(--accent-ink);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12.5px; font-weight:600;
+}
+.step-body h4{font-family:'Public Sans',sans-serif; font-size:14.5px; font-weight:600; margin-bottom:2px;}
+.step-body p{margin:0; font-size:13.5px; color:var(--ink-soft);}
+
 /* ============ ZEITSTRAHL ============ */
 /* Die Achse nimmt die Randlinie des Heftblatts auf; die Jahreszahlen
    hängen als Anker links davon. */
@@ -2029,6 +2042,80 @@ function buildInstrumente(){
   return out;
 }
 
+/* ---------- Volksinitiative: der Ablauf ---------- */
+/* Die Nummerierung ist hier inhaltlich gerechtfertigt: die Schritte haben
+   tatsächlich eine feste Reihenfolge. */
+var INITIATIV_SCHRITTE = [
+  {n:1, t:"Vorprüfung", d:"Die Bundeskanzlei prüft den Initiativtext formell, bevor Unterschriften gesammelt werden dürfen."},
+  {n:2, t:"Unterschriftensammlung", d:"100'000 Unterschriften von Stimmberechtigten innert 18 Monaten."},
+  {n:3, t:"Gültigkeitsprüfung", d:"Geprüft wird die Einheit der Materie, die Einheit der Form und die Vereinbarkeit mit zwingendem Völkerrecht."},
+  {n:4, t:"Beratung und Gegenvorschlag", d:"Die Initiative wird beraten; ihr kann ein direkter oder ein indirekter Gegenvorschlag gegenübergestellt werden."},
+  {n:5, t:"Volksabstimmung", d:"Zur Annahme braucht es Volks- und Ständemehr."}
+];
+
+var GUELTIGKEIT = [
+  {t:"Einheit der Materie", d:"Die Initiative behandelt ein Thema — nicht mehrere, die man nur zusammen annehmen oder ablehnen könnte."},
+  {t:"Einheit der Form", d:"Entweder allgemeine Anregung oder ausformulierter Text — keine Mischung."},
+  {t:"Zwingendes Völkerrecht", d:"Die Initiative darf zwingendem Völkerrecht nicht widersprechen."}
+];
+
+function buildInitiative(){
+  var out = [];
+  var titel = INITIATIV_SCHRITTE.map(function(s){ return s.t; });
+
+  INITIATIV_SCHRITTE.forEach(function(s){
+    out.push(choiceQ("g-initiative", "Ablauf",
+      "Der wievielte Schritt ist das: " + s.t + "?", "",
+      ["1","2","3","4","5"], String(s.n),
+      "Schritt " + s.n + " von 5: " + s.t + ". " + s.d));
+    out.push(choiceQ("g-initiative", "Ablauf",
+      "Welcher Schritt ist gemeint: " + s.d + "", "",
+      titel.slice(), s.t,
+      "Schritt " + s.n + ": " + s.t + "."));
+  });
+  /* Reihenfolge-Paare aus benachbarten Schritten. */
+  for(var i=0;i<INITIATIV_SCHRITTE.length-1;i++){
+    var a = INITIATIV_SCHRITTE[i], b = INITIATIV_SCHRITTE[i+1];
+    out.push(choiceQ("g-initiative", "Reihenfolge",
+      "Was kommt zuerst?", "",
+      shuffle([a.t, b.t]), a.t,
+      a.t + " ist Schritt " + a.n + ", " + b.t + " ist Schritt " + b.n + "."));
+  }
+  out.push(choiceQ("g-initiative", "Vorprüfung",
+    "Wer nimmt die Vorprüfung einer Volksinitiative vor?", "",
+    ["Die Bundeskanzlei","Das Bundesgericht","Der Bundesrat","Das Initiativkomitee"],
+    "Die Bundeskanzlei",
+    "Die Bundeskanzlei prüft den Initiativtext formell, bevor Unterschriften gesammelt werden dürfen."));
+
+  GUELTIGKEIT.forEach(function(g){
+    out.push(choiceQ("g-initiative", "Gültigkeit",
+      "Welches Gültigkeitskriterium ist gemeint: " + g.d, "",
+      GUELTIGKEIT.map(function(x){ return x.t; }), g.t,
+      g.t + " — " + g.d));
+  });
+  out.push(choiceQ("g-initiative", "Gültigkeit",
+    "Wie viele Kriterien entscheiden über die Gültigkeit einer Initiative?", "",
+    ["3","2","4","5"], "3",
+    "Einheit der Materie, Einheit der Form und zwingendes Völkerrecht."));
+
+  out.push(choiceQ("g-initiative", "Gegenvorschlag",
+    "Auf welcher Stufe steht ein direkter Gegenvorschlag?", "",
+    ["Auf Verfassungsstufe","Auf Gesetzesstufe","Auf Verordnungsstufe","Auf Kantonsstufe"],
+    "Auf Verfassungsstufe",
+    "Der direkte Gegenvorschlag steht wie die Initiative selbst auf Verfassungsstufe; der indirekte auf Gesetzesstufe."));
+  out.push(choiceQ("g-initiative", "Gegenvorschlag",
+    "Auf welcher Stufe steht ein indirekter Gegenvorschlag?", "",
+    ["Auf Gesetzesstufe","Auf Verfassungsstufe","Auf Verordnungsstufe","Auf Kantonsstufe"],
+    "Auf Gesetzesstufe",
+    "Der indirekte Gegenvorschlag steht auf Gesetzesstufe; der direkte auf Verfassungsstufe."));
+  out.push(choiceQ("g-initiative", "Abstimmung",
+    "Welches Mehr braucht eine Volksinitiative zur Annahme?", "",
+    ["Volks- und Ständemehr","Nur das Volksmehr","Nur das Ständemehr","Eine Zweidrittelmehrheit"],
+    "Volks- und Ständemehr",
+    "Zur Annahme einer Verfassungsänderung braucht es Volks- und Ständemehr."));
+  return out;
+}
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
@@ -2055,7 +2142,8 @@ var GE_TOPICS = [
      {key:"zahlen",      label:"Zahlen &amp; Fristen",  build:buildZahlen}
    ]},
   {key:"g-initiative", num:"05", label:"Volksinitiative", short:"Volksinitiative",
-   sub:"Der Ablauf in fünf Schritten", sets:[]},
+   sub:"Der Ablauf in fünf Schritten",
+   sets:[{key:"all", label:"Alles gemischt", build:buildInitiative}]},
   {key:"g-weltkrieg", num:"06", label:"Weltkrieg &amp; Zwischenkriegszeit", short:"Weltkrieg & Zwischenkriegszeit",
    sub:"Landesstreik, Fronten, Asylpraxis", sets:[]},
   {key:"g-staatslehre", num:"07", label:"Staatslehre", short:"Staatslehre",
@@ -2630,7 +2718,8 @@ var TOPIC_LEDE = {
   "g-zeitstrahl": "Alle 26 Ereignisse deines Dossiers in der richtigen Reihenfolge. Wer die Reihenfolge kann, kann auch die Jahreszahlen.",
   "g-1848": "Vier Verfassungen in fünfzig Jahren, ein Bürgerkrieg im November 1847 — und am Ende der Schritt vom Staatenbund zum Bundesstaat.",
   "g-demokratie": "Wie aus der Alleinherrschaft des Freisinns eine Konkordanz wurde — über 1874, 1891 und drei Bundesratssitze.",
-  "g-volksrechte": "Initiative, fakultatives und obligatorisches Referendum nebeneinander: Zweck, Quorum, Frist und das nötige Mehr."
+  "g-volksrechte": "Initiative, fakultatives und obligatorisches Referendum nebeneinander: Zweck, Quorum, Frist und das nötige Mehr.",
+  "g-initiative": "Fünf Schritte von der Vorprüfung bis zur Volksabstimmung — und die drei Kriterien, an denen eine Initiative scheitern kann."
 };
 function renderTopicDrill(body, key){
   var t = topicByKey(key);
@@ -3251,6 +3340,36 @@ REFERENCE["g-volksrechte"] = function(body){
     + '<tr><td class="sans">Initiativkomitee</td><td class="mono">7 bis 27 Mitglieder</td></tr>'
     + '<tr><td class="sans">Ständemehr</td><td class="mono">12 von 23</td></tr>'
     + '</table></div>';
+  body.innerHTML = html;
+};
+
+REFERENCE["g-initiative"] = function(body){
+  var html = '<div class="section-title">Von der Idee zur Abstimmung</div>';
+  html += '<p class="section-lede">Fünf Schritte in fester Reihenfolge. Wer die Reihenfolge kann, '
+       + 'kann die Frage nach jedem einzelnen Schritt beantworten.</p>';
+  html += '<div class="steps">';
+  INITIATIV_SCHRITTE.forEach(function(s){
+    html += '<div class="step"><span class="step-n mono">'+s.n+'</span>'
+      + '<div class="step-body"><h4>'+s.t+'</h4><p>'+s.d+'</p></div></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="section-title">Wann ist eine Initiative gültig?</div>';
+  html += '<div class="grid grid-3">';
+  GUELTIGKEIT.forEach(function(g){
+    html += '<div class="card"><h4>'+g.t+'</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'+g.d+'</p></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="section-title">Direkter oder indirekter Gegenvorschlag</div>';
+  html += '<div class="grid grid-2">'
+    + '<div class="card"><h4>Direkt</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
+    + 'Auf <b>Verfassungsstufe</b> — dieselbe Ebene wie die Initiative selbst.</p></div>'
+    + '<div class="card"><h4>Indirekt</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
+    + 'Auf <b>Gesetzesstufe</b> — eine Stufe tiefer.</p></div>'
+    + '</div>';
+  html += '<div class="callout tip"><b>Merkhilfe:</b> «Direkt» heisst auf gleicher Höhe wie die Initiative, '
+       + 'also in der Verfassung. Alles andere ist indirekt.</div>';
   body.innerHTML = html;
 };
 
