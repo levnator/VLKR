@@ -79,6 +79,30 @@ function runChecks(W, T){
     var bad = pool.filter(function(q){ return q.topic.indexOf("g-") === 0; });
     return bad.length === 0 ? true : bad.length + " Fremdfragen";
   });
+
+  /* ---- Task 6: Zeitstrahl-Daten ---- */
+  check("Zeitstrahl hat 26 Einträge", function(){
+    return T.TIMELINE.length === 26 ? true : "ist " + T.TIMELINE.length;
+  });
+  check("Davon 23 mit exaktem Jahr", function(){
+    var n = T.TIMELINE.filter(function(e){ return e.exact; }).length;
+    return n === 23 ? true : "ist " + n;
+  });
+  check("Zeitstrahl ist chronologisch sortiert", function(){
+    for(var i=1;i<T.TIMELINE.length;i++){
+      if(T.TIMELINE[i].y < T.TIMELINE[i-1].y) return "Bruch bei Index " + i;
+    }
+    return true;
+  });
+  check("Jeder Eintrag hat Titel, Beschreibung und gültiges Thema", function(){
+    var keys = T.topicsOf("ge").map(function(t){ return t.key; });
+    for(var i=0;i<T.TIMELINE.length;i++){
+      var e = T.TIMELINE[i];
+      if(!e.t || !e.d) return "Index " + i + " unvollständig";
+      if(keys.indexOf(e.topic) === -1) return "Index " + i + " hat unbekanntes Thema " + e.topic;
+    }
+    return true;
+  });
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;

@@ -467,6 +467,29 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
 .prompt-chip{background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:8px 12px; font-size:13px;}
 .prompt-chip .mono{color:var(--accent); margin-right:7px; font-size:11.5px;}
 
+/* ============ ZEITSTRAHL ============ */
+/* Die Achse nimmt die Randlinie des Heftblatts auf; die Jahreszahlen
+   hängen als Anker links davon. */
+.timeline{position:relative; margin:14px 0 18px 0; padding-left:62px;}
+.timeline::before{
+  content:""; position:absolute; left:52px; top:6px; bottom:6px;
+  width:1px; background:var(--rule-strong);
+}
+.tl-item{position:relative; padding:0 0 18px 0;}
+.tl-item::before{
+  content:""; position:absolute; left:-14px; top:7px;
+  width:7px; height:7px; border-radius:50%;
+  background:var(--accent); border:2px solid var(--paper);
+}
+.tl-item.fuzzy::before{background:var(--rule-strong);}
+.tl-year{
+  position:absolute; left:-62px; top:2px; width:48px; text-align:right;
+  font-size:13px; font-weight:600; color:var(--ink);
+}
+.tl-item.fuzzy .tl-year{color:var(--ink-faint); font-weight:500;}
+.tl-body h4{font-family:'Public Sans',sans-serif; font-size:14.5px; font-weight:600; margin-bottom:2px;}
+.tl-body p{margin:0; font-size:13.5px; color:var(--ink-soft);}
+
 /* ============ FACH-WAHL ============ */
 .subject-grid{display:grid; gap:12px; margin:18px 0 8px 0;}
 .subject-card{
@@ -620,6 +643,11 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
   .mc-row{flex-direction:column; gap:8px;}
   .mc-btn{width:100%; text-align:left; padding:14px 16px;}
   .quiz-actions{gap:10px;}
+
+  /* --- Zeitstrahl: schmalere Jahresspalte --- */
+  .timeline{padding-left:52px;}
+  .timeline::before{left:44px;}
+  .tl-year{left:-52px; width:40px; font-size:12px;}
 
   /* --- Auswertung --- */
   .cat-bar-row{flex-wrap:wrap; row-gap:3px;}
@@ -1531,6 +1559,70 @@ var FR_TOPICS = [
    sets:[{key:"all", label:"Alles gemischt", build:buildEtreBank}]}
 ];
 
+/* ================================================================
+   GESCHICHTE & STAATSKUNDE SCHWEIZ
+   Alle Angaben stammen wörtlich aus dem Dossier des Nutzers.
+   Nichts wird ergänzt — auch nichts allgemein Bekanntes.
+   ================================================================ */
+
+/* Einzige Quelle für alle datierten Ereignisse. Referenz und Drill lesen
+   beide hier — eine Jahreszahl steht deshalb an genau einer Stelle. */
+var TIMELINE = [
+  {y:1798, exact:true, t:"Helvetische Verfassung", topic:"g-1848",
+   d:"Erstes modernes Grundgesetz der Schweiz. Zentralistisch — sie liess weder Kantonen noch Gemeinden Raum für Selbstverwaltung."},
+  {y:1803, exact:true, t:"Mediationsakte", topic:"g-1848",
+   d:"Von Napoleon diktiert, ersetzt die Helvetische Verfassung. Beschränkt die zentrale Gewalt wieder weitgehend und stärkt den Föderalismus."},
+  {y:1815, exact:true, t:"Bundesvertrag", topic:"g-1848",
+   d:"Am Wiener Kongress vereinbart. Fortschritte in der militärischen Organisation, zugleich weitere Schwächung der Zentralgewalt — die Schweiz wird wieder ein reiner Staatenbund. Über die Grundrechte schweigt der Vertrag weitgehend."},
+  {y:1830, exact:false, label:"1830er", t:"Liberale und Radikale arbeiten auf einen Bundesstaat hin", topic:"g-1848",
+   d:"Seit Anfang der 1830er Jahre zielen Liberale und Radikale auf die Schaffung eines zentralen Bundesstaats."},
+  {y:1847, exact:true, t:"Sonderbundskrieg", topic:"g-1848",
+   d:"Bürgerkrieg vom 3. bis 29. November. Die letzte militärische Auseinandersetzung auf Schweizer Boden."},
+  {y:1848, exact:true, t:"Bundesverfassung vom 12. September", topic:"g-1848",
+   d:"Die Schweiz wird vom Staatenbund zum Bundesstaat. Erste Verfassung, die sich das Schweizer Volk selbst gab — eine demokratische Insel inmitten der Monarchien Europas."},
+  {y:1870, exact:false, label:"1870er", t:"Kulturkampf", topic:"g-demokratie",
+   d:"Der weltanschauliche Konflikt zwischen liberalem Staat und katholischer Kirche erreicht seinen Gipfel."},
+  {y:1874, exact:true, t:"Totalrevision der Bundesverfassung", topic:"g-demokratie",
+   d:"Einführung des fakultativen Gesetzesreferendums. Übergang von der repräsentativen zur halbdirekten Demokratie — und Beginn der Aussöhnung mit den Katholisch-Konservativen."},
+  {y:1888, exact:true, t:"Gründung der SP", topic:"g-demokratie",
+   d:"Die Sozialdemokratische Partei formiert sich aus der Demokratischen Bewegung und Arbeiterorganisationen."},
+  {y:1891, exact:true, t:"Volksinitiative eingeführt", topic:"g-demokratie",
+   d:"Volksinitiative auf Teilrevision der Bundesverfassung als formulierter Entwurf — das «Gaspedal» neben der «Bremse» Referendum."},
+  {y:1891, exact:true, t:"Josef Zemp in den Bundesrat", topic:"g-demokratie",
+   d:"Erster Nicht-Freisinniger im Bundesrat, Katholisch-Konservative. Erster Schritt zur Konkordanz."},
+  {y:1918, exact:true, t:"Landesstreik", topic:"g-weltkrieg",
+   d:"Landesweiter Generalstreik im November unter Führung des Oltener Aktionskomitees. Forderungen: Proporzwahlrecht, Frauenstimmrecht, 48-Stunden-Woche, AHV. Nach drei Tagen wegen Armeedrohung abgebrochen."},
+  {y:1918, exact:true, t:"Gründung der BGB", topic:"g-weltkrieg",
+   d:"Bauern-, Gewerbe- und Bürgerpartei, heute SVP — als konservatives Gegengewicht zu SP und Freisinn."},
+  {y:1918, exact:false, label:"1918/19", t:"Spanische Grippe", topic:"g-weltkrieg",
+   d:"Die Grippewelle fordert über 24'400 Todesopfer."},
+  {y:1919, exact:true, t:"48-Stunden-Woche", topic:"g-weltkrieg",
+   d:"Rasche Einführung als Folge des Landesstreiks."},
+  {y:1919, exact:true, t:"Nationalratswahl erstmals im Proporz", topic:"g-weltkrieg",
+   d:"Beendet die absolute Mehrheit des Freisinns."},
+  {y:1929, exact:true, t:"Rudolf Minger in den Bundesrat", topic:"g-demokratie",
+   d:"Einbindung der BGB in die Regierung — zweiter Schritt zur Konkordanz."},
+  {y:1933, exact:true, t:"Frontenfrühling", topic:"g-weltkrieg",
+   d:"Die Frontenbewegung erreicht ihren Höhepunkt."},
+  {y:1935, exact:true, t:"Totalrevisions-Initiative verworfen", topic:"g-weltkrieg",
+   d:"Die Initiative zur faschistischen Umgestaltung wird mit über 70 % Nein-Stimmen abgelehnt. Die Schweiz antwortet mit der «Geistigen Landesverteidigung»."},
+  {y:1938, exact:true, t:"Einheitliches Strafgesetzbuch angenommen", topic:"g-weltkrieg",
+   d:"Annahme in der Volksabstimmung."},
+  {y:1938, exact:true, t:"«J-Stempel» und Konferenz von Évian", topic:"g-weltkrieg",
+   d:"Der «J-Stempel» wird mit NS-Deutschland vereinbart. An der Konferenz von Évian versteht sich die Schweiz rein als Transitland."},
+  {y:1940, exact:true, t:"Letzte zivile Hinrichtung", topic:"g-weltkrieg",
+   d:"Hans Vollenweider wird als letzter Zivilist hingerichtet."},
+  {y:1942, exact:true, t:"Strafgesetzbuch tritt in Kraft", topic:"g-weltkrieg",
+   d:"Vier Jahre nach der Annahme."},
+  {y:1943, exact:true, t:"SP erstmals im Bundesrat", topic:"g-demokratie",
+   d:"Dritter Schritt zur Konkordanz."},
+  {y:1959, exact:true, t:"Zauberformel", topic:"g-demokratie",
+   d:"Einbindung der SP nach dem Schlüssel 2:2:2:1."},
+  {y:1999, exact:true, t:"Verbot der Todesstrafe in der Verfassung", topic:"g-weltkrieg",
+   d:"Verfassungsrechtliches Verbot."}
+];
+function tlLabel(e){ return e.label || String(e.y); }
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
@@ -2113,7 +2205,8 @@ var TOPIC_LEDE = {
   adj: "Adjektive mit drei Formen und die Possessivbegleiter — samt der Vokal-Falle, die beide betrifft.",
   place: "Die meisten Adjektive stehen hinter dem Nomen. 13 stehen davor — und einige ändern ihre Bedeutung je nach Stellung.",
   comp: "Comparatif und superlatif: vergleichen, steigern und die unregelmässigen Formen von bon und mauvais.",
-  etre: "Wer bildet das Passé composé mit être? Und wann braucht die Inversionsfrage ein -t-?"
+  etre: "Wer bildet das Passé composé mit être? Und wann braucht die Inversionsfrage ein -t-?",
+  "g-zeitstrahl": "Alle 26 Ereignisse deines Dossiers in der richtigen Reihenfolge. Wer die Reihenfolge kann, kann auch die Jahreszahlen."
 };
 function renderTopicDrill(body, key){
   var t = topicByKey(key);
@@ -2607,6 +2700,23 @@ REFERENCE.etre = function(body){
     + '<b>Achtung:</b> Endet das Verb auf einen Vokal und folgt il/elle/on, schiebst du ein <b>-t-</b> ein: '
     + '<span class="mono">Elle parle → Parle-t-elle … ?</span> Kein -t- nötig, wenn das Verb schon auf einem Konsonantenlaut endet: '
     + '<span class="mono">Tu as → As-tu … ?</span></div>';
+  body.innerHTML = html;
+};
+
+/* ================================================================
+   REFERENZ-SEITEN GESCHICHTE
+   ================================================================ */
+
+REFERENCE["g-zeitstrahl"] = function(body){
+  var html = '<div class="timeline">';
+  TIMELINE.forEach(function(e){
+    html += '<div class="tl-item' + (e.exact ? '' : ' fuzzy') + '">'
+      + '<div class="tl-year mono">' + tlLabel(e) + '</div>'
+      + '<div class="tl-body"><h4>' + e.t + '</h4><p>' + e.d + '</p></div></div>';
+  });
+  html += '</div>';
+  html += '<div class="callout tip"><b>Unscharfe Angaben:</b> Drei Einträge nennt dein Dossier ohne genaues Jahr '
+       + '(1830er, 1870er, 1918/19). Sie sind hell gesetzt und werden nie nach dem exakten Jahr abgefragt.</div>';
   body.innerHTML = html;
 };
 
