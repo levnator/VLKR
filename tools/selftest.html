@@ -103,6 +103,61 @@ function runChecks(W, T){
     }
     return true;
   });
+
+  /* ---- Task 7: Zeitstrahl-Drill ---- */
+  /* Ohne diese Prüfung würden die Invarianten unten auf leeren Bänken
+     stillschweigend bestehen. */
+  check("Die drei Zeitstrahl-Bänke sind gefüllt", function(){
+    var n = ["year","event","order"].map(function(s){ return T.bankFor("g-zeitstrahl", s).length; });
+    return (n[0] === 23 && n[1] === 23 && n[2] > 20)
+      ? true : "year=" + n[0] + " event=" + n[1] + " order=" + n[2];
+  });
+  check("Jahresfragen nur aus exakten Einträgen", function(){
+    var bank = T.bankFor("g-zeitstrahl", "year");
+    var fuzzy = T.TIMELINE.filter(function(e){ return !e.exact; })
+                          .map(function(e){ return e.t; });
+    var bad = bank.filter(function(q){
+      return fuzzy.some(function(t){ return q.prompt.indexOf(t) !== -1; });
+    });
+    return bad.length === 0 ? true : "unscharfer Eintrag in Frage: " + bad[0].prompt;
+  });
+  check("Jahresfragen akzeptieren die reine Jahreszahl", function(){
+    var bank = T.bankFor("g-zeitstrahl", "year");
+    var bad = bank.filter(function(q){ return !/^\d{4}$/.test(q.accept[0]); });
+    return bad.length === 0 ? true : "unerwartete Antwort: " + bad[0].accept[0];
+  });
+  check("Zuordnungsfragen haben vier verschiedene Optionen", function(){
+    var bank = T.bankFor("g-zeitstrahl", "event");
+    var bad = bank.filter(function(q){
+      var u = {}; q.choices.forEach(function(c){ u[c] = 1; });
+      return q.choices.length !== 4 || Object.keys(u).length !== 4;
+    });
+    return bad.length === 0 ? true : bad.length + " Fragen mit doppelten Optionen";
+  });
+  check("Zuordnungsfragen enthalten ihre eigene Antwort", function(){
+    var bank = T.bankFor("g-zeitstrahl", "event");
+    var bad = bank.filter(function(q){ return q.choices.indexOf(q.answer) === -1; });
+    return bad.length === 0 ? true : bad.length + " Fragen ohne richtige Option";
+  });
+  /* Die Jahre 1891, 1918, 1919 und 1938 tragen mehrere Ereignisse. Stünden
+     zwei davon in derselben Frage, gäbe es zwei richtige Antworten. */
+  check("Zuordnungsfragen haben nur eine richtige Antwort", function(){
+    var byYear = {};
+    T.TIMELINE.forEach(function(e){ (byYear[e.y] = byYear[e.y] || []).push(e.t); });
+    var bank = T.bankFor("g-zeitstrahl", "event");
+    for(var i=0;i<bank.length;i++){
+      var q = bank[i];
+      var y = (q.prompt.match(/\d{4}/) || [])[0];
+      var same = byYear[y] || [];
+      var hits = q.choices.filter(function(c){ return same.indexOf(c) !== -1; });
+      if(hits.length !== 1) return q.prompt + " hat " + hits.length + " richtige Optionen: " + hits.join(" / ");
+    }
+    return true;
+  });
+  check("Reihenfolge-Fragen nutzen unterschiedliche Jahre", function(){
+    var bank = T.bankFor("g-zeitstrahl", "order");
+    return bank.length > 0 ? true : "Bank ist leer";
+  });
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;

@@ -1623,10 +1623,72 @@ var TIMELINE = [
 ];
 function tlLabel(e){ return e.label || String(e.y); }
 
+/* ---------- Fragenbänke Zeitstrahl ---------- */
+
+/* Typ 1: Jahr nennen. Nur exakte Einträge. */
+function buildTimelineYear(){
+  var out = [];
+  TIMELINE.forEach(function(e){
+    if(!e.exact) return;
+    out.push(inputQ("g-zeitstrahl", "Jahreszahl",
+      "In welchem Jahr: " + e.t + "?",
+      "Vierstellige Jahreszahl",
+      [String(e.y)], String(e.y), e.d));
+  });
+  return out;
+}
+
+/* Typ 2: Ereignis zuordnen. Distraktoren sind echte Nachbar-Ereignisse —
+   dadurch prüft die Frage Unterscheidung statt Ausschluss.
+   Ereignisse desselben Jahres scheiden als Distraktor aus: 1891, 1918,
+   1919 und 1938 tragen mehrere, und die wären ebenso richtig. */
+function buildTimelineEvent(){
+  var out = [];
+  TIMELINE.forEach(function(e, idx){
+    if(!e.exact) return;
+    var near = [], i;
+    function usable(o){ return o.y !== e.y && near.indexOf(o.t) === -1; }
+    for(i = Math.max(0, idx-3); i <= Math.min(TIMELINE.length-1, idx+3); i++){
+      if(i !== idx && usable(TIMELINE[i])) near.push(TIMELINE[i].t);
+    }
+    /* Auffüllen, falls am Rand des Zeitstrahls zu wenige Nachbarn da sind. */
+    TIMELINE.forEach(function(o){
+      if(near.length < 3 && usable(o)) near.push(o.t);
+    });
+    var choices = shuffle(near.slice(0,3).concat([e.t]));
+    out.push(choiceQ("g-zeitstrahl", "Zuordnen",
+      "Was geschah " + e.y + "?", "",
+      choices, e.t, e.d));
+  });
+  return out;
+}
+
+/* Typ 3: Reihenfolge. Nahe Paare, weil weit entfernte trivial sind. */
+function buildTimelineOrder(){
+  var out = [], i, j;
+  for(i = 0; i < TIMELINE.length; i++){
+    for(j = i+1; j < Math.min(i+4, TIMELINE.length); j++){
+      var a = TIMELINE[i], b = TIMELINE[j];
+      if(a.y === b.y) continue;            /* gleiches Jahr hat keine Reihenfolge */
+      if(!a.exact || !b.exact) continue;   /* unscharf: Reihenfolge nicht belegbar */
+      out.push(choiceQ("g-zeitstrahl", "Reihenfolge",
+        "Was kam zuerst?", "",
+        shuffle([a.t, b.t]), a.t,
+        a.t + " (" + a.y + ") kam vor " + b.t + " (" + b.y + ")."));
+    }
+  }
+  return out;
+}
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
-   sub:"26 Ereignisse von 1798 bis 1999", sets:[]},
+   sub:"26 Ereignisse von 1798 bis 1999",
+   sets:[
+     {key:"year",  label:"Jahr nennen",       build:buildTimelineYear},
+     {key:"event", label:"Ereignis zuordnen", build:buildTimelineEvent},
+     {key:"order", label:"Was kam zuerst?",   build:buildTimelineOrder}
+   ]},
   {key:"g-1848", num:"02", label:"1848 &middot; Bundesstaat", short:"1848 · Bundesstaat",
    sub:"Verfassungen 1798–1848, Sonderbundskrieg", sets:[]},
   {key:"g-demokratie", num:"03", label:"Demokratie &amp; Konkordanz", short:"Demokratie & Konkordanz",
