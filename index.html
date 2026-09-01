@@ -2266,6 +2266,85 @@ function buildWeltkrieg(){
   return out;
 }
 
+/* ---------- Staatslehre ---------- */
+var GEWALTEN = [
+  {gewalt:"Legislative", organ:"Bundesversammlung",
+   detail:"Nationalrat 200 Sitze, Ständerat 46 Sitze", aufgabe:"Gesetze beschliessen"},
+  {gewalt:"Exekutive", organ:"Bundesrat",
+   detail:"7 gleichberechtigte Mitglieder", aufgabe:"Regieren und vollziehen"},
+  {gewalt:"Judikative", organ:"Bundesgericht",
+   detail:"Sitze in Lausanne und Luzern", aufgabe:"Recht sprechen"}
+];
+
+var GLOSSAR = [
+  {t:"Konkordanz",
+   d:"Regierungsmodell, das alle grossen Parteien in die Regierung einbindet. Gegenmodell: die Konkurrenzdemokratie, in der die Mehrheit allein regiert."},
+  {t:"Bundesstaat",
+   d:"Ein Staat mit eigener Verfassung über den Kantonen. Dazu wurde die Schweiz 1848."},
+  {t:"Staatenbund",
+   d:"Ein Bündnis eigenständiger Kantone mit schwacher Zentralgewalt. Das war die Schweiz unter dem Bundesvertrag von 1815."},
+  {t:"Kulturkampf",
+   d:"Der weltanschauliche Konflikt zwischen liberalem Staat und katholischer Kirche; sein Gipfel liegt in den 1870er Jahren."}
+];
+
+function buildStaatslehre(){
+  var out = [];
+  var gewalten = GEWALTEN.map(function(g){ return g.gewalt; });
+  var organe = GEWALTEN.map(function(g){ return g.organ; });
+
+  GEWALTEN.forEach(function(g){
+    out.push(choiceQ("g-staatslehre", "Gewaltenteilung",
+      "Welche Gewalt verkörpert dieses Organ: " + g.organ + "?", "",
+      gewalten.slice(), g.gewalt,
+      g.organ + " ist die " + g.gewalt + " — " + g.aufgabe + ". " + g.detail + "."));
+    out.push(choiceQ("g-staatslehre", "Gewaltenteilung",
+      "Welches Organ übt die " + g.gewalt + " aus?", "",
+      organe.slice(), g.organ,
+      g.gewalt + ": " + g.organ + " — " + g.detail + "."));
+    out.push(choiceQ("g-staatslehre", "Gewaltenteilung",
+      "Welches Organ hat diese Aufgabe: " + g.aufgabe + "?", "",
+      organe.slice(), g.organ,
+      g.organ + " — " + g.gewalt + "."));
+  });
+
+  out.push(inputQ("g-staatslehre", "Sitze",
+    "Wie viele Sitze hat der Nationalrat?", "Nur die Zahl",
+    ["200"], "200", "Nationalrat 200 Sitze, Ständerat 46 Sitze."));
+  out.push(inputQ("g-staatslehre", "Sitze",
+    "Wie viele Sitze hat der Ständerat?", "Nur die Zahl",
+    ["46"], "46", "Nationalrat 200 Sitze, Ständerat 46 Sitze."));
+  out.push(inputQ("g-staatslehre", "Sitze",
+    "Aus wie vielen Mitgliedern besteht der Bundesrat?", "Nur die Zahl",
+    ["7","sieben"], "7", "7 gleichberechtigte Mitglieder."));
+  out.push(choiceQ("g-staatslehre", "Bundesversammlung",
+    "Aus welchen beiden Kammern besteht die Bundesversammlung?", "",
+    ["Nationalrat und Ständerat","Bundesrat und Bundesgericht",
+     "Nationalrat und Bundesrat","Ständerat und Bundesgericht"],
+    "Nationalrat und Ständerat",
+    "Die Bundesversammlung: Nationalrat mit 200 und Ständerat mit 46 Sitzen."));
+  out.push(choiceQ("g-staatslehre", "Bundesgericht",
+    "Wo hat das Bundesgericht seine Sitze?", "",
+    ["In Lausanne und Luzern","In Bern und Zürich","In Genf und Basel","In Bern allein"],
+    "In Lausanne und Luzern",
+    "Das Bundesgericht — die Judikative — sitzt in Lausanne und Luzern."));
+
+  GLOSSAR.forEach(function(g){
+    out.push(choiceQ("g-staatslehre", "Glossar",
+      "Welcher Begriff ist gemeint? " + g.d, "",
+      GLOSSAR.map(function(x){ return x.t; }), g.t,
+      g.t + ": " + g.d));
+  });
+
+  out.push(inputQ("g-staatslehre", "smartspider",
+    "Wie viele Achsen hat die smartspider?", "Nur die Zahl",
+    ["8","acht"], "8", "8 Speichen, je auf einer Skala von 0 bis 100."));
+  out.push(choiceQ("g-staatslehre", "smartspider",
+    "Auf welcher Skala steht jede Achse der smartspider?", "",
+    ["0 bis 100","0 bis 10","1 bis 5","–100 bis +100"], "0 bis 100",
+    "8 Achsen, je auf einer Skala von 0 bis 100."));
+  return out;
+}
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
@@ -2298,7 +2377,8 @@ var GE_TOPICS = [
    sub:"Landesstreik, Fronten, Asylpraxis",
    sets:[{key:"all", label:"Alles gemischt", build:buildWeltkrieg}]},
   {key:"g-staatslehre", num:"07", label:"Staatslehre", short:"Staatslehre",
-   sub:"Gewaltenteilung, Glossar, smartspider", sets:[]}
+   sub:"Gewaltenteilung, Glossar, smartspider",
+   sets:[{key:"all", label:"Alles gemischt", build:buildStaatslehre}]}
 ];
 
 function topicByKey(k){
@@ -2871,7 +2951,8 @@ var TOPIC_LEDE = {
   "g-demokratie": "Wie aus der Alleinherrschaft des Freisinns eine Konkordanz wurde — über 1874, 1891 und drei Bundesratssitze.",
   "g-volksrechte": "Initiative, fakultatives und obligatorisches Referendum nebeneinander: Zweck, Quorum, Frist und das nötige Mehr.",
   "g-initiative": "Fünf Schritte von der Vorprüfung bis zur Volksabstimmung — und die drei Kriterien, an denen eine Initiative scheitern kann.",
-  "g-weltkrieg": "Röstigraben, Landesstreik, Fronten und Asylpraxis: die Jahre, in denen sich entschied, was für ein Land die Schweiz sein wollte."
+  "g-weltkrieg": "Röstigraben, Landesstreik, Fronten und Asylpraxis: die Jahre, in denen sich entschied, was für ein Land die Schweiz sein wollte.",
+  "g-staatslehre": "Wer macht die Gesetze, wer führt sie aus, wer spricht Recht — und die Begriffe, die in jeder Prüfungsfrage vorkommen."
 };
 function renderTopicDrill(body, key){
   var t = topicByKey(key);
@@ -3572,6 +3653,35 @@ REFERENCE["g-weltkrieg"] = function(body){
     + '<div class="card"><h4>Konferenz von Évian</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
     + 'Die Schweiz versteht sich rein als <b>Transitland</b>.</p></div>'
     + '</div>';
+  body.innerHTML = html;
+};
+
+REFERENCE["g-staatslehre"] = function(body){
+  var html = '<div class="section-title">Die drei Gewalten</div>';
+  html += '<div class="tablewrap"><table>'
+    + '<tr><th>Gewalt</th><th>Organ</th><th>Aufgabe</th><th>Zusammensetzung</th></tr>';
+  GEWALTEN.forEach(function(g){
+    html += '<tr><td class="sans"><b>'+g.gewalt+'</b></td><td class="sans">'+g.organ+'</td>'
+      + '<td class="sans">'+g.aufgabe+'</td><td class="sans">'+g.detail+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<div class="callout tip"><b>Die Zahlen:</b> Nationalrat <b class="mono">200</b>, '
+       + 'Ständerat <b class="mono">46</b>, Bundesrat <b class="mono">7</b>. '
+       + 'Das Bundesgericht sitzt in <b>Lausanne</b> und <b>Luzern</b>.</div>';
+
+  html += '<div class="section-title">Glossar</div>';
+  html += '<div class="grid grid-2">';
+  GLOSSAR.forEach(function(g){
+    html += '<div class="card"><h4>'+g.t+'</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'+g.d+'</p></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="section-title">smartspider</div>';
+  html += '<p class="section-lede">Das Netzdiagramm von smartvote stellt eine politische Position auf '
+       + '<b>acht Achsen</b> dar. Jede Achse trägt einen Wert auf einer Skala von <b class="mono">0</b> bis '
+       + '<b class="mono">100</b>; die verbundenen Punkte ergeben das Profil.</p>';
+  html += '<div class="callout tip"><b>Die zwei Zahlen, die zählen:</b> <b class="mono">8</b> Achsen, '
+       + 'Skala <b class="mono">0–100</b>.</div>';
   body.innerHTML = html;
 };
 

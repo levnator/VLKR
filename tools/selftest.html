@@ -206,6 +206,13 @@ function runChecks(W, T){
   bankCheck(T, "g-volksrechte", 24);
   bankCheck(T, "g-initiative", 14);
   bankCheck(T, "g-weltkrieg", 20);
+  bankCheck(T, "g-staatslehre", 16);
+
+  /* Jedes Geschichts-Thema muss spielbar sein. */
+  check("Jedes Geschichts-Thema hat mindestens ein Set", function(){
+    var leer = T.topicsOf("ge").filter(function(t){ return !t.sets || !t.sets.length; });
+    return leer.length === 0 ? true : "ohne Set: " + leer.map(function(t){return t.key;}).join(",");
+  });
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;
