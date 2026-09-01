@@ -21,6 +21,23 @@ function runChecks(W, T){
     var t = T.topicsOf("fr");
     return (t && t.length === 6) ? true : "erwartet 6, ist " + (t ? t.length : "null");
   });
+
+  /* ---- Task 2: SUBJECTS-Register ---- */
+  check("Zwei Fächer registriert", function(){
+    return T.SUBJECTS.length === 2 ? true : "erwartet 2, ist " + T.SUBJECTS.length;
+  });
+  check("Fach-Schlüssel sind fr und ge", function(){
+    var k = T.SUBJECTS.map(function(s){ return s.key; }).join(",");
+    return k === "fr,ge" ? true : "ist " + k;
+  });
+  check("Geschichte hat 7 Themen", function(){
+    var t = T.topicsOf("ge");
+    return (t && t.length === 7) ? true : "erwartet 7, ist " + (t ? t.length : "null");
+  });
+  check("Alle Geschichts-Schlüssel mit g- präfixiert", function(){
+    var bad = T.topicsOf("ge").filter(function(t){ return t.key.indexOf("g-") !== 0; });
+    return bad.length === 0 ? true : "ohne Präfix: " + bad.map(function(t){return t.key;}).join(",");
+  });
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;

@@ -1478,7 +1478,7 @@ function buildEtreBank(){
 /* ================================================================
    THEMEN-REGISTER
    ================================================================ */
-var TOPICS = [
+var FR_TOPICS = [
   {key:"verbs", num:"01", label:"Verben", short:"Verben",
    sub:"16 Verben × 6 Zeitformen", random:true, sets:[]},
   {key:"gender", num:"02", label:"Genre &amp; Nombre", short:"Genre & Nombre",
@@ -1508,8 +1508,27 @@ var TOPICS = [
    sub:"avoir oder être, Fragen mit Bindestrich",
    sets:[{key:"all", label:"Alles gemischt", build:buildEtreBank}]}
 ];
+
+/* ---------- Geschichte & Staatskunde Schweiz ---------- */
+var GE_TOPICS = [
+  {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
+   sub:"26 Ereignisse von 1798 bis 1999", sets:[]},
+  {key:"g-1848", num:"02", label:"1848 &middot; Bundesstaat", short:"1848 · Bundesstaat",
+   sub:"Verfassungen 1798–1848, Sonderbundskrieg", sets:[]},
+  {key:"g-demokratie", num:"03", label:"Demokratie &amp; Konkordanz", short:"Demokratie & Konkordanz",
+   sub:"1874, 1891 und der Weg zur Zauberformel", sets:[]},
+  {key:"g-volksrechte", num:"04", label:"Volksrechte", short:"Volksrechte",
+   sub:"Initiative, fakultatives und obligatorisches Referendum", sets:[]},
+  {key:"g-initiative", num:"05", label:"Volksinitiative", short:"Volksinitiative",
+   sub:"Der Ablauf in fünf Schritten", sets:[]},
+  {key:"g-weltkrieg", num:"06", label:"Weltkrieg &amp; Zwischenkriegszeit", short:"Weltkrieg & Zwischenkriegszeit",
+   sub:"Landesstreik, Fronten, Asylpraxis", sets:[]},
+  {key:"g-staatslehre", num:"07", label:"Staatslehre", short:"Staatslehre",
+   sub:"Gewaltenteilung, Glossar, smartspider", sets:[]}
+];
+
 function topicByKey(k){
-  for(var i=0;i<TOPICS.length;i++){ if(TOPICS[i].key===k) return TOPICS[i]; }
+  for(var i=0;i<FR_TOPICS.length;i++){ if(FR_TOPICS[i].key===k) return FR_TOPICS[i]; }
   return null;
 }
 var BANK_CACHE = {};
@@ -1539,7 +1558,7 @@ function makeFeeder(topicKey, setKey, verbCfg){
   };
 }
 function makeMixedFeeder(verbCfg){
-  var feeders = TOPICS.map(function(t){ return makeFeeder(t.key, "all", verbCfg); });
+  var feeders = FR_TOPICS.map(function(t){ return makeFeeder(t.key, "all", verbCfg); });
   return function(){
     var f = pick(feeders), q = f();
     return q || makeFeeder("verbs","all",verbCfg)();
@@ -1548,8 +1567,8 @@ function makeMixedFeeder(verbCfg){
 function buildPool(cfg, count){
   var qs = [], i;
   if(cfg.topic === "all"){
-    var per = Math.ceil((count * 1.5) / TOPICS.length);
-    TOPICS.forEach(function(t){
+    var per = Math.ceil((count * 1.5) / FR_TOPICS.length);
+    FR_TOPICS.forEach(function(t){
       var f = makeFeeder(t.key, "all", cfg.verbCfg);
       for(i=0;i<per;i++){ var q = f(); if(q) qs.push(q); }
     });
@@ -1588,7 +1607,7 @@ var STATE = {
   tabs: {}
 };
 
-var SECTIONS = [
+var FR_SECTIONS = [
   {key:"home", label:"Start"},
   {key:"verbs", label:"Verben"},
   {key:"gender", label:"Genre & Nombre"},
@@ -1599,16 +1618,33 @@ var SECTIONS = [
   {key:"test", label:"Prüfung"}
 ];
 
+/* Aus GE_TOPICS abgeleitet, damit Themenliste und Navigation nicht
+   auseinanderlaufen können. */
+var GE_SECTIONS = [{key:"home", label:"Start"}]
+  .concat(GE_TOPICS.map(function(t){ return {key:t.key, label:t.short}; }))
+  .concat([{key:"test", label:"Prüfung"}]);
+
+var SUBJECTS = [
+  {key:"fr", mark:"C", title:"Cahier de Grammaire", sub:"Französisch",
+   topics:FR_TOPICS, sections:FR_SECTIONS},
+  {key:"ge", mark:"H", title:"Geschichte", sub:"Staatskunde Schweiz",
+   topics:GE_TOPICS, sections:GE_SECTIONS}
+];
+function subjectByKey(k){
+  for(var i=0;i<SUBJECTS.length;i++){ if(SUBJECTS[i].key===k) return SUBJECTS[i]; }
+  return null;
+}
+
 function currentSection(){
   var h = location.hash.replace(/^#\//,"");
-  for(var i=0;i<SECTIONS.length;i++){ if(SECTIONS[i].key===h) return SECTIONS[i].key; }
+  for(var i=0;i<FR_SECTIONS.length;i++){ if(FR_SECTIONS[i].key===h) return FR_SECTIONS[i].key; }
   return "home";
 }
 function renderNav(){
   var nav = document.getElementById("nav");
   nav.innerHTML = "";
   var cur = currentSection();
-  SECTIONS.forEach(function(s, i){
+  FR_SECTIONS.forEach(function(s, i){
     var b = document.createElement("button");
     b.className = "nav-item" + (cur===s.key ? " active" : "");
     b.innerHTML = '<span class="num">'+String(i).padStart(2,"0")+'</span><span>'+s.label+'</span>';
@@ -1676,8 +1712,8 @@ function initNavDrawer(){
 function updateTopbarTitle(sec){
   var el = document.getElementById("topbarTitle");
   if(!el) return;
-  for(var i=0;i<SECTIONS.length;i++){
-    if(SECTIONS[i].key===sec){ el.textContent = SECTIONS[i].label; return; }
+  for(var i=0;i<FR_SECTIONS.length;i++){
+    if(FR_SECTIONS[i].key===sec){ el.textContent = FR_SECTIONS[i].label; return; }
   }
 }
 function clearSession(){
@@ -1744,7 +1780,7 @@ function renderHome(el){
 
   html += '<div class="section-title">Themen</div>';
   html += '<div class="grid grid-2" style="margin-top:8px;">';
-  TOPICS.forEach(function(t){
+  FR_TOPICS.forEach(function(t){
     var acc = topicAcc(t.key);
     html += '<button class="topic-card" data-go="#/'+t.key+'">'
       + '<span class="badge">'+t.num+'</span>'
@@ -2262,7 +2298,7 @@ function renderTestSection(el){
   html += '<div class="grid grid-2" style="margin-bottom:8px;">';
   html += '<button class="topic-card" data-test="all"><span class="badge">∑</span>'
     + '<div><h4>Alle Themen</h4><p>Gemischt aus allen sechs Kapiteln — wie die echte Prüfung</p></div></button>';
-  TOPICS.forEach(function(t){
+  FR_TOPICS.forEach(function(t){
     var acc = topicAcc(t.key);
     html += '<button class="topic-card" data-test="'+t.key+'"><span class="badge">'+t.num+'</span>'
       + '<div><h4>'+t.label+'</h4><p>'+t.sub+'</p>'
@@ -2449,9 +2485,6 @@ initTheme();
 initNavDrawer();
 renderSidebarStats();
 navigate();
-
-/* Platzhalter — wird in Task 2 durch das echte SUBJECTS-Register ersetzt. */
-var SUBJECTS = [{key:"fr", topics:TOPICS}];
 
 /* Testzugang für tools/selftest.html. Produktionscode liest das nie. */
 window.__VLKR_TEST__ = {
