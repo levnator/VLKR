@@ -13,6 +13,33 @@ function check(name, fn){
     else { fails++; results.push("FAIL  " + name + " — " + r); }
   }catch(e){ fails++; results.push("FAIL  " + name + " — " + e.message); }
 }
+/* Tasks 9–14 haben dieselbe Form: Bank gefüllt, jede Frage vollständig,
+   kein Thema fremd, jede Auswahlfrage enthält ihre eigene Antwort. */
+function bankCheck(T, key, min){
+  check("Thema " + key + ": Bank gefüllt und sauber", function(){
+    var bank = T.bankFor(key, "all");
+    if(bank.length < min) return "nur " + bank.length + " Fragen, mindestens " + min + " erwartet";
+    for(var i=0;i<bank.length;i++){
+      var q = bank[i];
+      if(q.topic !== key) return "Frage " + i + " trägt fremdes Thema " + q.topic;
+      if(!q.prompt) return "Frage " + i + " ohne Fragetext";
+      if(!q.explain) return "Frage " + i + " ohne Erklärung";
+      if(q.kind === "input"){
+        if(!q.accept || !q.accept.length || !q.accept[0]) return "Frage " + i + " ohne Antwort";
+      } else {
+        if(!q.answer) return "Frage " + i + " ohne Antwort";
+        if(q.choices.indexOf(q.answer) === -1) return "Frage " + i + " ohne richtige Option";
+        if(q.choices.length < 2) return "Frage " + i + " mit weniger als zwei Optionen";
+      }
+    }
+    return true;
+  });
+  check("Thema " + key + ": Referenz und Lede vorhanden", function(){
+    if(typeof T.REFERENCE[key] !== "function") return "REFERENCE fehlt";
+    if(!T.TOPIC_LEDE[key]) return "TOPIC_LEDE fehlt";
+    return true;
+  });
+}
 function runChecks(W, T){
   check("Testzugang vorhanden", function(){
     return T ? true : "window.__VLKR_TEST__ fehlt";
@@ -171,6 +198,10 @@ function runChecks(W, T){
     var bank = T.bankFor("g-1848", "sonderbund");
     return bank.length >= 8 ? true : "nur " + bank.length + " Fragen";
   });
+
+  /* ---- Tasks 9–14: Inhaltsthemen ---- */
+  bankCheck(T, "g-zeitstrahl", 23);
+  bankCheck(T, "g-1848", 24);
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;

@@ -1746,6 +1746,102 @@ function buildSonderbund(){
   return out;
 }
 
+/* ---------- 1848 · Bundesstaat ---------- */
+/* Die Verfassungsreihe. `merk` ist das Kennzeichen, nach dem der Drill
+   fragt — je Verfassung genau eines, damit die Zuordnung eindeutig ist. */
+var VERFASSUNGEN = [
+  {y:1798, name:"Helvetische Verfassung",
+   merk:"Zentralistisch — kein Raum für Kantone und Gemeinden",
+   lang:"Erstes modernes Grundgesetz der Schweiz. Sie liess weder Kantonen noch Gemeinden Raum für Selbstverwaltung."},
+  {y:1803, name:"Mediationsakte",
+   merk:"Von Napoleon diktiert — stärkt den Föderalismus",
+   lang:"Ersetzt die Helvetische Verfassung. Beschränkt die zentrale Gewalt wieder weitgehend und stärkt den Föderalismus."},
+  {y:1815, name:"Bundesvertrag",
+   merk:"Am Wiener Kongress vereinbart — wieder ein reiner Staatenbund",
+   lang:"Fortschritte in der militärischen Organisation, zugleich weitere Schwächung der Zentralgewalt. Über die Grundrechte schweigt der Vertrag weitgehend."},
+  {y:1848, name:"Bundesverfassung",
+   merk:"Vom Staatenbund zum Bundesstaat",
+   lang:"Angenommen am 12. September. Erste Verfassung, die sich das Schweizer Volk selbst gab — eine demokratische Insel inmitten der Monarchien Europas."}
+];
+
+function buildVerfassungen(){
+  var namen = VERFASSUNGEN.map(function(v){ return v.name + " (" + v.y + ")"; });
+  var out = [];
+  VERFASSUNGEN.forEach(function(v, i){
+    out.push(choiceQ("g-1848", "Verfassungen",
+      "Welche Ordnung trägt dieses Kennzeichen: " + v.merk + "?", "",
+      namen.slice(), namen[i], v.name + " (" + v.y + "). " + v.lang));
+  });
+  out.push(inputQ("g-1848", "Bundesverfassung",
+    "An welchem Datum wurde die Bundesverfassung 1848 angenommen?",
+    "Tag und Monat",
+    ["12. September","12. september","12.9.","12. 9.","12.09."], "12. September",
+    "Bundesverfassung vom 12. September 1848."));
+  out.push(choiceQ("g-1848", "Staatsform",
+    "Was war die Schweiz zwischen dem Bundesvertrag von 1815 und 1848?", "",
+    ["Ein reiner Staatenbund","Ein Bundesstaat","Eine zentralistische Republik","Eine Monarchie"],
+    "Ein reiner Staatenbund",
+    "Der Bundesvertrag von 1815 schwächte die Zentralgewalt weiter — die Schweiz war wieder ein reiner Staatenbund."));
+  out.push(choiceQ("g-1848", "Staatsform",
+    "Wozu wurde die Schweiz 1848?", "",
+    ["Zum Bundesstaat","Zum Staatenbund","Zum Einheitsstaat","Zur Konföderation ohne Verfassung"],
+    "Zum Bundesstaat",
+    "Die Bundesverfassung von 1848 machte die Schweiz vom Staatenbund zum Bundesstaat."));
+  out.push(choiceQ("g-1848", "Bundesverfassung",
+    "Warum gilt die Bundesverfassung von 1848 als «demokratische Insel»?", "",
+    ["Sie stand inmitten der Monarchien Europas",
+     "Sie war die erste Verfassung Europas",
+     "Sie galt nur für einen einzigen Kanton",
+     "Sie wurde von einer fremden Macht diktiert"],
+    "Sie stand inmitten der Monarchien Europas",
+    "Erste Verfassung, die sich das Schweizer Volk selbst gab — eine demokratische Insel inmitten der Monarchien Europas."));
+  return out;
+}
+
+function buildSonderbundskrieg(){
+  var out = [];
+  out.push(choiceQ("g-1848", "Sonderbundskrieg",
+    "In welchem Monat 1847 fand der Sonderbundskrieg statt?", "",
+    ["November","März","Juli","September"], "November",
+    "Bürgerkrieg vom 3. bis 29. November 1847."));
+  out.push(inputQ("g-1848", "Sonderbundskrieg",
+    "Der Sonderbundskrieg dauerte vom 3. bis zum wievielten November?",
+    "Nur die Zahl",
+    ["29","29."], "29",
+    "Vom 3. bis 29. November 1847."));
+  out.push(choiceQ("g-1848", "Sonderbundskrieg",
+    "Welche Bedeutung hat der Sonderbundskrieg bis heute?", "",
+    ["Die letzte militärische Auseinandersetzung auf Schweizer Boden",
+     "Der erste Krieg der Eidgenossenschaft",
+     "Der längste Krieg Europas",
+     "Der erste Krieg mit fremder Beteiligung"],
+    "Die letzte militärische Auseinandersetzung auf Schweizer Boden",
+    "Der Sonderbundskrieg von 1847 war die letzte militärische Auseinandersetzung auf Schweizer Boden."));
+  out.push(choiceQ("g-1848", "Sonderbundskrieg",
+    "Welches Lager schloss sich zum Sonderbund zusammen?", "",
+    ["Das katholisch-konservative Lager","Das liberal-reformierte Lager"],
+    "Das katholisch-konservative Lager",
+    "Der Sonderbund war das Bündnis der katholisch-konservativen Kantone; ihm gegenüber stand das liberal-reformierte Lager."));
+  out.push(inputQ("g-1848", "Sonderbundskrieg",
+    "Wie viele Kantone gehörten zum Sonderbund?",
+    "Nur die Zahl",
+    ["8","acht"], "8",
+    "Luzern, Schwyz, Uri, Zug, Obwalden, Nidwalden, Freiburg und Wallis."));
+  out.push(choiceQ("g-1848", "Bundesstaat",
+    "Worauf zielten Liberale und Radikale seit den 1830er Jahren?", "",
+    ["Auf einen zentralen Bundesstaat","Auf einen lockeren Staatenbund",
+     "Auf die Rückkehr zur Mediationsakte","Auf den Anschluss an Frankreich"],
+    "Auf einen zentralen Bundesstaat",
+    "Seit Anfang der 1830er Jahre zielen Liberale und Radikale auf die Schaffung eines zentralen Bundesstaats."));
+  out.push(choiceQ("g-1848", "Aussöhnung",
+    "Mit welcher Revision begann die Aussöhnung mit den Katholisch-Konservativen?", "",
+    ["Der Totalrevision von 1874","Der Bundesverfassung von 1848",
+     "Der Einführung der Volksinitiative 1891","Der Zauberformel von 1959"],
+    "Der Totalrevision von 1874",
+    "Erst die Totalrevision von 1874 leitete die Aussöhnung mit den Katholisch-Konservativen ein."));
+  return out;
+}
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
@@ -1758,7 +1854,9 @@ var GE_TOPICS = [
   {key:"g-1848", num:"02", label:"1848 &middot; Bundesstaat", short:"1848 · Bundesstaat",
    sub:"Verfassungen 1798–1848, Sonderbundskrieg",
    sets:[
-     {key:"sonderbund", label:"Sonderbund-Kantone", build:buildSonderbund}
+     {key:"verfassungen", label:"Verfassungsreihe",   build:buildVerfassungen},
+     {key:"krieg",        label:"Sonderbundskrieg",   build:buildSonderbundskrieg},
+     {key:"sonderbund",   label:"Sonderbund-Kantone", build:buildSonderbund}
    ]},
   {key:"g-demokratie", num:"03", label:"Demokratie &amp; Konkordanz", short:"Demokratie & Konkordanz",
    sub:"1874, 1891 und der Weg zur Zauberformel", sets:[]},
@@ -2340,7 +2438,8 @@ var TOPIC_LEDE = {
   place: "Die meisten Adjektive stehen hinter dem Nomen. 13 stehen davor — und einige ändern ihre Bedeutung je nach Stellung.",
   comp: "Comparatif und superlatif: vergleichen, steigern und die unregelmässigen Formen von bon und mauvais.",
   etre: "Wer bildet das Passé composé mit être? Und wann braucht die Inversionsfrage ein -t-?",
-  "g-zeitstrahl": "Alle 26 Ereignisse deines Dossiers in der richtigen Reihenfolge. Wer die Reihenfolge kann, kann auch die Jahreszahlen."
+  "g-zeitstrahl": "Alle 26 Ereignisse deines Dossiers in der richtigen Reihenfolge. Wer die Reihenfolge kann, kann auch die Jahreszahlen.",
+  "g-1848": "Vier Verfassungen in fünfzig Jahren, ein Bürgerkrieg im November 1847 — und am Ende der Schritt vom Staatenbund zum Bundesstaat."
 };
 function renderTopicDrill(body, key){
   var t = topicByKey(key);
@@ -2854,6 +2953,42 @@ REFERENCE["g-zeitstrahl"] = function(body){
   body.innerHTML = html;
 };
 
+REFERENCE["g-1848"] = function(body){
+  var html = '<div class="section-title">Die Verfassungsreihe 1798 → 1848</div>';
+  html += '<p class="section-lede">Vier Ordnungen in fünfzig Jahren. Das Pendel schlägt von der Zentralisierung '
+       + 'zum Föderalismus und zurück — bis 1848 der Ausgleich gefunden ist.</p>';
+  html += '<div class="tablewrap"><table><tr><th>Jahr</th><th>Ordnung</th><th>Kennzeichen</th></tr>';
+  VERFASSUNGEN.forEach(function(v){
+    html += '<tr><td class="mono">'+v.y+'</td><td class="sans"><b>'+v.name+'</b></td><td class="sans">'+v.merk+'</td></tr>';
+  });
+  html += '</table></div>';
+  VERFASSUNGEN.forEach(function(v){
+    html += '<div class="card"><h4>'+v.y+' · '+v.name+'</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'+v.lang+'</p></div>';
+  });
+
+  html += '<div class="section-title">Staatenbund oder Bundesstaat?</div>';
+  html += '<div class="grid grid-2">'
+    + '<div class="card"><h4>Staatenbund</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
+    + 'Ein Bündnis eigenständiger Kantone mit schwacher Zentralgewalt. Das war die Schweiz unter dem Bundesvertrag von 1815.</p></div>'
+    + '<div class="card"><h4>Bundesstaat</h4><p style="margin:0;font-size:13.5px;color:var(--ink-soft)">'
+    + 'Ein Staat mit eigener Verfassung über den Kantonen. Dazu wurde die Schweiz 1848.</p></div>'
+    + '</div>';
+
+  html += '<div class="section-title">Der Sonderbundskrieg 1847</div>';
+  html += '<div class="tablewrap"><table>'
+    + '<tr><th>Lager</th><th>Wer</th></tr>'
+    + '<tr><td class="sans">Sonderbund</td><td class="sans">Die acht katholisch-konservativen Kantone: '
+    + SONDERBUND.join(", ") + '</td></tr>'
+    + '<tr><td class="sans">Gegenseite</td><td class="sans">Das liberal-reformierte Lager, das auf einen zentralen Bundesstaat zielte</td></tr>'
+    + '<tr><td class="sans">Dauer</td><td class="sans">3. bis 29. November 1847</td></tr>'
+    + '<tr><td class="sans">Bedeutung</td><td class="sans">Letzte militärische Auseinandersetzung auf Schweizer Boden</td></tr>'
+    + '</table></div>';
+  html += '<div class="callout tip"><b>Der rote Faden:</b> Seit Anfang der 1830er Jahre zielen Liberale und Radikale '
+       + 'auf einen zentralen Bundesstaat. 1847 entscheidet der Krieg die Frage, 1848 wird sie in eine Verfassung gegossen — '
+       + 'und die Aussöhnung mit den Unterlegenen beginnt erst mit der Totalrevision von 1874.</div>';
+  body.innerHTML = html;
+};
+
 /* ================================================================
    THEME + INIT
    ================================================================ */
@@ -2888,7 +3023,9 @@ window.__VLKR_TEST__ = {
   buildPool: buildPool,
   makeFeeder: makeFeeder,
   parseHash: parseHash,
-  subjectProgress: subjectProgress
+  subjectProgress: subjectProgress,
+  REFERENCE: REFERENCE,
+  TOPIC_LEDE: TOPIC_LEDE
 };
 
 })();
