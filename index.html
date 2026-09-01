@@ -1680,6 +1680,72 @@ function buildTimelineOrder(){
   return out;
 }
 
+/* ---------- Zahlen-Drill ---------- */
+/* Alle Werte wörtlich aus dem Dossier. `alt` fängt nur Schreibweisen ab,
+   nicht andere Zahlen. */
+var ZAHLEN = [
+  {f:"Wie viele Unterschriften braucht eine Volksinitiative?", a:"100'000", alt:["100000","100 000"],
+   e:"100'000 Stimmberechtigte innert 18 Monaten."},
+  {f:"Wie lange ist die Sammelfrist einer Volksinitiative?", a:"18 Monate", alt:["18"],
+   e:"18 Monate ab der Vorprüfung."},
+  {f:"Wie viele Unterschriften braucht das fakultative Referendum?", a:"50'000", alt:["50000","50 000"],
+   e:"50'000 Stimmberechtigte — oder 8 Kantone."},
+  {f:"Wie viele Kantone können ersatzweise ein fakultatives Referendum verlangen?", a:"8", alt:["acht"],
+   e:"8 Kantone anstelle von 50'000 Unterschriften."},
+  {f:"Wie lange ist die Frist beim fakultativen Referendum?", a:"100 Tage", alt:["100"],
+   e:"100 Tage ab Veröffentlichung des Gesetzes."},
+  {f:"Wie viele Mitglieder hat ein Initiativkomitee mindestens?", a:"7", alt:["sieben"],
+   e:"Mindestens 7, höchstens 27 stimmberechtigte Schweizer Bürgerinnen und Bürger."},
+  {f:"Wie viele Mitglieder darf ein Initiativkomitee höchstens haben?", a:"27",
+   e:"Mindestens 7, höchstens 27 stimmberechtigte Schweizer Bürgerinnen und Bürger."},
+  {f:"Wie viele Kantonsstimmen braucht das Ständemehr mindestens?", a:"12", alt:["zwölf"],
+   e:"Mindestens 12 der 23 Kantonsstimmen."},
+  {f:"Wie viele Kantonsstimmen gibt es insgesamt?", a:"23",
+   e:"23 Kantonsstimmen; für das Ständemehr braucht es mindestens 12."},
+  {f:"Wie viele Sitze hat der Nationalrat?", a:"200",
+   e:"Nationalrat 200 Sitze, Ständerat 46 Sitze."},
+  {f:"Wie viele Sitze hat der Ständerat?", a:"46",
+   e:"Nationalrat 200 Sitze, Ständerat 46 Sitze."},
+  {f:"Aus wie vielen Mitgliedern besteht der Bundesrat?", a:"7", alt:["sieben"],
+   e:"7 gleichberechtigte Mitglieder."},
+  {f:"Wie lautet die Zauberformel von 1959?", a:"2:2:2:1", alt:["2 2 2 1","2-2-2-1"],
+   e:"Seit 1959 der Verteilschlüssel im Bundesrat."},
+  {f:"Wie viele Achsen hat die smartspider?", a:"8", alt:["acht"],
+   e:"8 Speichen, je auf einer Skala von 0 bis 100."},
+  {f:"Wie viele Todesopfer forderte die Spanische Grippe?", a:"24'400", alt:["24400","24 400"],
+   e:"Über 24'400 Todesopfer 1918/19."},
+  {f:"Wie viel Prozent Nein-Stimmen bekam die Totalrevisions-Initiative 1935 mindestens?", a:"70 %",
+   alt:["70","70%","über 70 %","über 70%","ueber 70 %"],
+   e:"Über 70 % Nein-Stimmen."}
+];
+function buildZahlen(){
+  return ZAHLEN.map(function(z){
+    return inputQ("g-volksrechte", "Zahl", z.f, "",
+      [z.a].concat(z.alt || []), z.a, z.e);
+  });
+}
+
+/* ---------- Sonderbund-Kantone ---------- */
+/* NICHT_SONDERBUND ist keine Faktenbehauptung des Dossiers, sondern die
+   Gegenprobe: Das Dossier nennt die acht Kantone abschliessend. */
+var SONDERBUND = ["Luzern","Schwyz","Uri","Zug","Obwalden","Nidwalden","Freiburg","Wallis"];
+var NICHT_SONDERBUND = ["Bern","Zürich","Aargau","Thurgau","Genf","Waadt","Basel-Stadt","Solothurn"];
+function buildSonderbund(){
+  var out = [];
+  var erklaerung = "Der Sonderbund bestand aus Luzern, Schwyz, Uri, Zug, Obwalden, Nidwalden, Freiburg und Wallis.";
+  SONDERBUND.forEach(function(k){
+    out.push(choiceQ("g-1848", "Sonderbund",
+      "Gehörte " + k + " zum Sonderbund?", "",
+      ["Ja","Nein"], "Ja", erklaerung));
+  });
+  NICHT_SONDERBUND.forEach(function(k){
+    out.push(choiceQ("g-1848", "Sonderbund",
+      "Gehörte " + k + " zum Sonderbund?", "",
+      ["Ja","Nein"], "Nein", erklaerung));
+  });
+  return out;
+}
+
 /* ---------- Geschichte & Staatskunde Schweiz ---------- */
 var GE_TOPICS = [
   {key:"g-zeitstrahl", num:"01", label:"Zeitstrahl", short:"Zeitstrahl",
@@ -1690,11 +1756,17 @@ var GE_TOPICS = [
      {key:"order", label:"Was kam zuerst?",   build:buildTimelineOrder}
    ]},
   {key:"g-1848", num:"02", label:"1848 &middot; Bundesstaat", short:"1848 · Bundesstaat",
-   sub:"Verfassungen 1798–1848, Sonderbundskrieg", sets:[]},
+   sub:"Verfassungen 1798–1848, Sonderbundskrieg",
+   sets:[
+     {key:"sonderbund", label:"Sonderbund-Kantone", build:buildSonderbund}
+   ]},
   {key:"g-demokratie", num:"03", label:"Demokratie &amp; Konkordanz", short:"Demokratie & Konkordanz",
    sub:"1874, 1891 und der Weg zur Zauberformel", sets:[]},
   {key:"g-volksrechte", num:"04", label:"Volksrechte", short:"Volksrechte",
-   sub:"Initiative, fakultatives und obligatorisches Referendum", sets:[]},
+   sub:"Initiative, fakultatives und obligatorisches Referendum",
+   sets:[
+     {key:"zahlen", label:"Zahlen &amp; Fristen", build:buildZahlen}
+   ]},
   {key:"g-initiative", num:"05", label:"Volksinitiative", short:"Volksinitiative",
    sub:"Der Ablauf in fünf Schritten", sets:[]},
   {key:"g-weltkrieg", num:"06", label:"Weltkrieg &amp; Zwischenkriegszeit", short:"Weltkrieg & Zwischenkriegszeit",

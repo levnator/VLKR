@@ -158,6 +158,19 @@ function runChecks(W, T){
     var bank = T.bankFor("g-zeitstrahl", "order");
     return bank.length > 0 ? true : "Bank ist leer";
   });
+
+  /* ---- Task 8: Zahlen und Sonderbund ---- */
+  check("Zahlen-Bank enthält die Kernquoren", function(){
+    var bank = T.bankFor("g-volksrechte", "zahlen");
+    var joined = bank.map(function(q){ return q.display; }).join("|");
+    var need = ["100'000", "18 Monate", "50'000", "100 Tage"];
+    var missing = need.filter(function(v){ return joined.indexOf(v) === -1; });
+    return missing.length === 0 ? true : "fehlt: " + missing.join(", ");
+  });
+  check("Acht Sonderbund-Kantone", function(){
+    var bank = T.bankFor("g-1848", "sonderbund");
+    return bank.length >= 8 ? true : "nur " + bank.length + " Fragen";
+  });
 }
 document.getElementById("app").addEventListener("load", function(){
   var W = this.contentWindow;
