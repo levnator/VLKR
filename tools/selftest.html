@@ -58,13 +58,64 @@ function runChecks(W, T){
     return k === "verbs,gender,adj,place,comp,etre" ? true : "ist " + k;
   });
 
-  /* ---- Task 2: SUBJECTS-Register ---- */
-  check("Zwei Fächer registriert", function(){
-    return T.SUBJECTS.length === 2 ? true : "erwartet 2, ist " + T.SUBJECTS.length;
+  /* ---- Verbliste 24–33 ---- */
+  check("26 Verben in der Bibel", function(){
+    return Object.keys(T.VERBS).length === 26 ? true : "ist " + Object.keys(T.VERBS).length;
   });
-  check("Fach-Schlüssel sind fr und ge", function(){
+  check("Die zehn neuen Verben sind da", function(){
+    var neu = ["dormir","mentir","servir","venir","tenir","cueillir","offrir","mourir","conquerir","bouillir"];
+    var fehlt = neu.filter(function(k){ return !T.VERBS[k]; });
+    return fehlt.length === 0 ? true : "fehlt: " + fehlt.join(", ");
+  });
+  check("Jedes Verb hat 6 Zeiten à 6 Personen", function(){
+    var tk = ["pr","im","pc","pq","fu","co"], bad = [];
+    Object.keys(T.VERBS).forEach(function(k){
+      var f = T.VERBS[k].forms;
+      tk.forEach(function(t){
+        if(!f[t] || f[t].length !== 6) bad.push(k + "." + t);
+        else f[t].forEach(function(cell, i){
+          var arr = Array.isArray(cell) ? cell : [cell];
+          if(!arr.length || arr.some(function(x){ return !x || !String(x).trim(); })) bad.push(k+"."+t+"["+i+"]");
+        });
+      });
+    });
+    return bad.length === 0 ? true : "unvollständig: " + bad.slice(0,5).join(", ");
+  });
+  check("Jedes Verb steht in genau einer Gruppe", function(){
+    var seen = {}, doppelt = [], fehlt = [];
+    T.VERB_GROUPS.forEach(function(g){
+      g.verbs.forEach(function(v){
+        if(!T.VERBS[v]) fehlt.push(v);
+        if(seen[v]) doppelt.push(v);
+        seen[v] = 1;
+      });
+    });
+    var ohne = Object.keys(T.VERBS).filter(function(k){ return !seen[k]; });
+    if(fehlt.length) return "Gruppe nennt unbekanntes Verb: " + fehlt.join(", ");
+    if(doppelt.length) return "doppelt gruppiert: " + doppelt.join(", ");
+    return ohne.length === 0 ? true : "ohne Gruppe: " + ohne.join(", ");
+  });
+  /* venir und mourir bilden das Passé composé mit être — sie stehen in
+     ETRE_PAIRS und müssen es auch in der Konjugation tun. */
+  check("venir und mourir konjugieren mit être", function(){
+    var bad = ["venir","mourir"].filter(function(k){
+      var c = T.VERBS[k].forms.pc[0];
+      return String(Array.isArray(c) ? c[0] : c).indexOf("suis ") !== 0;
+    });
+    return bad.length === 0 ? true : "mit avoir gebildet: " + bad.join(", ");
+  });
+  check("tenir konjugiert mit avoir", function(){
+    var c = T.VERBS.tenir.forms.pc[0];
+    return String(Array.isArray(c) ? c[0] : c).indexOf("ai ") === 0 ? true : "ist " + c;
+  });
+
+  /* ---- Task 2: SUBJECTS-Register ---- */
+  check("Drei Fächer registriert", function(){
+    return T.SUBJECTS.length === 3 ? true : "erwartet 3, ist " + T.SUBJECTS.length;
+  });
+  check("Fach-Schlüssel sind fr, ge und pkm", function(){
     var k = T.SUBJECTS.map(function(s){ return s.key; }).join(",");
-    return k === "fr,ge" ? true : "ist " + k;
+    return k === "fr,ge,pkm" ? true : "ist " + k;
   });
   check("Geschichte hat 7 Themen", function(){
     var t = T.topicsOf("ge");
@@ -232,6 +283,112 @@ function runChecks(W, T){
   });
 }
 
+/* Das Pokémon-Modul hängt am Netz. Statt wirklich zu laden, wird pkmFetch
+   durch Fixtures ersetzt — so lassen sich Bänke und Bildpfade prüfen,
+   ohne von einer fremden API abzuhängen. */
+function pkmFixture(){
+  function card(i, name, preis){
+    return {id:"me05-"+i, localId:String(i), name:name,
+            image:"https://assets.tcgdex.net/en/me/me05/"+i,
+            pricing:{cardmarket:{unit:"EUR", trend:preis, avg:preis, low:preis/2}}};
+  }
+  var namen = ["Mega Darkrai ex","Mega Zeraora ex","Mega Chandelure ex","Mega Excadrill ex",
+               "Mega Delphox ex","Mega Slowbro ex","Zorua","Sableye","Houndour","Murkrow"];
+  var karten = namen.map(function(n, i){ return card(i+1, n, (i+1) * 3.5); });
+  var byId = {};
+  karten.forEach(function(c){ byId[c.id] = c; });
+  return function(url){
+    if(/\/sets$/.test(url)){
+      return Promise.resolve([
+        {id:"me05", name:"Pitch Black", cardCount:{total:120}},
+        {id:"me05tg", name:"Pitch Black Trainer Gallery", cardCount:{total:12}},
+        {id:"me03", name:"Ascended Heroes", cardCount:{total:295}}
+      ]);
+    }
+    var m = url.match(/\/sets\/([^/?]+)$/);
+    if(m) return Promise.resolve({id:m[1], name:m[1]==="me03"?"Ascended Heroes":"Pitch Black", cards:karten});
+    var c = url.match(/\/cards\/([^/?]+)$/);
+    if(c && byId[c[1]]) return Promise.resolve(byId[c[1]]);
+    return Promise.reject(new Error("Fixture kennt " + url + " nicht"));
+  };
+}
+
+function runPkmChecks(T, done){
+  check("Pokémon ist als drittes Fach registriert", function(){
+    var s = T.SUBJECTS[2];
+    return (s && s.key === "pkm" && s.topics.length === 2)
+      ? true : "ist " + (s ? s.key + "/" + s.topics.length : "nichts");
+  });
+  check("Pokémon-Themenschlüssel tragen das Präfix p-", function(){
+    var bad = T.topicsOf("pkm").filter(function(t){ return t.key.indexOf("p-") !== 0; });
+    return bad.length === 0 ? true : bad.map(function(t){return t.key;}).join(",");
+  });
+  check("Zwei Sets zur Wahl: Ascended Heroes und Pitch Black", function(){
+    var k = T.PKM_SETS.map(function(s){ return s.label; }).join(" / ");
+    return k === "Ascended Heroes / Pitch Black" ? true : "ist " + k;
+  });
+  /* Ein Name kann auf mehrere Einträge passen — die Hauptedition hat die
+     meisten Karten und muss gewinnen. */
+  check("Set-Erkennung wählt die Hauptedition, nicht die Unterserie", function(){
+    var liste = [{id:"me05tg", name:"Pitch Black Trainer Gallery", cardCount:{total:12}},
+                 {id:"me05", name:"Pitch Black", cardCount:{total:120}}];
+    var hit = T.pkmPickSet(liste, T.PKM_SETS[1]);
+    return (hit && hit.id === "me05") ? true : "gewählt: " + (hit ? hit.id : "nichts");
+  });
+  check("Bild-URL bekommt Qualität und Endung", function(){
+    var u = T.pkmImg({img:"https://assets.tcgdex.net/en/me/me05/7"}, "high");
+    return u === "https://assets.tcgdex.net/en/me/me05/7/high.webp" ? true : "ist " + u;
+  });
+  check("Preise werden als Euro mit Komma gesetzt", function(){
+    return T.pkmEuro(218.5) === "218,50 €" ? true : "ist " + T.pkmEuro(218.5);
+  });
+
+  T.pkmReset();
+  T.setPkmFetch(pkmFixture());
+  T.pkmPreparePrices().then(function(){
+    check("Artwork-Bank ist gefüllt und spoilerfrei", function(){
+      var bank = T.bankFor("p-artwork", "all");
+      if(bank.length < 10) return "nur " + bank.length + " Fragen";
+      for(var i=0;i<bank.length;i++){
+        var q = bank[i];
+        if(q.choices.length !== 4) return "Frage " + i + " hat " + q.choices.length + " Optionen";
+        if(q.choices.indexOf(q.answer) === -1) return "Frage " + i + " ohne richtige Option";
+        var u = {}; q.choices.forEach(function(c){ u[c] = 1; });
+        if(Object.keys(u).length !== 4) return "Frage " + i + " hat doppelte Optionen";
+        /* Der Kartenname darf nicht im Fragetext stehen. */
+        if(q.prompt.indexOf(q.answer) !== -1) return "Frage " + i + " verrät die Antwort im Prompt";
+        if(q.prompt.indexOf("pk-art") === -1) return "Frage " + i + " zeigt keinen Bildausschnitt";
+      }
+      return true;
+    });
+    check("Preis-Bank nutzt nur echte Preise als Distraktoren", function(){
+      var bank = T.bankFor("p-preis", "all");
+      if(bank.length < 4) return "nur " + bank.length + " Fragen";
+      var echt = {};
+      for(var i=1;i<=10;i++) echt[T.pkmEuro(i*3.5)] = 1;
+      for(var j=0;j<bank.length;j++){
+        var q = bank[j];
+        if(q.choices.indexOf(q.answer) === -1) return "Frage " + j + " ohne richtige Option";
+        var fremd = q.choices.filter(function(c){ return !echt[c]; });
+        if(fremd.length) return "erfundener Preis: " + fremd.join(", ");
+        var u = {}; q.choices.forEach(function(c){ u[c] = 1; });
+        if(Object.keys(u).length !== q.choices.length) return "Frage " + j + " hat doppelte Preise";
+      }
+      return true;
+    });
+    check("Prüfung Pokémon zieht keine Fragen aus anderen Fächern", function(){
+      var pool = T.buildPool({subject:"pkm", topic:"all", set:"all", verbCfg:{}}, 20);
+      if(!pool.length) return "Pool ist leer";
+      var bad = pool.filter(function(q){ return q.topic.indexOf("p-") !== 0; });
+      return bad.length === 0 ? true : bad.length + " Fremdfragen, erste: " + bad[0].topic;
+    });
+    done();
+  })["catch"](function(e){
+    check("Pokémon-Daten laden mit Fixtures", function(){ return "Fehler: " + e.message; });
+    done();
+  });
+}
+
 /* Jede Seite beider Fächer einmal öffnen: Überlauf messen und jeden
    Skriptfehler im Iframe einsammeln. */
 function runRouteChecks(W, T, done){
@@ -267,9 +424,11 @@ document.getElementById("app").addEventListener("load", function(){
   setTimeout(function(){
     var T = W.__VLKR_TEST__;
     runChecks(W, T);
-    runRouteChecks(W, T, function(){
-      results.push(fails ? ("\n" + fails + " FEHLER") : "\nALL PASS");
-      document.getElementById("results").textContent = results.join("\n");
+    runPkmChecks(T, function(){
+      runRouteChecks(W, T, function(){
+        results.push(fails ? ("\n" + fails + " FEHLER") : "\nALL PASS");
+        document.getElementById("results").textContent = results.join("\n");
+      });
     });
   }, 500);
 });
