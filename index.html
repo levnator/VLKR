@@ -513,7 +513,8 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
    beiden Themen gleich aussieht, sitzt es auf einer hellen Fläche wie ein
    eingeklebtes Exlibris — nicht auf dem Papier der App. */
 .brand-mark.has-logo, .sc-mark.has-logo{background:#FDFAEF; padding:0; overflow:hidden;}
-.brand-mark.has-logo img, .sc-mark.has-logo img{
+.brand-mark.has-logo img, .sc-mark.has-logo img,
+.brand-mark.has-logo svg, .sc-mark.has-logo svg{
   width:100%; height:100%; display:block; object-fit:contain; border-radius:inherit;
 }
 
@@ -2941,12 +2942,32 @@ function currentSection(){
   for(var i=0;i<s.sections.length;i++){ if(s.sections[i].key === p.section) return p.section; }
   return "home";
 }
-/* Fächer mit eigenem Signet zeigen das Bild statt des Buchstabens. */
+/* Signets der Fächer. Das Cahier bringt eine fertige Grafik mit; die
+   beiden anderen sind gezeichnet — gleiche Sprache: cremefarbener Grund,
+   oranger Ring, marineblaue Form. */
+var MARK_NAVY = "#28508C", MARK_ORANGE = "#EE8B3C", MARK_CREAM = "#FCFAED";
+var SUBJECT_ICON = {
+  /* Schild mit Schweizerkreuz. */
+  ge: '<svg viewBox="0 0 48 48" aria-hidden="true">'
+    + '<circle cx="24" cy="24" r="19.5" fill="none" stroke="'+MARK_ORANGE+'" stroke-width="3"/>'
+    + '<path d="M24 8.6l12 3.8v10.8c0 7.6-5.2 12.7-12 15.1-6.8-2.4-12-7.5-12-15.1V12.4z" fill="'+MARK_NAVY+'"/>'
+    + '<path d="M21.4 15.6h5.2v5.4H32v5.2h-5.4v5.4h-5.2v-5.4H16v-5.2h5.4z" fill="'+MARK_CREAM+'"/>'
+    + '</svg>',
+  /* Zwei Karten, die hintere angeschrägt. */
+  pkm: '<svg viewBox="0 0 48 48" aria-hidden="true">'
+    + '<circle cx="24" cy="24" r="19.5" fill="none" stroke="'+MARK_ORANGE+'" stroke-width="3"/>'
+    + '<rect x="10.5" y="14.5" width="14" height="19.5" rx="2.5" fill="'+MARK_NAVY+'" opacity=".55"'
+    +   ' transform="rotate(-18 17.5 24)"/>'
+    + '<rect x="21" y="13.5" width="15.5" height="21" rx="2.6" fill="'+MARK_NAVY+'"'
+    +   ' stroke="'+MARK_CREAM+'" stroke-width="2"/>'
+    + '<circle cx="28.7" cy="24" r="4.1" fill="'+MARK_ORANGE+'"/>'
+    + '</svg>'
+};
 function markHtml(subjectKey, fallback, alt){
-  return subjectKey === "fr"
-    ? '<img src="' + LOGO_MARK + '" alt="' + alt + '">'
-    : fallback;
+  if(subjectKey === "fr") return '<img src="' + LOGO_MARK + '" alt="' + alt + '">';
+  return SUBJECT_ICON[subjectKey] || fallback;
 }
+function hasMark(subjectKey){ return subjectKey === "fr" || !!SUBJECT_ICON[subjectKey]; }
 
 /* Die Schublade trägt das Zeichen des aktiven Fachs; ohne Fach das der App. */
 function renderBrand(){
@@ -2959,7 +2980,7 @@ function renderBrand(){
     title.innerHTML = '<b>VLKR</b><br>Deine Fächer';
     return;
   }
-  mark.className = "brand-mark" + (sub.key === "fr" ? " has-logo" : "");
+  mark.className = "brand-mark" + (hasMark(sub.key) ? " has-logo" : "");
   mark.innerHTML = markHtml(sub.key, sub.mark, "Cahier de Grammaire");
   title.innerHTML = '<b>' + sub.title.split(" ")[0] + '</b><br>'
     + (sub.key === "fr" ? "de Grammaire" : sub.sub);
@@ -3096,7 +3117,7 @@ function renderSubjectPicker(el){
       ? (p.total + " Themen · noch nicht geübt")
       : (p.total + " Themen · " + p.done + " geübt · " + p.acc + "%");
     html += '<button class="subject-card" data-subject="' + s.key + '">'
-      + '<span class="sc-mark' + (s.key === "fr" ? ' has-logo' : '') + '">'
+      + '<span class="sc-mark' + (hasMark(s.key) ? ' has-logo' : '') + '">'
       + markHtml(s.key, s.mark, s.title) + '</span>'
       + '<span class="sc-body"><span class="sc-title">' + s.title + '</span>'
       + '<span class="sc-sub">' + s.sub + '</span>'
