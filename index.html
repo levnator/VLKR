@@ -2679,8 +2679,9 @@ var GE_SECTIONS = [{key:"home", label:"Start"}]
    pricing.cardmarket, täglich aktualisiert) — nur ohne diese Hürden.
    ================================================================ */
 
-var PKM_API = "https://api.tcgdex.net/v2/en";
-var PKM_CACHE_KEY = "vlkr_pkm_v1";
+var PKM_TCGDEX = "https://api.tcgdex.net/v2/en";
+var PKM_PTCG = "https://api.pokemontcg.io/v2";
+var PKM_CACHE_KEY = "vlkr_pkm_v2";
 var PKM_SET_TTL = 30*24*3600*1000;   /* Kartenlisten ändern sich nicht mehr */
 var PKM_PRICE_TTL = 12*3600*1000;    /* Preise schon — TCGdex zieht täglich nach */
 var PKM_SAMPLE = 30;                 /* so viele Karten bekommen einen Preis */
@@ -2730,15 +2731,67 @@ function pkmActiveSets(){
 
 /* Mehrere Einträge können auf denselben Namen passen (Unterserien,
    Trainer-Galerien). Die Edition mit den meisten Karten ist die richtige. */
+function pkmSetSize(s){
+  if(!s) return 0;
+  if(s.cardCount) return s.cardCount.total || s.cardCount.official || s.cardCount || 0;
+  return s.total || s.printedTotal || 0;
+}
 function pkmPickSet(list, cfg){
   var best = null;
   (list || []).forEach(function(s){
     if(!cfg.match.test(String(s.name || ""))) return;
-    var n = (s.cardCount && s.cardCount.total) || s.cardCount || 0;
-    var bn = best ? ((best.cardCount && best.cardCount.total) || best.cardCount || 0) : -1;
-    if(n > bn) best = s;
+    if(pkmSetSize(s) > pkmSetSize(best)) best = s;
   });
   return best;
+}
+
+/* Zwei Quellen, weil eine einzelne ausfallen kann — genau das ist beim
+   ersten Anlauf passiert. Sie werden der Reihe nach probiert; die erste,
+   die antwortet, gewinnt.
+   TCGdex liefert Karten ohne Preis (die kommen einzeln nach), die
+   Pokémon-TCG-API liefert Karten und Cardmarket-Preis in einem Zug. */
+var PKM_SOURCES = [
+  {key:"tcgdex", name:"TCGdex", loadSet:function(cfg){
+    return pkmFetch(PKM_TCGDEX + "/sets").then(function(list){
+      var hit = pkmPickSet(list, cfg);
+      if(!hit) throw new Error("Set nicht gelistet");
+      return pkmFetch(PKM_TCGDEX + "/sets/" + hit.id);
+    }).then(function(set){
+      return {
+        name: set.name,
+        cards: (set.cards || []).filter(function(c){ return c && c.image && c.name; })
+          .map(function(c){ return {id:c.id, n:c.name, lid:c.localId, img:c.image, eur:null}; })
+      };
+    });
+  }},
+  {key:"ptcg", name:"Pokémon-TCG-API", loadSet:function(cfg){
+    return pkmFetch(PKM_PTCG + "/sets?q=" + encodeURIComponent('name:"' + cfg.label + '"'))
+      .then(function(r){
+        var hit = pkmPickSet((r && r.data) || [], cfg);
+        if(!hit) throw new Error("Set nicht gelistet");
+        return pkmFetch(PKM_PTCG + "/cards?pageSize=250&q=" + encodeURIComponent("set.id:" + hit.id))
+          .then(function(cr){ return {set:hit, rows:(cr && cr.data) || []}; });
+      }).then(function(o){
+        return {
+          name: o.set.name,
+          cards: o.rows.filter(function(c){ return c && c.images && c.images.large && c.name; })
+            .map(function(c){
+              var pr = c.cardmarket && c.cardmarket.prices;
+              var v = pr ? (pr.trendPrice != null ? pr.trendPrice : pr.averageSellPrice) : null;
+              return {id:c.id, n:c.name, lid:c.number,
+                      imgHi:c.images.large, imgLo:c.images.small,
+                      eur:(typeof v === "number" && v > 0) ? v : null};
+            })
+        };
+      });
+  }}
+];
+
+/* «Failed to fetch» sagt niemandem etwas — es heisst immer: gar nicht
+   erst angekommen, also CORS, TLS oder kein Netz. */
+function pkmReason(e){
+  var m = String(e && e.message ? e.message : e);
+  return /failed to fetch|networkerror|load failed/i.test(m) ? "nicht erreichbar" : m;
 }
 
 function pkmLoadSet(cfg){
@@ -2746,22 +2799,32 @@ function pkmLoadSet(cfg){
   var cached = pkmCacheGet("set:" + cfg.key, PKM_SET_TTL);
   if(cached){ PKM_DATA[cfg.key] = cached; return Promise.resolve(cached); }
 
-  return pkmFetch(PKM_API + "/sets").then(function(list){
-    var hit = pkmPickSet(list, cfg);
-    if(!hit) throw new Error("Edition «" + cfg.label + "» ist bei TCGdex (noch) nicht gelistet.");
-    return pkmFetch(PKM_API + "/sets/" + hit.id);
-  }).then(function(set){
-    var cards = (set.cards || []).filter(function(c){ return c && c.image && c.name; })
-      .map(function(c){ return {id:c.id, n:c.name, img:c.image, lid:c.localId}; });
-    if(!cards.length) throw new Error("Edition «" + cfg.label + "» hat keine Karten mit Bild.");
-    var out = {key:cfg.key, label:cfg.label, id:set.id, name:set.name, cards:cards};
-    PKM_DATA[cfg.key] = out;
-    pkmCachePut("set:" + cfg.key, out);
-    return out;
-  });
+  var fehler = [];
+  function versuche(i){
+    if(i >= PKM_SOURCES.length){
+      throw new Error("«" + cfg.label + "» war bei keiner Quelle zu holen — " + fehler.join(", ") + ".");
+    }
+    var src = PKM_SOURCES[i];
+    return src.loadSet(cfg).then(function(r){
+      if(!r.cards.length) throw new Error("keine Karten mit Bild");
+      r.cards.forEach(function(c){ c.src = src.key; });
+      var out = {key:cfg.key, label:cfg.label, name:r.name, src:src.key, cards:r.cards};
+      PKM_DATA[cfg.key] = out;
+      pkmCachePut("set:" + cfg.key, out);
+      return out;
+    })["catch"](function(e){
+      fehler.push(src.name + " " + pkmReason(e));
+      return versuche(i + 1);
+    });
+  }
+  return Promise.resolve().then(function(){ return versuche(0); });
 }
 
-function pkmImg(card, quality){ return card.img + "/" + (quality || "high") + ".webp"; }
+/* TCGdex gibt eine Basis-URL ohne Endung, die Pokémon-TCG-API fertige. */
+function pkmImg(card, quality){
+  if(card.imgHi) return (quality === "low" && card.imgLo) ? card.imgLo : card.imgHi;
+  return card.img + "/" + (quality || "high") + ".webp";
+}
 
 /* Preise hängen am vollen Kartenobjekt, nicht am Kurzeintrag. Statt aller
    Karten holen wir eine Stichprobe — in kleinen Wellen, damit die API
@@ -2775,7 +2838,7 @@ function pkmLoadPrices(cards, onProgress){
       done++; if(onProgress) onProgress(done, total);
       return Promise.resolve();
     }
-    return pkmFetch(PKM_API + "/cards/" + card.id).then(function(full){
+    return pkmFetch(PKM_TCGDEX + "/cards/" + card.id).then(function(full){
       var cm = full && full.pricing && full.pricing.cardmarket;
       var eur = null;
       if(cm){
@@ -2817,11 +2880,21 @@ function pkmPrepareCards(onProgress){
 
 function pkmPreparePrices(onProgress){
   return pkmPrepareCards().then(function(){
-    var pool = [];
+    var fertig = [], offen = [];
     pkmActiveSets().forEach(function(s){
-      if(PKM_DATA[s.key]) pool = pool.concat(PKM_DATA[s.key].cards);
+      var d = PKM_DATA[s.key];
+      if(!d) return;
+      d.cards.forEach(function(c){
+        if(c.eur != null) fertig.push({card:c, eur:c.eur});
+        else if(c.src === "tcgdex") offen.push(c);
+      });
     });
-    return pkmLoadPrices(shuffle(pool).slice(0, PKM_SAMPLE), onProgress);
+    /* Kam der Preis schon mit der Kartenliste, ist nichts mehr zu holen. */
+    if(fertig.length >= 4){
+      if(onProgress) onProgress(1, 1);
+      return shuffle(fertig).slice(0, 80);
+    }
+    return pkmLoadPrices(shuffle(offen).slice(0, PKM_SAMPLE), onProgress);
   }).then(function(priced){
     PKM_PRICED = priced;
     BANK_CACHE = {};
@@ -3437,10 +3510,11 @@ function renderPrepare(body, t, done){
     var panel = document.getElementById("loadPanel");
     if(!panel) return;
     panel.className = "callout warn";
-    var msg = String(err && err.message ? err.message : err);
-    if(/failed to fetch|networkerror|load failed/i.test(msg)){
-      msg = "Keine Verbindung zu api.tcgdex.net. Prüf deine Internetverbindung — "
-          + "einmal geladene Kartenlisten bleiben danach 30 Tage lokal gespeichert.";
+    var msg = pkmReason(err);
+    if(/nicht erreichbar/.test(msg)){
+      msg += '<br><br>«Nicht erreichbar» heisst: die Anfrage kam gar nicht erst an — '
+           + 'kein Netz, oder die Quelle lässt keine Abfragen aus dem Browser zu. '
+           + 'Einmal geladene Kartenlisten bleiben danach 30 Tage lokal gespeichert.';
     }
     panel.innerHTML = '<b>Daten konnten nicht geladen werden.</b><br>' + msg
       + '<br><br><button class="btn secondary" id="retryBtn">Nochmal versuchen</button>';

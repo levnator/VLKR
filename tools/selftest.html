@@ -382,9 +382,65 @@ function runPkmChecks(T, done){
       var bad = pool.filter(function(q){ return q.topic.indexOf("p-") !== 0; });
       return bad.length === 0 ? true : bad.length + " Fremdfragen, erste: " + bad[0].topic;
     });
-    done();
+    runFallbackCheck(T, done);
   })["catch"](function(e){
     check("Pokémon-Daten laden mit Fixtures", function(){ return "Fehler: " + e.message; });
+    done();
+  });
+}
+
+/* Der Fall, der live aufgetreten ist: die erste Quelle antwortet gar
+   nicht. Dann muss die zweite einspringen, statt dass das Fach ausfällt. */
+function runFallbackCheck(T, done){
+  T.pkmReset();
+  T.setPkmFetch(function(url){
+    if(url.indexOf("tcgdex") !== -1) return Promise.reject(new TypeError("Failed to fetch"));
+    if(/\/sets\?/.test(url)){
+      return Promise.resolve({data:[
+        {id:"me05tg", name:"Pitch Black Trainer Gallery", total:12},
+        {id:"me05", name:"Pitch Black", total:120},
+        {id:"me03", name:"Ascended Heroes", total:295}
+      ]});
+    }
+    if(/\/cards\?/.test(url)){
+      var rows = [];
+      for(var i=1;i<=12;i++){
+        rows.push({id:"me05-"+i, name:"Karte "+i, number:String(i),
+          images:{small:"https://images.pokemontcg.io/me05/"+i+".png",
+                  large:"https://images.pokemontcg.io/me05/"+i+"_hires.png"},
+          cardmarket:{prices:{trendPrice: i * 4.25}}});
+      }
+      return Promise.resolve({data:rows});
+    }
+    return Promise.reject(new Error("Fixture kennt " + url + " nicht"));
+  });
+
+  T.pkmPreparePrices().then(function(){
+    check("Fällt auf die zweite Quelle durch, wenn die erste tot ist", function(){
+      var bank = T.bankFor("p-artwork", "all");
+      return bank.length >= 12 ? true : "nur " + bank.length + " Fragen";
+    });
+    check("Preise der zweiten Quelle kommen ohne Extra-Anfragen mit", function(){
+      var bank = T.bankFor("p-preis", "all");
+      if(bank.length < 4) return "nur " + bank.length + " Fragen";
+      var echt = {};
+      for(var i=1;i<=12;i++) echt[T.pkmEuro(i*4.25)] = 1;
+      for(var j=0;j<bank.length;j++){
+        var fremd = bank[j].choices.filter(function(c){ return !echt[c]; });
+        if(fremd.length) return "erfundener Preis: " + fremd.join(", ");
+      }
+      return true;
+    });
+    check("Fertige Bild-URLs der zweiten Quelle bleiben unverändert", function(){
+      var u = T.pkmImg({imgHi:"https://images.pokemontcg.io/me05/3_hires.png",
+                        imgLo:"https://images.pokemontcg.io/me05/3.png"}, "high");
+      return u === "https://images.pokemontcg.io/me05/3_hires.png" ? true : "ist " + u;
+    });
+    done();
+  })["catch"](function(e){
+    check("Fällt auf die zweite Quelle durch, wenn die erste tot ist", function(){
+      return "Fehler: " + e.message;
+    });
     done();
   });
 }
