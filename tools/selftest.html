@@ -376,6 +376,12 @@ function runPkmChecks(T, done){
       }
       return true;
     });
+    /* Die Fixture kennt nur TCGdex-Antworten. Weil die Pokémon-TCG-API
+       zuerst gefragt wird, beweist ein TCGdex-Ergebnis das Durchfallen. */
+    check("Fällt auf die zweite Quelle durch, wenn die erste nichts liefert", function(){
+      var src = T.pkmSourceOf("pitch-black") || T.pkmSourceOf("ascended-heroes");
+      return src === "tcgdex" ? true : "Quelle war " + src;
+    });
     check("Prüfung Pokémon zieht keine Fragen aus anderen Fächern", function(){
       var pool = T.buildPool({subject:"pkm", topic:"all", set:"all", verbCfg:{}}, 20);
       if(!pool.length) return "Pool ist leer";
@@ -389,13 +395,16 @@ function runPkmChecks(T, done){
   });
 }
 
-/* Der Fall, der live aufgetreten ist: die erste Quelle antwortet gar
-   nicht. Dann muss die zweite einspringen, statt dass das Fach ausfällt. */
+/* Die Pokémon-TCG-API ist die erste Quelle: sie liefert Karten, Bilder
+   und Cardmarket-Preis in einem Zug. Die Set-Suche läuft ohne `q`, weil
+   `q=name:"Ascended Heroes"` dort live HTTP 500 ergab. */
 function runFallbackCheck(T, done){
   T.pkmReset();
   T.setPkmFetch(function(url){
     if(url.indexOf("tcgdex") !== -1) return Promise.reject(new TypeError("Failed to fetch"));
+    /* Die Abfrage darf keinen q-Parameter für den Setnamen tragen. */
     if(/\/sets\?/.test(url)){
+      if(/[?&]q=/.test(url)) return Promise.reject(new Error("HTTP 500 für " + url));
       return Promise.resolve({data:[
         {id:"me05tg", name:"Pitch Black Trainer Gallery", total:12},
         {id:"me05", name:"Pitch Black", total:120},
@@ -416,11 +425,13 @@ function runFallbackCheck(T, done){
   });
 
   T.pkmPreparePrices().then(function(){
-    check("Fällt auf die zweite Quelle durch, wenn die erste tot ist", function(){
+    check("Pokémon-TCG-API liefert das Set ohne q-Parameter", function(){
+      if(T.pkmSourceOf("ascended-heroes") !== "ptcg" && T.pkmSourceOf("pitch-black") !== "ptcg")
+        return "Quelle war nicht ptcg";
       var bank = T.bankFor("p-artwork", "all");
       return bank.length >= 12 ? true : "nur " + bank.length + " Fragen";
     });
-    check("Preise der zweiten Quelle kommen ohne Extra-Anfragen mit", function(){
+    check("Preise der Pokémon-TCG-API kommen ohne Extra-Anfragen mit", function(){
       var bank = T.bankFor("p-preis", "all");
       if(bank.length < 4) return "nur " + bank.length + " Fragen";
       var echt = {};
@@ -451,16 +462,28 @@ function runFallbackCheck(T, done){
     check("Ein HTTP-Fehler gilt nicht als Erfolg", function(){
       var v = T.pkmVerdict({bildPtcg:true, bildTcgdex:true,
                             apiPtcg:"HTTP 500", apiTcgdex:"HTTP 404"});
+      return v.kind !== "ok" ? true : "sagt " + v.kind;
+    });
+    /* Genau der Fall vom Livesystem: ein lesbarer Status beweist, dass die
+       Antwort ankam — dann darf die Diagnose nicht CORS behaupten. */
+    check("Lesbarer HTTP-Status schliesst CORS aus", function(){
+      var v = T.pkmVerdict({bildPtcg:true, bildTcgdex:false,
+                            apiPtcg:"HTTP 500", apiTcgdex:"nicht erreichbar"});
+      return v.kind === "server" ? true : "sagt " + v.kind;
+    });
+    check("CORS nur, wenn keine einzige Antwort ankam", function(){
+      var v = T.pkmVerdict({bildPtcg:true, bildTcgdex:true,
+                            apiPtcg:"nicht erreichbar", apiTcgdex:"nicht erreichbar"});
       return v.kind === "cors" ? true : "sagt " + v.kind;
     });
-    check("Fertige Bild-URLs der zweiten Quelle bleiben unverändert", function(){
+    check("Fertige Bild-URLs bleiben unverändert", function(){
       var u = T.pkmImg({imgHi:"https://images.pokemontcg.io/me05/3_hires.png",
                         imgLo:"https://images.pokemontcg.io/me05/3.png"}, "high");
       return u === "https://images.pokemontcg.io/me05/3_hires.png" ? true : "ist " + u;
     });
     done();
   })["catch"](function(e){
-    check("Fällt auf die zweite Quelle durch, wenn die erste tot ist", function(){
+    check("Pokémon-TCG-API liefert das Set ohne q-Parameter", function(){
       return "Fehler: " + e.message;
     });
     done();

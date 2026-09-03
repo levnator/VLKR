@@ -2756,21 +2756,13 @@ function pkmPickSet(list, cfg){
    TCGdex liefert Karten ohne Preis (die kommen einzeln nach), die
    Pokémon-TCG-API liefert Karten und Cardmarket-Preis in einem Zug. */
 var PKM_SOURCES = [
-  {key:"tcgdex", name:"TCGdex", loadSet:function(cfg){
-    return pkmFetch(PKM_TCGDEX + "/sets").then(function(list){
-      var hit = pkmPickSet(list, cfg);
-      if(!hit) throw new Error("Set nicht gelistet");
-      return pkmFetch(PKM_TCGDEX + "/sets/" + hit.id);
-    }).then(function(set){
-      return {
-        name: set.name,
-        cards: (set.cards || []).filter(function(c){ return c && c.image && c.name; })
-          .map(function(c){ return {id:c.id, n:c.name, lid:c.localId, img:c.image, eur:null}; })
-      };
-    });
-  }},
+  /* Zuerst die Pokémon-TCG-API: sie antwortet, und sie liefert Karten und
+     Cardmarket-Preis in einem Zug.
+     Die Suche läuft bewusst OHNE `q`-Parameter — `q=name:"Ascended Heroes"`
+     quittiert deren Parser mit HTTP 500. Die Setliste ist klein genug, um
+     sie ganz zu holen und selbst zu filtern. */
   {key:"ptcg", name:"Pokémon-TCG-API", loadSet:function(cfg){
-    return pkmFetch(PKM_PTCG + "/sets?q=" + encodeURIComponent('name:"' + cfg.label + '"'))
+    return pkmFetch(PKM_PTCG + "/sets?pageSize=250")
       .then(function(r){
         var hit = pkmPickSet((r && r.data) || [], cfg);
         if(!hit) throw new Error("Set nicht gelistet");
@@ -2789,6 +2781,22 @@ var PKM_SOURCES = [
             })
         };
       });
+  }},
+  /* TCGdex als Rückfall. Zurzeit ist die Domain nicht erreichbar — auch
+     ihre Bilder nicht —, aber wenn sie zurückkommt, greift sie wieder.
+     Preise holt sie nicht mit; die kommen dann einzeln nach. */
+  {key:"tcgdex", name:"TCGdex", loadSet:function(cfg){
+    return pkmFetch(PKM_TCGDEX + "/sets").then(function(list){
+      var hit = pkmPickSet(list, cfg);
+      if(!hit) throw new Error("Set nicht gelistet");
+      return pkmFetch(PKM_TCGDEX + "/sets/" + hit.id);
+    }).then(function(set){
+      return {
+        name: set.name,
+        cards: (set.cards || []).filter(function(c){ return c && c.image && c.name; })
+          .map(function(c){ return {id:c.id, n:c.name, lid:c.localId, img:c.image, eur:null}; })
+      };
+    });
   }}
 ];
 
@@ -2822,7 +2830,7 @@ function pkmDiagnose(){
   return Promise.all([
     pkmProbeImage("https://images.pokemontcg.io/base1/1.png"),
     pkmProbeImage("https://assets.tcgdex.net/en/base/base1/1/low.webp"),
-    pkmProbeFetch(PKM_PTCG + "/sets?pageSize=1"),
+    pkmProbeFetch(PKM_PTCG + "/sets?pageSize=250"),
     pkmProbeFetch(PKM_TCGDEX + "/sets")
   ]).then(function(r){
     return {bildPtcg:r[0], bildTcgdex:r[1], apiPtcg:r[2], apiTcgdex:r[3]};
@@ -2831,14 +2839,20 @@ function pkmDiagnose(){
 /* Reine Funktion, damit der Selbsttest jede Konstellation durchspielen kann. */
 function pkmVerdict(r){
   if(r.apiPtcg === "ok" || r.apiTcgdex === "ok"){
-    return {kind:"ok", text:"Mindestens eine Quelle antwortet doch. Drück nochmal auf «Nochmal versuchen» — "
+    return {kind:"ok", text:"Mindestens eine Quelle antwortet. Drück nochmal auf «Nochmal versuchen» — "
       + "beim ersten Anlauf war wohl nur kurz nichts da."};
   }
+  /* Ein lesbarer HTTP-Status beweist, dass die Antwort durchkam: dann ist
+     weder die Verbindung noch CORS das Problem, sondern die Abfrage selbst. */
+  var status = [r.apiPtcg, r.apiTcgdex].filter(function(v){ return /^HTTP/.test(String(v)); });
+  if(status.length){
+    return {kind:"server", text:"Die Quelle antwortet, aber mit einem Fehler (" + status.join(", ") + "). "
+      + "Deine Verbindung ist also in Ordnung — es hakt an der Abfrage oder am Dienst selbst."};
+  }
   if(r.bildPtcg || r.bildTcgdex){
-    return {kind:"cors", text:"Die Bilder der Kartendienste laden, die Datenabfragen nicht. "
-      + "Das ist CORS: die Server erlauben keine Abfragen direkt aus dem Browser. "
-      + "Das lässt sich nur beheben, indem vlkr.ch die Daten selbst holt und weiterreicht — "
-      + "sag mir Bescheid, dann baue ich das."};
+    return {kind:"cors", text:"Bilder laden, Datenabfragen nicht — und keine kam auch nur bis zu einer "
+      + "Antwort. Das ist CORS: die Server erlauben keine Abfragen direkt aus dem Browser. "
+      + "Das lässt sich nur beheben, indem vlkr.ch die Daten selbst holt und weiterreicht."};
   }
   return {kind:"blocked", text:"Weder Bilder noch Daten kommen durch. Dann blockiert etwas auf deinem "
     + "Gerät oder in deinem Netz alle fremden Adressen — typischerweise ein Werbeblocker, eine "
@@ -4451,6 +4465,7 @@ window.__VLKR_TEST__ = {
   pkmEuro: pkmEuro,
   pkmImg: pkmImg,
   pkmVerdict: pkmVerdict,
+  pkmSourceOf: function(k){ return PKM_DATA[k] ? PKM_DATA[k].src : null; },
   /* Der Selbsttest hängt hier Fixtures ein, statt wirklich ins Netz zu gehen. */
   setPkmFetch: function(fn){ pkmFetch = fn; },
   pkmPrepareCards: function(){ return pkmPrepareCards(); },
