@@ -431,6 +431,28 @@ function runFallbackCheck(T, done){
       }
       return true;
     });
+    /* Die Diagnose muss die drei Fälle sauber trennen, sonst schickt sie
+       den Nutzer auf die falsche Fährte. */
+    check("Diagnose erkennt CORS: Bilder laden, Daten nicht", function(){
+      var v = T.pkmVerdict({bildPtcg:true, bildTcgdex:true,
+                            apiPtcg:"nicht erreichbar", apiTcgdex:"nicht erreichbar"});
+      return v.kind === "cors" ? true : "sagt " + v.kind;
+    });
+    check("Diagnose erkennt Blockade: gar nichts kommt durch", function(){
+      var v = T.pkmVerdict({bildPtcg:false, bildTcgdex:false,
+                            apiPtcg:"nicht erreichbar", apiTcgdex:"nicht erreichbar"});
+      return v.kind === "blocked" ? true : "sagt " + v.kind;
+    });
+    check("Diagnose erkennt, wenn es doch geht", function(){
+      var v = T.pkmVerdict({bildPtcg:true, bildTcgdex:false,
+                            apiPtcg:"ok", apiTcgdex:"nicht erreichbar"});
+      return v.kind === "ok" ? true : "sagt " + v.kind;
+    });
+    check("Ein HTTP-Fehler gilt nicht als Erfolg", function(){
+      var v = T.pkmVerdict({bildPtcg:true, bildTcgdex:true,
+                            apiPtcg:"HTTP 500", apiTcgdex:"HTTP 404"});
+      return v.kind === "cors" ? true : "sagt " + v.kind;
+    });
     check("Fertige Bild-URLs der zweiten Quelle bleiben unverändert", function(){
       var u = T.pkmImg({imgHi:"https://images.pokemontcg.io/me05/3_hires.png",
                         imgLo:"https://images.pokemontcg.io/me05/3.png"}, "high");

@@ -494,6 +494,11 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
 .pk-tile figcaption b{display:block; font-weight:600;}
 .pk-tile figcaption span{color:var(--ink-faint); font-size:10.5px;}
 
+.diag-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+.diag-note{margin:14px 0 6px 0; font-size:13.5px;}
+.diag-list{margin:0; padding-left:18px; font-size:13px; line-height:1.7;}
+.diag-list b{font-family:'IBM Plex Mono',monospace; font-size:12.5px;}
+
 .load-panel{
   display:flex; align-items:center; gap:14px;
   background:var(--paper-raised); border:1px solid var(--rule);
@@ -2794,6 +2799,53 @@ function pkmReason(e){
   return /failed to fetch|networkerror|load failed/i.test(m) ? "nicht erreichbar" : m;
 }
 
+/* ---------- Diagnose ----------
+   Ein Bild unterliegt keiner CORS-Prüfung, ein fetch schon. Lädt das Bild
+   eines Hosts, aber der fetch dorthin nicht, liegt es an CORS. Scheitert
+   beides, kommt schon die Verbindung nicht zustande — dann blockiert
+   etwas auf dem Gerät oder im Netz, und kein Code der Welt hilft. */
+function pkmProbeImage(url, ms){
+  return new Promise(function(res){
+    var im = new Image();
+    var t = setTimeout(function(){ im.onload = im.onerror = null; res(false); }, ms || 8000);
+    im.onload = function(){ clearTimeout(t); res(true); };
+    im.onerror = function(){ clearTimeout(t); res(false); };
+    im.src = url + (url.indexOf("?") === -1 ? "?" : "&") + "p=" + Date.now();
+  });
+}
+function pkmProbeFetch(url){
+  return fetch(url, {cache:"no-store"}).then(function(r){
+    return r.ok ? "ok" : ("HTTP " + r.status);
+  })["catch"](function(e){ return pkmReason(e); });
+}
+function pkmDiagnose(){
+  return Promise.all([
+    pkmProbeImage("https://images.pokemontcg.io/base1/1.png"),
+    pkmProbeImage("https://assets.tcgdex.net/en/base/base1/1/low.webp"),
+    pkmProbeFetch(PKM_PTCG + "/sets?pageSize=1"),
+    pkmProbeFetch(PKM_TCGDEX + "/sets")
+  ]).then(function(r){
+    return {bildPtcg:r[0], bildTcgdex:r[1], apiPtcg:r[2], apiTcgdex:r[3]};
+  });
+}
+/* Reine Funktion, damit der Selbsttest jede Konstellation durchspielen kann. */
+function pkmVerdict(r){
+  if(r.apiPtcg === "ok" || r.apiTcgdex === "ok"){
+    return {kind:"ok", text:"Mindestens eine Quelle antwortet doch. Drück nochmal auf «Nochmal versuchen» — "
+      + "beim ersten Anlauf war wohl nur kurz nichts da."};
+  }
+  if(r.bildPtcg || r.bildTcgdex){
+    return {kind:"cors", text:"Die Bilder der Kartendienste laden, die Datenabfragen nicht. "
+      + "Das ist CORS: die Server erlauben keine Abfragen direkt aus dem Browser. "
+      + "Das lässt sich nur beheben, indem vlkr.ch die Daten selbst holt und weiterreicht — "
+      + "sag mir Bescheid, dann baue ich das."};
+  }
+  return {kind:"blocked", text:"Weder Bilder noch Daten kommen durch. Dann blockiert etwas auf deinem "
+    + "Gerät oder in deinem Netz alle fremden Adressen — typischerweise ein Werbeblocker, eine "
+    + "Privatsphäre-Erweiterung, ein DNS-Filter oder ein Firmennetz. Probier es mit abgeschaltetem "
+    + "Blocker oder in einem privaten Fenster."};
+}
+
 function pkmLoadSet(cfg){
   if(PKM_DATA[cfg.key]) return Promise.resolve(PKM_DATA[cfg.key]);
   var cached = pkmCacheGet("set:" + cfg.key, PKM_SET_TTL);
@@ -3517,9 +3569,29 @@ function renderPrepare(body, t, done){
            + 'Einmal geladene Kartenlisten bleiben danach 30 Tage lokal gespeichert.';
     }
     panel.innerHTML = '<b>Daten konnten nicht geladen werden.</b><br>' + msg
-      + '<br><br><button class="btn secondary" id="retryBtn">Nochmal versuchen</button>';
+      + '<div class="diag-row">'
+      + '<button class="btn secondary" id="retryBtn">Nochmal versuchen</button>'
+      + '<button class="btn secondary" id="diagBtn">Woran liegt’s?</button></div>'
+      + '<div id="diagOut"></div>';
     var rb = document.getElementById("retryBtn");
     if(rb) rb.onclick = function(){ renderPrepare(body, t, done); };
+    var db = document.getElementById("diagBtn");
+    if(db) db.onclick = function(){
+      var out = document.getElementById("diagOut");
+      db.disabled = true;
+      out.innerHTML = '<p class="diag-note">Teste die Verbindung…</p>';
+      pkmDiagnose().then(function(r){
+        var v = pkmVerdict(r);
+        out.innerHTML = '<p class="diag-note"><b>' + v.text + '</b></p>'
+          + '<ul class="diag-list">'
+          + '<li>Bilder von images.pokemontcg.io: <b>' + (r.bildPtcg ? "laden" : "kommen nicht durch") + '</b></li>'
+          + '<li>Bilder von assets.tcgdex.net: <b>' + (r.bildTcgdex ? "laden" : "kommen nicht durch") + '</b></li>'
+          + '<li>Daten von api.pokemontcg.io: <b>' + r.apiPtcg + '</b></li>'
+          + '<li>Daten von api.tcgdex.net: <b>' + r.apiTcgdex + '</b></li>'
+          + '</ul>';
+        db.disabled = false;
+      });
+    };
   });
 }
 
@@ -4378,6 +4450,7 @@ window.__VLKR_TEST__ = {
   pkmPickSet: pkmPickSet,
   pkmEuro: pkmEuro,
   pkmImg: pkmImg,
+  pkmVerdict: pkmVerdict,
   /* Der Selbsttest hängt hier Fixtures ein, statt wirklich ins Netz zu gehen. */
   setPkmFetch: function(fn){ pkmFetch = fn; },
   pkmPrepareCards: function(){ return pkmPrepareCards(); },
