@@ -1715,6 +1715,363 @@ function buildEtreBank(){
 }
 
 /* ================================================================
+   DATEN — 07 POSSESSIFS (Begleiter + Pronomen)
+   ================================================================ */
+var POSS_PRONOUNS = [
+  {owner:"ich", adj:"mon / ma / mes", m:"le mien", f:"la mienne", mp:"les miens", fp:"les miennes"},
+  {owner:"du", adj:"ton / ta / tes", m:"le tien", f:"la tienne", mp:"les tiens", fp:"les tiennes"},
+  {owner:"er / sie", adj:"son / sa / ses", m:"le sien", f:"la sienne", mp:"les siens", fp:"les siennes"},
+  {owner:"wir", adj:"notre / nos", m:"le nôtre", f:"la nôtre", mp:"les nôtres", fp:"les nôtres"},
+  {owner:"ihr / Sie", adj:"votre / vos", m:"le vôtre", f:"la vôtre", mp:"les vôtres", fp:"les vôtres"},
+  {owner:"sie (Plural)", adj:"leur / leurs", m:"le leur", f:"la leur", mp:"les leurs", fp:"les leurs"}
+];
+
+/* Begleiter vor Wörtern aus dem Wortschatz „En route“ */
+function buildPossAdj(){
+  var items = [
+    ["(ich) ____ billet","mon","billet ist maskulin → mon."],
+    ["(ich) ____ valise","ma","valise ist feminin und beginnt mit Konsonant → ma."],
+    ["(du) ____ passeport","ton","passeport ist maskulin → ton."],
+    ["(du) ____ carte d'identité","ta","carte ist feminin → ta."],
+    ["(er) ____ sac à dos","son","sac ist maskulin → son."],
+    ["(sie, 1 Person) ____ sac à main","son","Falle! Ihre Handtasche = son sac à main. Entscheidend ist das Nomen (le sac), nicht der Besitzer."],
+    ["(er) ____ valise","sa","Falle! Sein Koffer = sa valise. Das Nomen ist feminin, auch wenn der Besitzer ein Mann ist."],
+    ["(sie, 1 Person) ____ arrivée","son","Falle! arrivée ist feminin, beginnt aber mit Vokal → son."],
+    ["(ich) ____ auberge de jeunesse","mon","Falle! auberge ist feminin, beginnt aber mit Vokal → mon."],
+    ["(du) ____ excursion","ton","Falle! excursion beginnt mit Vokal → ton statt ta."],
+    ["(ich) ____ horaire","mon","horaire ist maskulin und beginnt mit stummem h → mon."],
+    ["(wir) ____ réservation","notre","notre gilt für maskulin und feminin im Singular."],
+    ["(wir) ____ bagages","nos","les bagages ist Plural → nos."],
+    ["(wir) ____ vol","notre","Ein Flug, mehrere Besitzer → notre."],
+    ["(ihr) ____ billets","vos","Plural → vos."],
+    ["(ihr) ____ hébergement","votre","Ein Objekt → votre, egal ob maskulin oder feminin."],
+    ["(sie, mehrere) ____ chambre double","leur","Ein Zimmer, mehrere Besitzer → leur ohne -s."],
+    ["(sie, mehrere) ____ valises","leurs","Mehrere Koffer → leurs mit -s."],
+    ["(sie, mehrere) ____ passeports","leurs","Mehrere Pässe → leurs."],
+    ["(er) ____ addition","son","Falle! addition ist feminin, beginnt aber mit Vokal → son."]
+  ];
+  return items.map(function(p){
+    return inputQ("poss","Possessivbegleiter", p[0], "Setz den passenden Begleiter ein.", [p[1]], p[1], p[2]);
+  });
+}
+function buildPossPron(){
+  var items = [
+    ["ma valise",["la mienne"],"valise ist feminin Singular → la mienne."],
+    ["ton passeport",["le tien"],"passeport ist maskulin Singular → le tien."],
+    ["ses bagages",["les siens"],"les bagages ist maskulin Plural → les siens."],
+    ["sa tente",["la sienne"],"tente ist feminin → la sienne."],
+    ["notre vol",["le nôtre"],"le nôtre — beim Pronomen mit Accent circonflexe (ô)."],
+    ["notre chambre",["la nôtre"],"la nôtre — gleiche Form, nur der Artikel zeigt das Geschlecht."],
+    ["vos billets",["les vôtres"],"Plural → les vôtres (mit ô)."],
+    ["leur réservation",["la leur"],"leur als Pronomen braucht den Artikel: la leur."],
+    ["leurs valises",["les leurs"],"Plural → les leurs."],
+    ["mes valises",["les miennes"],"valises ist feminin Plural → les miennes."],
+    ["tes cartes d'identité",["les tiennes"],"cartes ist feminin Plural → les tiennes."],
+    ["son hôtel",["le sien"],"hôtel ist maskulin → le sien."],
+    ["mon sac à dos",["le mien"],"sac ist maskulin → le mien."],
+    ["votre excursion",["la vôtre"],"excursion ist feminin → la vôtre."]
+  ];
+  return items.map(function(it){
+    return inputQ("poss","Begleiter → Pronomen", it[0], "Ersetze durch das Possessivpronomen.", it[1], it[1][0], it[2]);
+  });
+}
+function buildPossFill(){
+  var items = [
+    ["Ce n'est pas ma valise, c'est ____. <span class=\"muted\">(à toi)</span>",["la tienne"],"valise feminin, Besitzer du → la tienne."],
+    ["Ton billet est valable pour Paris. Et ____ ? <span class=\"muted\">(à moi)</span>",["le mien"],"billet maskulin, Besitzer ich → le mien."],
+    ["Nos passeports sont ici. Où sont ____ ? <span class=\"muted\">(à vous)</span>",["les vôtres"],"passeports maskulin Plural, Besitzer ihr → les vôtres."],
+    ["Mes valises sont lourdes, ____ sont légères. <span class=\"muted\">(à lui)</span>",["les siennes"],"valises feminin Plural, Besitzer er → les siennes."],
+    ["J'ai mon sac à dos, mais elle a oublié ____.",["le sien"],"sac maskulin, Besitzerin sie → le sien. Das Geschlecht des Besitzers spielt keine Rolle."],
+    ["Leur hôtel est cher, ____ est bon marché. <span class=\"muted\">(à nous)</span>",["le nôtre"],"hôtel maskulin, Besitzer wir → le nôtre."],
+    ["Notre réservation est confirmée. Et ____ ? <span class=\"muted\">(à eux)</span>",["la leur"],"réservation feminin, Besitzer sie (Plural) → la leur."],
+    ["Ce sont tes bagages ? — Oui, ce sont ____.",["les miens"],"bagages maskulin Plural, Besitzer ich → les miens."],
+    ["Ma chambre est simple, ____ est double. <span class=\"muted\">(à elle)</span>",["la sienne"],"chambre feminin → la sienne."],
+    ["Vos excursions sont chères, ____ sont gratuites. <span class=\"muted\">(à eux)</span>",["les leurs"],"excursions Plural, Besitzer sie → les leurs."],
+    ["Je pense à mon voyage, et toi, tu penses ____ . <span class=\"muted\">(à + deine Reise)</span>",["au tien"],"à + le tien = au tien — wie à + le = au."],
+    ["Il parle de son séjour, et nous parlons ____ . <span class=\"muted\">(de + unserem)</span>",["du nôtre"],"de + le nôtre = du nôtre — wie de + le = du."],
+    ["Leurs tentes sont grandes, ____ est petite. <span class=\"muted\">(à toi, 1 Zelt)</span>",["la tienne"],"Ein Zelt (la tente), Besitzer du → la tienne."]
+  ];
+  return items.map(function(it){
+    return inputQ("poss","Lückentext · Pronomen", it[0], "Setz das Possessivpronomen ein.", it[1], it[1][0], it[2]);
+  });
+}
+function buildPossMix(){
+  var bank = [];
+  var ch = [
+    ["C'est ____ billet.",["mon","le mien"],"mon","Vor einem Nomen steht der Begleiter (mon). Das Pronomen steht allein."],
+    ["Ce billet est ____.",["le mien","mon"],"le mien","Kein Nomen danach → Pronomen le mien (oder: à moi)."],
+    ["C'est ____ chambre.",["notre","nôtre"],"notre","Begleiter vor dem Nomen: notre ohne Accent."],
+    ["Cette chambre, c'est la ____.",["nôtre","notre"],"nôtre","Pronomen: la nôtre mit ô."],
+    ["Pierre et Anne ont ____ valises.",["leurs","leur"],"leurs","Mehrere Koffer → leurs."],
+    ["Pierre et Anne ont ____ voiture.",["leur","leurs"],"leur","Ein Auto → leur."],
+    ["Anne cherche ____ passeport.",["son","sa"],"son","passeport ist maskulin → son, auch bei einer Besitzerin."],
+    ["Marc cherche ____ carte d'identité.",["sa","son"],"sa","carte ist feminin → sa, auch bei einem Besitzer."]
+  ];
+  ch.forEach(function(c){
+    bank.push(choiceQ("poss","Begleiter oder Pronomen?", c[0], "Was passt in die Lücke?", shuffle(c[1]), c[2], c[3]));
+  });
+  var tr = [
+    ["Ihr Koffer ist im Fundbüro. <span class=\"muted\">(sie, 1 Person)</span>",["Sa valise est au bureau des objets trouvés"],"Sa valise est au bureau des objets trouvés.","la valise → sa; à + le bureau → au bureau."],
+    ["Unser Flug hebt um 8 Uhr ab.",["Notre vol décolle à 8 heures","Notre vol décolle à huit heures","Notre vol décolle à 8 h","Notre vol décolle à 8h"],"Notre vol décolle à 8 heures.","le vol → notre; abheben = décoller."],
+    ["Wo ist dein Pass?",["Où est ton passeport ?","Où est ton passeport"],"Où est ton passeport ?","le passeport → ton."],
+    ["Habt ihr eure Tickets?",["Avez-vous vos billets ?","Vous avez vos billets ?","Est-ce que vous avez vos billets ?"],"Avez-vous vos billets ?","Plural → vos."],
+    ["Das ist nicht mein Koffer, das ist deiner.",["Ce n'est pas ma valise, c'est la tienne"],"Ce n'est pas ma valise, c'est la tienne.","ma valise → la tienne (feminin)."],
+    ["Mein Zimmer ist ein Einzelzimmer, ihres ist ein Doppelzimmer. <span class=\"muted\">(sie, 1 Person)</span>",["Ma chambre est une chambre simple, la sienne est une chambre double"],"Ma chambre est une chambre simple, la sienne est une chambre double.","la chambre → ma / la sienne."]
+  ];
+  tr.forEach(function(t){
+    bank.push(inputQ("poss","Übersetzen", t[0], "Übersetze ins Französische.", t[1], t[2], t[3]));
+  });
+  return bank;
+}
+
+/* ================================================================
+   DATEN — 08 NÉGATION
+   ================================================================ */
+var NEGATIONS = [
+  {fr:"ne … pas", de:"nicht", opp:"—", ex:"Je ne réserve pas la chambre."},
+  {fr:"ne … pas du tout", de:"überhaupt nicht", opp:"—", ex:"Il n'est pas du tout à l'heure."},
+  {fr:"ne … plus", de:"nicht mehr", opp:"encore, toujours (noch)", ex:"Elle n'est plus en vacances."},
+  {fr:"ne … jamais", de:"nie, niemals", opp:"toujours (immer), souvent, déjà (schon mal)", ex:"Il n'est jamais en retard."},
+  {fr:"ne … pas encore", de:"noch nicht", opp:"déjà (schon)", ex:"Je n'ai pas encore fait mes bagages."},
+  {fr:"ne … rien", de:"nichts", opp:"quelque chose, tout", ex:"Nous n'avons rien commandé."},
+  {fr:"ne … personne", de:"niemand", opp:"quelqu'un, tout le monde", ex:"Je ne vois personne au guichet."},
+  {fr:"ne … aucun(e)", de:"kein einziger", opp:"un, des, plusieurs", ex:"Il n'y a aucune chambre libre."},
+  {fr:"ne … nulle part", de:"nirgends", opp:"partout, quelque part", ex:"Je ne trouve mon billet nulle part."},
+  {fr:"ne … ni … ni", de:"weder … noch", opp:"et … et", ex:"Il n'a ni passeport ni carte d'identité."},
+  {fr:"ne … que", de:"nur (keine echte Verneinung)", opp:"seulement", ex:"Je n'ai qu'une valise."}
+];
+
+function buildNegTransform(){
+  var items = [
+    ["J'ai un billet.","ne … pas",["Je n'ai pas de billet"],"Je n'ai pas de billet.","un/une/des → de nach der Verneinung."],
+    ["Nous avons déjà réservé la chambre.","noch nicht",["Nous n'avons pas encore réservé la chambre"],"Nous n'avons pas encore réservé la chambre.","déjà ↔ ne … pas encore; die Verneinung umklammert das Hilfsverb."],
+    ["Il est toujours à l'heure.","nie",["Il n'est jamais à l'heure"],"Il n'est jamais à l'heure.","toujours (immer) ↔ ne … jamais."],
+    ["Elle est encore en vacances.","nicht mehr",["Elle n'est plus en vacances"],"Elle n'est plus en vacances.","encore (noch) ↔ ne … plus."],
+    ["Il est toujours à la gare. <span class=\"muted\">(toujours = noch immer)</span>","nicht mehr",["Il n'est plus à la gare"],"Il n'est plus à la gare.","toujours im Sinn von „noch immer“ ↔ ne … plus."],
+    ["Je vois quelqu'un au guichet.","niemand",["Je ne vois personne au guichet"],"Je ne vois personne au guichet.","quelqu'un ↔ ne … personne."],
+    ["Tu as tout préparé.","nichts",["Tu n'as rien préparé"],"Tu n'as rien préparé.","tout ↔ ne … rien; rien steht vor dem Partizip."],
+    ["Ils ont annulé quelque chose.","nichts",["Ils n'ont rien annulé"],"Ils n'ont rien annulé.","quelque chose ↔ rien, vor dem Partizip."],
+    ["J'ai rencontré quelqu'un à la gare.","niemand",["Je n'ai rencontré personne à la gare"],"Je n'ai rencontré personne à la gare.","Falle! personne steht HINTER dem Partizip."],
+    ["Quelqu'un est en retard.","niemand",["Personne n'est en retard"],"Personne n'est en retard.","personne als Subjekt: Personne ne … — ohne pas!"],
+    ["Tout est complet.","nichts",["Rien n'est complet"],"Rien n'est complet.","rien als Subjekt: Rien ne … — ohne pas!"],
+    ["Il y a des embouteillages sur l'autoroute.","ne … pas",["Il n'y a pas d'embouteillages sur l'autoroute"],"Il n'y a pas d'embouteillages sur l'autoroute.","des → de, vor Vokal d'."],
+    ["Nous prenons toujours l'autoroute.","nie",["Nous ne prenons jamais l'autoroute"],"Nous ne prenons jamais l'autoroute.","Der bestimmte Artikel (l') bleibt."],
+    ["Je préfère payer comptant.","Infinitiv verneinen",["Je préfère ne pas payer comptant"],"Je préfère ne pas payer comptant.","Beim Infinitiv stehen ne pas zusammen VOR dem Verb."],
+    ["Elle s'informe sur l'horaire.","ne … pas",["Elle ne s'informe pas sur l'horaire"],"Elle ne s'informe pas sur l'horaire.","ne steht vor dem Reflexivpronomen: ne s'informe pas."],
+    ["Il a déjà voyagé en avion.","nie",["Il n'a jamais voyagé en avion"],"Il n'a jamais voyagé en avion.","déjà (schon mal) ↔ ne … jamais."],
+    ["Il reste encore des chambres.","nicht mehr",["Il ne reste plus de chambres"],"Il ne reste plus de chambres.","encore ↔ ne … plus; des → de."],
+    ["Je le confirme.","ne … pas",["Je ne le confirme pas"],"Je ne le confirme pas.","ne steht vor dem Objektpronomen: ne le confirme pas."],
+    ["Le serveur recommande quelque chose.","nichts",["Le serveur ne recommande rien"],"Le serveur ne recommande rien.","quelque chose ↔ ne … rien."],
+    ["Elle a toujours un sac à main.","nie",["Elle n'a jamais de sac à main"],"Elle n'a jamais de sac à main.","un → de, auch nach jamais."],
+    ["Nous avons un passeport et une carte d'identité.","weder … noch",["Nous n'avons ni passeport ni carte d'identité"],"Nous n'avons ni passeport ni carte d'identité.","Bei ni … ni fällt der unbestimmte Artikel ganz weg."],
+    ["Le vol a déjà atterri.","noch nicht",["Le vol n'a pas encore atterri"],"Le vol n'a pas encore atterri.","déjà ↔ ne … pas encore."],
+    ["Tout le monde paie comptant.","niemand",["Personne ne paie comptant"],"Personne ne paie comptant.","tout le monde ↔ personne als Subjekt: Personne ne …"],
+    ["Ils passent encore leurs vacances à la mer.","nicht mehr",["Ils ne passent plus leurs vacances à la mer"],"Ils ne passent plus leurs vacances à la mer.","encore ↔ ne … plus."]
+  ];
+  return items.map(function(it){
+    return inputQ("neg","Verneinen", it[0], "Verneine mit <b>"+it[1]+"</b>.", it[2], it[3], it[4]);
+  });
+}
+function buildNegTranslate(){
+  var items = [
+    ["Ich habe noch nicht gebucht.",["Je n'ai pas encore réservé"],"Je n'ai pas encore réservé.","noch nicht = ne … pas encore; buchen = réserver."],
+    ["Wir sind nie pünktlich.",["Nous ne sommes jamais à l'heure"],"Nous ne sommes jamais à l'heure.","pünktlich sein = être à l'heure."],
+    ["Er fährt nicht mehr mit dem Auto.",["Il ne va plus en voiture"],"Il ne va plus en voiture.","mit dem Auto fahren = aller en voiture."],
+    ["Niemand ist am Schalter.",["Personne n'est au guichet"],"Personne n'est au guichet.","Personne ne … ohne pas; à + le guichet = au guichet."],
+    ["Ich habe nichts bestellt.",["Je n'ai rien commandé"],"Je n'ai rien commandé.","rien vor dem Partizip."],
+    ["Sie hat kein Ticket.",["Elle n'a pas de billet"],"Elle n'a pas de billet.","kein = ne … pas de."],
+    ["Wir haben kein Trinkgeld gegeben.",["Nous n'avons pas donné de pourboire"],"Nous n'avons pas donné de pourboire.","kein → pas de; pas umklammert das Hilfsverb."],
+    ["Das Hotel ist nicht ausgebucht.",["L'hôtel n'est pas complet"],"L'hôtel n'est pas complet.","ausgebucht = complet."],
+    ["Ich habe niemanden am Empfang gesehen.",["Je n'ai vu personne à la réception"],"Je n'ai vu personne à la réception.","personne steht hinter dem Partizip: n'ai vu personne."],
+    ["Der Flug ist noch nicht abgehoben.",["Le vol n'a pas encore décollé"],"Le vol n'a pas encore décollé.","décoller bildet das Passé composé mit avoir."],
+    ["Er reist nie ins Ausland.",["Il ne voyage jamais à l'étranger","Il ne va jamais à l'étranger"],"Il ne voyage jamais à l'étranger.","ins / im Ausland = à l'étranger."],
+    ["Wir finden unsere Pässe nicht mehr.",["Nous ne trouvons plus nos passeports"],"Nous ne trouvons plus nos passeports.","nicht mehr = ne … plus; unsere (Plural) = nos."],
+    ["Habt ihr eure Reservation noch nicht bestätigt?",["Vous n'avez pas encore confirmé votre réservation ?","Vous n'avez pas encore confirmé votre réservation","N'avez-vous pas encore confirmé votre réservation ?"],"Vous n'avez pas encore confirmé votre réservation ?","noch nicht = pas encore; eure (1 Objekt) = votre."],
+    ["Ich habe nur einen Rucksack.",["Je n'ai qu'un sac à dos"],"Je n'ai qu'un sac à dos.","nur = ne … que; der Artikel un bleibt, weil ne … que keine echte Verneinung ist."],
+    ["Es gibt keine Sehenswürdigkeiten in diesem Dorf.",["Il n'y a pas de curiosités dans ce village"],"Il n'y a pas de curiosités dans ce village.","la curiosité = die Sehenswürdigkeit; des → de."],
+    ["Er möchte nicht zu Fuss gehen.",["Il ne veut pas aller à pied","Il ne voudrait pas aller à pied"],"Il ne veut pas aller à pied.","zu Fuss gehen = aller à pied; die Verneinung umklammert das konjugierte Verb."]
+  ];
+  return items.map(function(it){
+    return inputQ("neg","Übersetzen", it[0], "Übersetze ins Französische.", it[1], it[2], it[3]);
+  });
+}
+function buildNegChoice(){
+  var bank = [];
+  var pairs = [
+    ["Je n'ai vu personne.","Je n'ai personne vu.","personne steht hinter dem Partizip."],
+    ["Je n'ai rien mangé.","Je n'ai mangé rien.","rien steht vor dem Partizip — wie pas."],
+    ["Il préfère ne pas partir.","Il ne préfère partir pas.","Infinitiv verneinen: ne pas zusammen davor."],
+    ["Je ne vois rien.","Je ne vois pas rien.","Nie pas zusätzlich zu rien, jamais, plus, personne."],
+    ["Personne n'est venu.","Personne n'est pas venu.","Personne ne … — ohne pas."],
+    ["Je n'ai pas de valise.","Je n'ai pas une valise.","Nach der Verneinung: un/une/des → de."],
+    ["Ce n'est pas une valise.","Ce n'est pas de valise.","Falle! Nach être bleibt der Artikel: ce n'est pas un/une …"],
+    ["Je ne le réserve pas.","Je le ne réserve pas.","ne steht vor dem Objektpronomen."],
+    ["Nous n'avons plus de billets.","Nous n'avons plus des billets.","des → de, auch nach plus."],
+    ["Je n'ai qu'une valise.","Je n'ai que de valise.","ne … que ist keine echte Verneinung — der Artikel bleibt."],
+    ["Il n'est jamais allé à la mer.","Il n'est allé jamais à la mer.","jamais steht vor dem Partizip."],
+    ["Elle ne s'amuse pas.","Elle se n'amuse pas.","ne kommt vor das Reflexivpronomen."]
+  ];
+  pairs.forEach(function(p){
+    bank.push(choiceQ("neg","Richtig oder falsch?", "Welcher Satz ist richtig?", "", shuffle([p[0], p[1]]), p[0], p[2]));
+  });
+  var opp = [
+    ["toujours <span class=\"muted\">(immer)</span>","ne … jamais"],
+    ["encore <span class=\"muted\">(noch)</span>","ne … plus"],
+    ["déjà <span class=\"muted\">(schon)</span>","ne … pas encore"],
+    ["quelque chose","ne … rien"],
+    ["tout","ne … rien"],
+    ["quelqu'un","ne … personne"],
+    ["tout le monde","ne … personne"],
+    ["partout","ne … nulle part"],
+    ["et … et","ne … ni … ni"],
+    ["seulement","ne … que"]
+  ];
+  var all = ["ne … jamais","ne … plus","ne … pas encore","ne … rien","ne … personne","ne … nulle part","ne … ni … ni","ne … que"];
+  opp.forEach(function(o){
+    var dis = shuffle(all.filter(function(x){ return x !== o[1]; })).slice(0,3);
+    bank.push(choiceQ("neg","Gegenteil", o[0], "Welche Verneinung ist das Gegenteil?", shuffle(dis.concat([o[1]])), o[1],
+      o[0].replace(/<[^>]+>/g,"").trim()+" ↔ "+o[1]));
+  });
+  return bank;
+}
+
+/* ================================================================
+   DATEN — 09 VOKABELN „02 – En route“, S. 14–17
+   ================================================================ */
+var VOC_PAGES = [
+  {key:"s14", label:"S. 14 · Reisen & Reservationen", words:[
+    ["partir de","abfahren von"],["arriver à","ankommen in/an"],["le départ","die Abfahrt, Abreise"],
+    ["une arrivée","die Ankunft, Anreise"],["un aller simple","die einfache Fahrt, Hinfahrt"],
+    ["un aller-retour","die Hin- und Rückfahrt"],["le passager","der Passagier"],["le billet","das Ticket"],
+    ["être valable pour","gültig sein für"],["le guichet","der Schalter"],["une agence de voyage","das Reisebüro"],
+    ["une offre","das Angebot"],["le prospectus","der Prospekt"],["les préparatifs","die Vorbereitungen"],
+    ["préparer qn/qc","jn./etw. vorbereiten"],["préférer faire qc","vorziehen, etw. zu tun"],
+    ["préliminaire","vorbereitend"],["s'informer sur qn/qc","sich über jn./etw. informieren"],
+    ["un horaire","der Fahrplan, Flugplan"],["la destination","das Ziel, der Bestimmungsort"],
+    ["la réservation","die Reservation"],["réserver qc","etw. reservieren"],
+    ["une annulation","die Absage, Stornierung"],["annuler qc","etw. absagen, stornieren"],
+    ["la confirmation","die Bestätigung"],["confirmer qc à qn","jm. etw. bestätigen"],
+    ["la réception","der Empfang, die Rezeption"],["recevoir qn/qc","jn./etw. empfangen"]
+  ]},
+  {key:"s15", label:"S. 15 · Ferien & Verkehrsmittel", words:[
+    ["payer qc comptant","etw. bar bezahlen"],["s'amuser avec qn/qc","sich mit jm./etw. vergnügen"],
+    ["avoir congé","frei haben"],["être en vacances","in den Ferien sein"],
+    ["passer ses vacances","seine Ferien verbringen"],["à la mer","am Meer"],["à la plage","am Strand"],
+    ["à la montagne","in den Bergen"],["à la campagne","auf dem Land"],["en ville","in der Stadt"],
+    ["les bagages","das Gepäck"],["faire ses bagages","seine Koffer packen"],["la valise","der Koffer"],
+    ["le sac à dos","der Rucksack"],["le sac à main","die Handtasche"],
+    ["le bureau des objets trouvés","das Fundbüro"],["aller à vélo","mit dem Fahrrad fahren"],
+    ["aller à moto","mit dem Motorrad fahren"],["aller à pied","zu Fuss gehen"],
+    ["aller en train","mit dem Zug fahren"],["aller en autobus","mit dem Bus fahren"],
+    ["aller en avion","mit dem Flugzeug fliegen"],["aller en voiture","mit dem Auto fahren"],
+    ["aller en taxi","mit dem Taxi fahren"],["aller en bac","mit der Fähre fahren"],
+    ["aller en métro","mit der Metro fahren"],["la croisière","die Kreuzfahrt"],["décoller","abheben"],
+    ["atterrir","landen"],["le vol","der Flug"],["voler","fliegen"],
+    ["prendre une autoroute","eine Autobahn nehmen"],["un embouteillage","ein Stau"],
+    ["la sortie","der Ausgang, die Ausfahrt"]
+  ]},
+  {key:"s16", label:"S. 16 · Bahnhof, Hotel & Essen", words:[
+    ["une entrée","der Eingang, die Auffahrt, der Eintritt"],["un arrêt de bus","die Bushaltestelle"],
+    ["la gare","der Bahnhof"],["la station de métro","die Metrostation"],
+    ["la voie","das Gleis, die Fahrbahn, der Weg"],["la correspondance","der Anschluss (ÖV)"],
+    ["à l'étranger","im Ausland"],["la frontière","die Grenze"],["la douane","der Zoll"],
+    ["déclarer qc à qn","etw. verzollen"],["le séjour","der Aufenthalt"],["un hébergement","die Unterkunft"],
+    ["un hôtel","das Hotel"],["la chambre double","das Doppelzimmer"],["la chambre simple","das Einzelzimmer"],
+    ["la pension complète","die Vollpension"],["la demi-pension","die Halbpension"],
+    ["la salle de bains","das Badezimmer"],["une auberge de jeunesse","die Jugendherberge"],
+    ["un appartement de vacances","die Ferienwohnung"],["la chambre d'hôte","das Gästezimmer"],
+    ["le camping","Campen, der Campingplatz"],["la tente","das Zelt"],["complet","ausgebucht"],
+    ["la haute saison","die Hochsaison"],["la basse saison","die Nebensaison"],["louer qc","etw. mieten"],
+    ["le petit-déjeuner","das Frühstück"],["le déjeuner","das Mittagessen"],["le dîner","das Nachtessen"],
+    ["le casse-croûte","der Imbiss, die Zwischenmahlzeit"],["à (l')emporter","zum Mitnehmen"],
+    ["la formule","das Menüangebot"],["proposer qc à qn","jm. etw. vorschlagen"],
+    ["recommander qc à qn","jm. etw. empfehlen"]
+  ]},
+  {key:"s17", label:"S. 17 · Restaurant & Sehenswürdigkeiten", words:[
+    ["commander qc","etw. bestellen"],["la commande","die Bestellung"],["goûter qc","etw. probieren"],
+    ["coûter qc","etw. kosten"],["une addition","die Rechnung"],["service compris","Bedienung inbegriffen"],
+    ["le pourboire","das Trinkgeld"],["remplir qc","etw. ausfüllen, füllen"],["le formulaire","das Formular"],
+    ["la carte d'identité","die Identitätskarte"],["le passeport","der Reisepass"],
+    ["être à l'heure","pünktlich sein"],["être en retard","verspätet sein"],["le paysage","die Landschaft"],
+    ["le désert","die Wüste"],["la côte","die Küste"],["le fleuve","der Fluss"],["le ruisseau","der Bach"],
+    ["le port","der Hafen"],["la forêt vierge","der Urwald"],["une excursion","der Ausflug"],
+    ["le plan","der Stadtplan"],["la carte","die Landkarte"],["le panorama","das Panorama, der Rundblick"],
+    ["la curiosité","die Sehenswürdigkeit"],["la vieille ville","die Altstadt"],["le monument","das Denkmal"],
+    ["une église","die Kirche"],["un hôtel de ville","das Rathaus"],["le château","das Schloss"],
+    ["la tour","der Turm"],["la banque","die Bank"],["la poste","die Post"],["le stade","das Stadion"],
+    ["une ambassade","die Botschaft"],["les heures d'ouverture","die Öffnungszeiten"]
+  ]}
+];
+
+/* Alle Schreibweisen, die als richtig gelten: mit und ohne qn/qc, mit
+   bestimmtem statt unbestimmtem Artikel (und umgekehrt). */
+function vocAccept(fr){
+  var out = [fr];
+  if(fr.indexOf("(l')") !== -1){
+    out = [fr.replace("(l')","l'"), fr.replace("(l')","").replace(/\s+/g," ")];
+  }
+  if(/\bq[nc]\b/.test(fr)){
+    var bare = fr.replace(/\s+à qn$/,"").replace(/\s+q[nc](\/q[nc])?\b/g,"").trim();
+    out.push(bare);
+    var noPrep = bare.replace(/\s+(sur|avec|à|de)$/,"");
+    if(noPrep !== bare) out.push(noPrep);
+  }
+  if(fr === "partir de" || fr === "arriver à" || fr === "être valable pour"){
+    out.push(fr.replace(/\s+\S+$/,""));
+  }
+  var m = fr.match(/^(le|la|un|une) (.+)$/);
+  if(m){
+    var rest = m[2], vowel = startsVowelSound(rest);
+    if(m[1] === "un") out.push(vowel ? "l'"+rest : "le "+rest);
+    if(m[1] === "une") out.push(vowel ? "l'"+rest : "la "+rest);
+    if(m[1] === "le") out.push("un "+rest);
+    if(m[1] === "la") out.push("une "+rest);
+  }
+  return out;
+}
+function vocBuilder(page){
+  return function(){
+    var bank = [];
+    page.words.forEach(function(w){
+      bank.push(inputQ("voc","Deutsch → Französisch · "+page.key.replace("s","S. "), w[1],
+        /^(le|la|les|un|une|l')\b/.test(w[0]) ? "Wie heisst das auf Französisch? <span class=\"muted\">(mit Artikel)</span>" : "Wie heisst das auf Französisch?",
+        vocAccept(w[0]), w[0], "Merke: "+w[0]+" = "+w[1]+"."));
+      var dis = shuffle(page.words.filter(function(x){ return x[0] !== w[0]; })).slice(0,3)
+        .map(function(x){ return x[1]; });
+      bank.push(choiceQ("voc","Französisch → Deutsch · "+page.key.replace("s","S. "), "<i>"+w[0]+"</i>",
+        "Was bedeutet das?", shuffle(dis.concat([w[1]])), w[1], w[0]+" = "+w[1]+"."));
+    });
+    return bank;
+  };
+}
+/* Lückensätze mit dem Wortschatz — so wie im Test „im Satz“ gefragt wird. */
+function buildVocSentences(){
+  var items = [
+    ["Le train ____ de Genève à 8 h. <span class=\"muted\">(fährt ab)</span>",["part"],"partir de: le train part de …"],
+    ["Nous ____ à Paris à midi. <span class=\"muted\">(kommen an)</span>",["arrivons"],"arriver à: nous arrivons à …"],
+    ["Je voudrais un ____ pour Lyon. <span class=\"muted\">(Hin- und Rückfahrt)</span>",["aller-retour","aller retour"],"un aller-retour = die Hin- und Rückfahrt."],
+    ["Ce billet est ____ pour deux jours. <span class=\"muted\">(gültig)</span>",["valable"],"être valable pour = gültig sein für."],
+    ["Tu achètes les billets au ____. <span class=\"muted\">(Schalter)</span>",["guichet"],"le guichet = der Schalter."],
+    ["L'hôtel est ____, il n'y a plus de chambres. <span class=\"muted\">(ausgebucht)</span>",["complet"],"complet = ausgebucht."],
+    ["Il y a un grand ____ sur l'autoroute. <span class=\"muted\">(Stau)</span>",["embouteillage"],"un embouteillage = ein Stau."],
+    ["L'avion ____ à 10 h et ____ à 12 h. <span class=\"muted\">(hebt ab / landet)</span>",["décolle atterrit","décolle et atterrit","décolle, atterrit"],"décoller = abheben, atterrir = landen."],
+    ["Ce soir, je fais mes ____. <span class=\"muted\">(Koffer packen)</span>",["bagages"],"faire ses bagages = seine Koffer packen."],
+    ["Au restaurant, je demande l'____. <span class=\"muted\">(Rechnung)</span>",["addition"],"une addition = die Rechnung."],
+    ["Je laisse un ____ au serveur. <span class=\"muted\">(Trinkgeld)</span>",["pourboire"],"le pourboire = das Trinkgeld."],
+    ["À la frontière, on passe la ____. <span class=\"muted\">(Zoll)</span>",["douane"],"la douane = der Zoll."],
+    ["Nous ne sommes pas à l'heure, nous sommes en ____. <span class=\"muted\">(verspätet)</span>",["retard"],"être en retard = verspätet sein."],
+    ["J'ai perdu mon sac. Je vais au bureau des ____. <span class=\"muted\">(Fundbüro)</span>",["objets trouvés","objets trouves"],"le bureau des objets trouvés = das Fundbüro."],
+    ["Le serveur nous ____ le poisson. <span class=\"muted\">(empfiehlt)</span>",["recommande"],"recommander qc à qn = jm. etw. empfehlen."],
+    ["Il faut ____ ce formulaire. <span class=\"muted\">(ausfüllen)</span>",["remplir"],"remplir qc = etw. ausfüllen."],
+    ["Pendant la ____ saison, les hôtels sont chers. <span class=\"muted\">(Hoch-)</span>",["haute"],"la haute saison = die Hochsaison."],
+    ["Un sandwich à ____, s'il vous plaît. <span class=\"muted\">(zum Mitnehmen)</span>",["emporter","l'emporter"],"à (l')emporter = zum Mitnehmen."]
+  ];
+  return items.map(function(it){
+    return inputQ("voc","Im Satz", it[0], "Ergänze mit dem passenden Wort.", it[1], it[1][0], it[2]);
+  });
+}
+
+/* ================================================================
    THEMEN-REGISTER
    ================================================================ */
 var FR_TOPICS = [
@@ -1745,7 +2102,26 @@ var FR_TOPICS = [
    ]},
   {key:"etre", num:"06", label:"Être &amp; Inversion", short:"Être & Inversion",
    sub:"avoir oder être, Fragen mit Bindestrich",
-   sets:[{key:"all", label:"Alles gemischt", build:buildEtreBank}]}
+   sets:[{key:"all", label:"Alles gemischt", build:buildEtreBank}]},
+  {key:"poss", num:"07", label:"Possessifs", short:"Possessifs",
+   sub:"mon/ma/mes und le mien/la mienne",
+   sets:[
+     {key:"adj", label:"Begleiter", build:buildPossAdj},
+     {key:"pron", label:"Begleiter → Pronomen", build:buildPossPron},
+     {key:"fill", label:"Lückentext · Pronomen", build:buildPossFill},
+     {key:"mix", label:"Begleiter oder Pronomen · Übersetzen", build:buildPossMix}
+   ]},
+  {key:"neg", num:"08", label:"Négation", short:"Négation",
+   sub:"ne … pas, plus, jamais, pas encore, rien, personne",
+   sets:[
+     {key:"trans", label:"Sätze verneinen", build:buildNegTransform},
+     {key:"choice", label:"Stellung & Gegenteil", build:buildNegChoice},
+     {key:"transl", label:"Übersetzen", build:buildNegTranslate}
+   ]},
+  {key:"voc", num:"09", label:"Vocabulaire · En route", short:"Vocabulaire",
+   sub:"Dossier 02, Seiten 14–17",
+   sets:VOC_PAGES.map(function(p){ return {key:p.key, label:p.label, build:vocBuilder(p)}; })
+     .concat([{key:"satz", label:"Im Satz", build:buildVocSentences}])}
 ];
 
 /* ================================================================
@@ -2662,6 +3038,9 @@ var FR_SECTIONS = [
   {key:"place", label:"Adjektiv-Stellung"},
   {key:"comp", label:"Steigerung"},
   {key:"etre", label:"Être & Inversion"},
+  {key:"poss", label:"Possessifs"},
+  {key:"neg", label:"Négation"},
+  {key:"voc", label:"Vocabulaire"},
   {key:"test", label:"Prüfung"}
 ];
 
@@ -3537,6 +3916,9 @@ var TOPIC_LEDE = {
   place: "Die meisten Adjektive stehen hinter dem Nomen. 13 stehen davor — und einige ändern ihre Bedeutung je nach Stellung.",
   comp: "Comparatif und superlatif: vergleichen, steigern und die unregelmässigen Formen von bon und mauvais.",
   etre: "Wer bildet das Passé composé mit être? Und wann braucht die Inversionsfrage ein -t-?",
+  poss: "Begleiter vor dem Nomen (mon billet), Pronomen anstelle des Nomens (le mien) — geübt mit dem Wortschatz „En route“.",
+  neg: "ne … pas und ihre Verwandten: plus, jamais, pas encore, rien, personne. Wo sie im Satz stehen und was mit dem Artikel passiert.",
+  voc: "Vokabeltest vom 14. Oktober 2026: Dossier 02 – En route, Seiten 14–17. Deutsch → Französisch schreiben, Französisch → Deutsch erkennen.",
   "g-zeitstrahl": "Alle 26 Ereignisse deines Dossiers in der richtigen Reihenfolge. Wer die Reihenfolge kann, kann auch die Jahreszahlen.",
   "g-1848": "Vier Verfassungen in fünfzig Jahren, ein Bürgerkrieg im November 1847 — und am Ende der Schritt vom Staatenbund zum Bundesstaat.",
   "g-demokratie": "Wie aus der Alleinherrschaft des Freisinns eine Konkordanz wurde — über 1874, 1891 und drei Bundesratssitze.",
@@ -4146,6 +4528,58 @@ REFERENCE.etre = function(body){
   body.innerHTML = html;
 };
 
+REFERENCE.poss = function(body){
+  var html = '<div class="section-title">Begleiter und Pronomen im Überblick</div>';
+  html += '<p class="section-lede">Der <b>Begleiter</b> (adjectif possessif) steht vor dem Nomen: <i>mon billet</i>. Das <b>Pronomen</b> (pronom possessif) ersetzt das Nomen: <i>le mien</i>.</p>';
+  html += '<div class="tablewrap"><table><tr><th>Besitzer</th><th>Begleiter</th><th>♂ Sg.</th><th>♀ Sg.</th><th>♂ Pl.</th><th>♀ Pl.</th></tr>';
+  POSS_PRONOUNS.forEach(function(p){
+    html += '<tr><td class="sans">'+p.owner+'</td><td class="muted">'+p.adj+'</td><td>'+p.m+'</td><td>'+p.f+'</td><td>'+p.mp+'</td><td>'+p.fp+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<div class="grid grid-3">'
+    + '<div class="card"><h4>Das Nomen entscheidet</h4><div class="ex">Geschlecht und Zahl richten sich nach dem Besitz, nicht nach dem Besitzer:<br>Marc → <b>sa</b> valise<br>Anne → <b>son</b> passeport</div></div>'
+    + '<div class="card"><h4>notre ≠ nôtre</h4><div class="ex">Begleiter ohne Accent: notre vol<br>Pronomen mit ô: le nôtre, la vôtre</div></div>'
+    + '<div class="card"><h4>à / de + Pronomen</h4><div class="ex">à + le mien → <b>au mien</b><br>de + le nôtre → <b>du nôtre</b><br>à + les leurs → <b>aux leurs</b></div></div>'
+    + '</div>';
+  html += '<div class="callout warn"><b>Die Vokal-Falle:</b> vor femininen Wörtern mit Vokal oder stummem h steht mon/ton/son: <span class="mono">mon arrivée · ton excursion · son addition · mon auberge de jeunesse</span>.</div>';
+  html += '<div class="callout tip"><b>leur oder leurs?</b> Ein Objekt, mehrere Besitzer → <span class="mono">leur valise / la leur</span>. Mehrere Objekte → <span class="mono">leurs valises / les leurs</span>.</div>';
+  body.innerHTML = html;
+};
+
+REFERENCE.neg = function(body){
+  var html = '<div class="section-title">Die Verneinungen</div>';
+  html += '<div class="tablewrap"><table><tr><th>Französisch</th><th>Deutsch</th><th>Gegenteil von</th><th>Beispiel</th></tr>';
+  NEGATIONS.forEach(function(n){
+    html += '<tr><td class="exc">'+n.fr+'</td><td class="sans">'+n.de+'</td><td class="sans muted">'+n.opp+'</td><td>'+n.ex+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<div class="section-title">Wo steht die Verneinung?</div>';
+  html += '<div class="grid grid-2">'
+    + '<div class="card"><h4>Präsens</h4><div class="ex">ne + Verb + pas<br>Je <b>ne</b> réserve <b>pas</b>.<br>vor Vokal: Je <b>n\'</b>ai <b>pas</b> de billet.</div></div>'
+    + '<div class="card"><h4>Mit Pronomen</h4><div class="ex">ne + Pronomen + Verb + pas<br>Je <b>ne</b> le confirme <b>pas</b>.<br>Elle <b>ne</b> s\'informe <b>pas</b>.</div></div>'
+    + '<div class="card"><h4>Passé composé</h4><div class="ex">ne + Hilfsverb + pas + Partizip<br>Je <b>n\'</b>ai <b>pas</b> réservé.<br>Nous <b>n\'</b>avons <b>rien</b> commandé.</div></div>'
+    + '<div class="card"><h4>Ausnahme: hinter dem Partizip</h4><div class="ex">personne, aucun, nulle part, que<br>Je n\'ai vu <b>personne</b>.<br>Je ne l\'ai trouvé <b>nulle part</b>.</div></div>'
+    + '<div class="card"><h4>Infinitiv</h4><div class="ex">ne pas zusammen vor das Verb<br>Je préfère <b>ne pas</b> partir.<br>Il promet de <b>ne rien</b> dire.</div></div>'
+    + '<div class="card"><h4>Als Subjekt</h4><div class="ex">Rien / Personne + ne — ohne pas!<br><b>Personne n\'</b>est à l\'heure.<br><b>Rien ne</b> marche.</div></div>'
+    + '</div>';
+  html += '<div class="callout warn"><b>Artikel nach der Verneinung:</b> un / une / des / du / de la → <b>de (d\')</b>: <span class="mono">J\'ai une valise → Je n\'ai pas de valise · Il y a des embouteillages → Il n\'y a pas d\'embouteillages</span>.<br><br>'
+    + '<b>Ausnahmen:</b> nach <i>être</i> bleibt der Artikel (<span class="mono">Ce n\'est pas un hôtel</span>), ebenso bei <i>ne … que</i> (<span class="mono">Je n\'ai qu\'une valise</span>). Der bestimmte Artikel bleibt immer: <span class="mono">Je ne prends pas l\'autoroute</span>.</div>';
+  html += '<div class="callout tip"><b>Nie doppelt:</b> rien, jamais, plus und personne ersetzen pas: <span class="mono">Je ne vois rien</span> — nicht „ne vois pas rien“. Kurzantworten ohne ne: <i>Pas encore. — Jamais ! — Rien. — Personne.</i></div>';
+  html += '<div class="callout ok"><b>toujours hat zwei Gegenteile:</b> toujours = immer → <span class="mono">ne … jamais</span>; toujours = noch immer → <span class="mono">ne … plus</span>. Und déjà = schon → <span class="mono">ne … pas encore</span>; déjà = schon mal → <span class="mono">ne … jamais</span>.</div>';
+  body.innerHTML = html;
+};
+
+REFERENCE.voc = function(body){
+  var html = '<div class="callout tip"><b>Vokabeltest Mittwoch, 14. Oktober 2026:</b> Quizlet „02 – En route“, Seiten 14–17. Seite 18 enthält nur Übungen und kommt nicht im Test.</div>';
+  VOC_PAGES.forEach(function(p){
+    html += '<div class="section-title">'+p.label+' <span class="muted">· '+p.words.length+' Wörter</span></div>';
+    html += '<div class="tablewrap"><table><tr><th>Französisch</th><th>Deutsch</th></tr>';
+    p.words.forEach(function(w){ html += '<tr><td>'+w[0]+'</td><td class="sans">'+w[1]+'</td></tr>'; });
+    html += '</table></div>';
+  });
+  body.innerHTML = html;
+};
+
 /* ================================================================
    REFERENZ-SEITEN GESCHICHTE
    ================================================================ */
@@ -4456,6 +4890,7 @@ window.__VLKR_TEST__ = {
   parseHash: parseHash,
   subjectProgress: subjectProgress,
   REFERENCE: REFERENCE,
+  VOC_PAGES: VOC_PAGES,
   TOPIC_LEDE: TOPIC_LEDE,
   STORE_KEY: STORE_KEY,
   VERBS: VERBS,

@@ -44,9 +44,9 @@ function runChecks(W, T){
   check("Testzugang vorhanden", function(){
     return T ? true : "window.__VLKR_TEST__ fehlt";
   });
-  check("Französisch hat 6 Themen", function(){
+  check("Französisch hat 9 Themen", function(){
     var t = T.topicsOf("fr");
-    return (t && t.length === 6) ? true : "erwartet 6, ist " + (t ? t.length : "null");
+    return (t && t.length === 9) ? true : "erwartet 9, ist " + (t ? t.length : "null");
   });
   /* Fortschritt hängt an STORE_KEY und den Themenschlüsseln. Ändert sich
      eines davon, ist der bestehende Französisch-Stand verloren. */
@@ -55,7 +55,7 @@ function runChecks(W, T){
   });
   check("Französische Themenschlüssel unverändert", function(){
     var k = T.topicsOf("fr").map(function(t){ return t.key; }).join(",");
-    return k === "verbs,gender,adj,place,comp,etre" ? true : "ist " + k;
+    return k.indexOf("verbs,gender,adj,place,comp,etre") === 0 ? true : "ist " + k;
   });
 
   /* ---- Verbliste 24–33 ---- */
@@ -260,6 +260,13 @@ function runChecks(W, T){
   });
 
   /* ---- Tasks 9–14: Inhaltsthemen ---- */
+  bankCheck(T, "poss", 50);
+  bankCheck(T, "neg", 50);
+  bankCheck(T, "voc", 250);
+  check("Vokabeln: 133 Wörter auf vier Seiten", function(){
+    var n = T.VOC_PAGES.reduce(function(a,p){ return a + p.words.length; }, 0);
+    return n === 133 ? true : "ist " + n;
+  });
   bankCheck(T, "g-zeitstrahl", 23);
   bankCheck(T, "g-1848", 24);
   bankCheck(T, "g-demokratie", 18);
