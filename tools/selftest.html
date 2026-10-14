@@ -260,6 +260,32 @@ function runChecks(W, T){
   });
 
   /* ---- Tasks 9–14: Inhaltsthemen ---- */
+  /* ---- Baukasten 3D ---- */
+  check("Baukasten: jede Zerlegung ergibt wieder die Form", function(){
+    var bad = [];
+    Object.keys(T.VERBS).forEach(function(k){
+      ["pr","im","pc","pq","fu","co"].forEach(function(t){
+        for(var i=0;i<6;i++){
+          var c = T.VERBS[k].forms[t][i], f = Array.isArray(c) ? c[0] : c;
+          var s = T.atelierSplit(k, t, i);
+          var back = s.aux ? s.aux + " " + s.stem : s.stem + s.end;
+          if(back !== f) bad.push(k+"."+t+"["+i+"]="+back);
+        }
+      });
+    });
+    return bad.length === 0 ? true : bad.slice(0,5).join(", ");
+  });
+  check("Baukasten: Stamm und Endung stimmen", function(){
+    var cases = [["parler","pr",3,"parl","ons"],["finir","pr",0,"fin","is"],["finir","pr",3,"fin","issons"],
+                 ["dormir","pr",2,"dor","t"],["parler","fu",0,"parler","ai"],["venir","co",5,"viendr","aient"],
+                 ["parler","im",4,"parl","iez"]];
+    for(var i=0;i<cases.length;i++){
+      var c = cases[i], s = T.atelierSplit(c[0], c[1], c[2]);
+      if(s.stem !== c[3] || s.end !== c[4]) return c.join("/") + " ergab " + s.stem + "+" + s.end;
+    }
+    var pc = T.atelierSplit("venir","pc",0);
+    return pc.aux === "suis" ? true : "venir pc: " + pc.aux;
+  });
   bankCheck(T, "poss", 50);
   bankCheck(T, "neg", 50);
   bankCheck(T, "voc", 250);

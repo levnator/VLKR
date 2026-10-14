@@ -753,6 +753,53 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
   .level-card .lc-stats span + span{border-left:none; padding-left:0;}
 }
 
+/* ============ BAUKASTEN 3D ============ */
+.atelier{margin-top:8px;}
+.at-hero{padding:clamp(56px, 13vh, 150px) 0 clamp(8px, 2vh, 20px); text-align:center;}
+.at-eyebrow{display:block; font-family:'Newsreader',serif; font-style:italic; font-size:19px; color:var(--ink); letter-spacing:.01em;}
+.at-eyebrow span{color:var(--ink-faint); font-style:normal; font-family:'Public Sans',sans-serif; font-size:14px;}
+.at-exc{font-style:normal; font-family:'Public Sans',sans-serif; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--accent); background:var(--accent-soft); padding:3px 8px; border-radius:99px; margin-left:6px; vertical-align:2px;}
+.at-word{font-family:'Newsreader',Georgia,serif; font-style:italic; font-weight:500; line-height:1;
+  font-size:clamp(54px, 12vw, 148px); letter-spacing:-0.025em; margin:clamp(22px, 5vh, 44px) 0 0;
+  color:var(--ink); overflow-wrap:anywhere;}
+.at-word .at-pron{font-weight:400; color:var(--ink-faint); margin-right:.18em; font-size:.5em; vertical-align:.12em;}
+.at-word .at-end{color:var(--accent); display:inline-block;}
+.at-word .at-end.whole{color:var(--gold);}
+.at-word.in .at-end{animation:atRise .55s cubic-bezier(.2,.8,.2,1);}
+@keyframes atRise{from{opacity:0; transform:translateY(.22em);} to{opacity:1; transform:none;}}
+.at-rule{max-width:620px; margin:clamp(18px, 3vh, 30px) auto 0; color:var(--ink-soft); font-size:15px; line-height:1.55; text-wrap:balance;}
+.at-rule b{color:var(--ink); font-weight:600;}
+.at-stage{position:relative; height:clamp(260px, 44vh, 440px); margin:clamp(10px, 3vh, 30px) -8px 0; outline:none; border-radius:18px;}
+.at-stage:focus-visible{box-shadow:0 0 0 2px var(--focus);}
+.at-stage canvas{display:block; width:100% !important; height:100% !important; cursor:grab; touch-action:pan-y;}
+.at-stage canvas:active{cursor:grabbing;}
+.at-stage-msg{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center;
+  padding:0 24px; color:var(--ink-faint); font-size:14px;}
+.at-stage.offline{height:auto; min-height:80px;}
+.at-stage.offline .at-stage-msg{position:static; padding:24px;}
+.at-forms{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:6px 10px; max-width:640px; margin:6px auto 0;}
+.at-form{background:none; border:0; padding:8px 10px; border-radius:10px; text-align:left; cursor:pointer;
+  font-family:'Newsreader',serif; font-size:19px; color:var(--ink-soft); min-width:0; overflow-wrap:anywhere;}
+.at-form .p{font-family:'Public Sans',sans-serif; font-size:12px; color:var(--ink-faint);}
+.at-form b{color:var(--accent); font-weight:600;}
+.at-form.active{background:var(--accent-soft); color:var(--ink);}
+.at-form:hover{color:var(--ink);}
+.at-controls{margin:clamp(30px, 6vh, 60px) auto 20px; max-width:760px; display:flex; flex-direction:column; gap:14px; align-items:center;}
+.at-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
+.at-chip{border:1px solid var(--rule); background:var(--paper-raised); color:var(--ink-soft); border-radius:99px;
+  padding:7px 14px; font-size:13px; font-weight:600; cursor:pointer;}
+.at-chip.ghost{background:transparent;}
+.at-chip.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+.at-verb{border:0; background:none; cursor:pointer; padding:4px 8px; font-family:'Newsreader',serif; font-style:italic;
+  font-size:20px; color:var(--ink-faint); border-bottom:1.5px solid transparent;}
+.at-verb:hover{color:var(--ink);}
+.at-verb.active{color:var(--accent); border-bottom-color:var(--accent);}
+@media (max-width:560px){
+  .at-forms{grid-template-columns:repeat(2, minmax(0,1fr));}
+  .at-stage{margin:10px 0 0;}
+}
+@media (prefers-reduced-motion: reduce){ .at-word.in .at-end{animation:none;} }
 </style>
 </head>
 <body>
@@ -3780,10 +3827,11 @@ function renderVerbsSection(el){
   var tab = curTab("verbs","reference");
   var html = '<span class="eyebrow">Thema 01</span><h1 class="page-title">Verben</h1>';
   html += '<p class="page-lede">Alle 26 Verben in allen 6 Zeitformen. Rot markiert heisst: Besonderheit gegenüber dem regulären Muster.</p>';
-  html += tabBar("verbs", [{key:"reference",label:"Referenz"},{key:"drill",label:"Trainer"}], function(){ renderVerbsSection(el); });
+  html += tabBar("verbs", [{key:"reference",label:"Referenz"},{key:"drill",label:"Trainer"},{key:"atelier",label:"Baukasten 3D"}], function(){ renderVerbsSection(el); });
   el.innerHTML = html + '<div id="secBody"></div>';
   var body = document.getElementById("secBody");
   if(tab === "reference") renderVerbReference(body);
+  else if(tab === "atelier") renderVerbAtelier(body);
   else renderVerbTrainer(body);
 }
 function renderVerbReference(body){
@@ -3844,6 +3892,360 @@ function renderVerbDetail(body, vk){
     renderVerbsSection(document.getElementById("content"));
   };
 }
+/* ================================================================
+   BAUKASTEN 3D — Stamm + Endung, als Ring aus sechs Kacheln
+   three.js kommt erst beim Öffnen des Tabs vom CDN. Ohne Netz bleibt
+   der Baukasten bedienbar: Wort, Formel und Formenliste sind reines DOM.
+   ================================================================ */
+var THREE_SRC = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+var threeLoading = null;
+function loadThree(){
+  if(window.THREE) return Promise.resolve(window.THREE);
+  if(threeLoading) return threeLoading;
+  threeLoading = new Promise(function(res, rej){
+    var s = document.createElement("script");
+    s.src = THREE_SRC; s.async = true;
+    s.onload = function(){ window.THREE ? res(window.THREE) : rej(new Error("THREE fehlt")); };
+    s.onerror = function(){ threeLoading = null; rej(new Error("three.js nicht erreichbar")); };
+    document.head.appendChild(s);
+  });
+  return threeLoading;
+}
+
+var AT_GROUPS = [
+  {key:"er", label:"-er", verbs:["parler","lancer","manger","acheter","esperer","appeler","jeter","payer","envoyer","aller"]},
+  {key:"ir", label:"-ir", verbs:["finir","hair","courir","fuir","dormir","mentir","servir","venir","tenir","cueillir","offrir","mourir","conquerir","bouillir"]},
+  {key:"aux", label:"-oir · -re", verbs:["avoir","etre"]}
+];
+var AT_PRON = ["je","tu","il","nous","vous","ils"];
+var AT_TILE_PRON = ["je","tu","il · elle · on","nous","vous","ils · elles"];
+var AT_IMPARFAIT = ["ais","ais","ait","ions","iez","aient"];
+var AT_FUTUR = ["ai","as","a","ons","ez","ont"];
+/* Ganz unregelmässig im Présent — hier gibt es keinen Stamm zum Zeigen. */
+var AT_WHOLE_PR = {avoir:1, etre:1, aller:1};
+
+function atFirst(cell){ return cellArr(cell)[0]; }
+function atIss(vk){ return /issons$/.test(atFirst(VERBS[vk].forms.pr[3])); }
+function atIsEtreAux(vk){ return /^(suis|es|est|sommes|êtes|sont)\b/.test(atFirst(VERBS[vk].forms.pc[0])); }
+
+/* Zerlegt eine Form in Hilfsverb, Stamm und Endung. Für die einfachen
+   Zeiten ist die Endung das, was sich je Person ändert; für die
+   zusammengesetzten ist es das Hilfsverb. */
+function atelierSplit(vk, tk, pi){
+  var v = VERBS[vk], form = atFirst(v.forms[tk][pi]);
+  if(tk === "pc" || tk === "pq"){
+    var sp = form.indexOf(" ");
+    return {aux:form.slice(0, sp), stem:form.slice(sp+1), end:"", whole:false};
+  }
+  if(tk === "pr" && AT_WHOLE_PR[vk]) return {aux:"", stem:"", end:form, whole:true};
+  var cands;
+  if(tk === "im" || tk === "co") cands = [AT_IMPARFAIT[pi]];
+  else if(tk === "fu") cands = [AT_FUTUR[pi]];
+  else if(atIss(vk)) cands = [["is"],["is"],["it"],["issons"],["issez"],["issent"]][pi];
+  else cands = [["e","s","x"],["es","s","x"],["e","t","d"],["ons"],["ez"],["ent"]][pi];
+  for(var i=0;i<cands.length;i++){
+    var c = cands[i];
+    if(form.length > c.length && form.slice(-c.length) === c){
+      return {aux:"", stem:form.slice(0, -c.length), end:c, whole:false};
+    }
+  }
+  return {aux:"", stem:"", end:form, whole:true};
+}
+function atPronoun(vk, pi, first){
+  if(pi !== 0) return AT_PRON[pi];
+  return (vk !== "hair" && startsVowelSound(first)) ? "j'" : "je";
+}
+/* Die Regel zur gewählten Zeit, in einer Zeile. */
+function atelierRule(vk, tk){
+  var v = VERBS[vk], aux = atIsEtreAux(vk) ? "être" : "avoir";
+  var nous = atFirst(v.forms.pr[3]);
+  if(tk === "pr"){
+    if(AT_WHOLE_PR[vk]) return v.inf + " ist im Présent komplett unregelmässig — die ganze Form lernst du auswendig.";
+    if(/er$/.test(v.inf)) return "Présent der -er-Verben: Stamm + <b>e · es · e · ons · ez · ent</b>";
+    if(atIss(vk)) return "Présent wie finir: Stamm + <b>is · is · it · issons · issez · issent</b>";
+    return "Présent der unregelmässigen -ir-Verben: Stamm + <b>s · s · t · ons · ez · ent</b>";
+  }
+  if(tk === "im"){
+    return vk === "etre"
+      ? "Imparfait: einzige Ausnahme ist être mit dem Stamm <b>ét-</b> + ais · ais · ait · ions · iez · aient"
+      : "Imparfait: Stamm der nous-Form (<i>nous "+nous+"</i> → <b>"+nous.replace(/ons$/,"")+"-</b>) + <b>ais · ais · ait · ions · iez · aient</b>";
+  }
+  if(tk === "fu") return "Futur simple: Futur-Stamm + die Endungen von avoir: <b>ai · as · a · ons · ez · ont</b>";
+  if(tk === "co") return "Conditionnel: derselbe Stamm wie im Futur + die Endungen des Imparfait: <b>ais · ais · ait · ions · iez · aient</b>";
+  if(tk === "pc") return "Passé composé: <b>"+aux+"</b> im Présent + Partizip"+(aux === "être" ? " — mit être passt sich das Partizip dem Subjekt an (e, s, es)." : ".");
+  return "Plus-que-parfait: <b>"+aux+"</b> im Imparfait + Partizip"+(aux === "être" ? " — mit être passt sich das Partizip dem Subjekt an." : ".");
+}
+
+function atState(){
+  if(!STATE.atelier) STATE.atelier = {vk:"parler", tk:"pr", pi:3, grp:"er"};
+  return STATE.atelier;
+}
+
+function renderVerbAtelier(body){
+  var st = atState();
+  var html = '<div class="atelier">'
+    + '<div class="at-hero">'
+    +   '<span class="at-eyebrow" id="atEyebrow"></span>'
+    +   '<div class="at-word" id="atWord" aria-live="polite"></div>'
+    +   '<p class="at-rule" id="atRule"></p>'
+    + '</div>'
+    + '<div class="at-stage" id="atStage" tabindex="0" aria-label="Personen-Ring. Pfeiltasten wechseln die Person.">'
+    +   '<div class="at-stage-msg" id="atMsg">Baukasten wird aufgebaut …</div>'
+    + '</div>'
+    + '<div class="at-forms" id="atForms"></div>'
+    + '<div class="at-controls">'
+    +   '<div class="at-row" id="atTenses"></div>'
+    +   '<div class="at-row" id="atGroups"></div>'
+    +   '<div class="at-row at-verbs" id="atVerbs"></div>'
+    + '</div>'
+    + '</div>';
+  body.innerHTML = html;
+
+  var scene = null;
+  function update(){
+    var v = VERBS[st.vk], t = tenseByKey(st.tk);
+    var sp = atelierSplit(st.vk, st.tk, st.pi);
+    var first = sp.aux || sp.stem || sp.end;
+    var w = document.getElementById("atWord");
+    w.innerHTML = '<span class="at-pron">'+atPronoun(st.vk, st.pi, first)+'</span>'
+      + (sp.aux ? '<span class="at-end">'+sp.aux+'</span> <span class="at-stem">'+sp.stem+'</span>'
+                : '<span class="at-stem">'+sp.stem+'</span><span class="at-end'+(sp.whole?' whole':'')+'">'+sp.end+'</span>');
+    w.classList.remove("in"); void w.offsetWidth; w.classList.add("in");
+    document.getElementById("atEyebrow").innerHTML = v.inf + ' <span>· ' + v.de + ' · ' + t.label + '</span>'
+      + (v.exc[st.tk] ? ' <em class="at-exc">Besonderheit</em>' : '');
+    document.getElementById("atRule").innerHTML = atelierRule(st.vk, st.tk);
+
+    var fh = '';
+    for(var i=0;i<6;i++){
+      var s2 = atelierSplit(st.vk, st.tk, i), f2 = s2.aux || s2.stem || s2.end;
+      fh += '<button class="at-form'+(i===st.pi?' active':'')+'" data-pi="'+i+'">'
+        + '<span class="p">'+atPronoun(st.vk, i, f2)+'</span> '
+        + (s2.aux ? '<b>'+s2.aux+'</b> '+s2.stem : s2.stem+'<b>'+s2.end+'</b>') + '</button>';
+    }
+    document.getElementById("atForms").innerHTML = fh;
+    document.querySelectorAll("#atForms [data-pi]").forEach(function(b){
+      b.onclick = function(){ setPerson(+b.getAttribute("data-pi")); };
+    });
+
+    document.getElementById("atTenses").innerHTML = TENSES.map(function(x){
+      return '<button class="at-chip'+(x.key===st.tk?' active':'')+'" data-tk="'+x.key+'">'+x.label+'</button>';
+    }).join("");
+    document.getElementById("atGroups").innerHTML = AT_GROUPS.map(function(g){
+      return '<button class="at-chip ghost'+(g.key===st.grp?' active':'')+'" data-grp="'+g.key+'">'+g.label+'</button>';
+    }).join("");
+    var grp = AT_GROUPS.filter(function(g){ return g.key===st.grp; })[0];
+    document.getElementById("atVerbs").innerHTML = grp.verbs.map(function(k){
+      return '<button class="at-verb'+(k===st.vk?' active':'')+'" data-vk="'+k+'">'+VERBS[k].inf+'</button>';
+    }).join("");
+    document.querySelectorAll("#atTenses [data-tk]").forEach(function(b){
+      b.onclick = function(){ st.tk = b.getAttribute("data-tk"); update(); };
+    });
+    document.querySelectorAll("#atGroups [data-grp]").forEach(function(b){
+      b.onclick = function(){
+        st.grp = b.getAttribute("data-grp");
+        var g = AT_GROUPS.filter(function(x){ return x.key===st.grp; })[0];
+        if(g.verbs.indexOf(st.vk) === -1) st.vk = g.verbs[0];
+        update();
+      };
+    });
+    document.querySelectorAll("#atVerbs [data-vk]").forEach(function(b){
+      b.onclick = function(){ st.vk = b.getAttribute("data-vk"); update(); };
+    });
+    if(scene) scene.refresh();
+  }
+  function setPerson(i){
+    st.pi = ((i % 6) + 6) % 6;
+    update();
+    if(scene) scene.focus(st.pi);
+  }
+  var stage = document.getElementById("atStage");
+  stage.onkeydown = function(e){
+    if(e.key === "ArrowRight"){ setPerson(st.pi+1); e.preventDefault(); }
+    if(e.key === "ArrowLeft"){ setPerson(st.pi-1); e.preventDefault(); }
+  };
+  update();
+
+  loadThree().then(function(THREE){
+    if(!document.body.contains(stage)) return;
+    scene = atelierScene(THREE, stage, st, setPerson);
+    document.getElementById("atMsg").remove();
+  }).catch(function(){
+    var m = document.getElementById("atMsg");
+    if(m) m.textContent = "Die 3D-Ansicht braucht eine Internetverbindung. Die Formen oben und darunter funktionieren trotzdem.";
+    stage.classList.add("offline");
+  });
+}
+
+function atCss(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function atelierScene(THREE, stage, st, setPerson){
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setClearColor(0x000000, 0);
+  stage.appendChild(renderer.domElement);
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.72));
+  var key = new THREE.DirectionalLight(0xffffff, 0.55); key.position.set(3, 6, 8); scene.add(key);
+  var rim = new THREE.DirectionalLight(0xffffff, 0.25); rim.position.set(-6, 2, -4); scene.add(rim);
+
+  /* Weicher Schatten unter dem Ring — ein Verlauf statt echter Schatten. */
+  var sc = document.createElement("canvas"); sc.width = sc.height = 256;
+  var sx = sc.getContext("2d"), grd = sx.createRadialGradient(128,128,10,128,128,128);
+  grd.addColorStop(0, "rgba(0,0,0,0.22)"); grd.addColorStop(1, "rgba(0,0,0,0)");
+  sx.fillStyle = grd; sx.fillRect(0,0,256,256);
+  var shadowTex = new THREE.CanvasTexture(sc);
+  var shadow = new THREE.Mesh(new THREE.PlaneGeometry(9, 9),
+    new THREE.MeshBasicMaterial({map:shadowTex, transparent:true, depthWrite:false}));
+  shadow.rotation.x = -Math.PI/2; shadow.position.y = -1.05; scene.add(shadow);
+
+  var W = 1.7, H = 1.08, D = 0.16, R = 3.1, STEP = Math.PI*2/6;
+  var shape = new THREE.Shape(), r = 0.16, x0 = -W/2, y0 = -H/2;
+  shape.moveTo(x0+r, y0); shape.lineTo(x0+W-r, y0); shape.quadraticCurveTo(x0+W, y0, x0+W, y0+r);
+  shape.lineTo(x0+W, y0+H-r); shape.quadraticCurveTo(x0+W, y0+H, x0+W-r, y0+H);
+  shape.lineTo(x0+r, y0+H); shape.quadraticCurveTo(x0, y0+H, x0, y0+H-r);
+  shape.lineTo(x0, y0+r); shape.quadraticCurveTo(x0, y0, x0+r, y0);
+  var slabGeo = new THREE.ExtrudeGeometry(shape, {depth:D, bevelEnabled:true, bevelThickness:0.04, bevelSize:0.04, bevelSegments:4, curveSegments:10});
+  slabGeo.translate(0, 0, -D/2);
+  var faceGeo = new THREE.PlaneGeometry(W, H);
+
+  var ring = new THREE.Group(); scene.add(ring);
+  var tiles = [];
+  for(var i=0;i<6;i++){
+    var holder = new THREE.Group();
+    var a = i*STEP;
+    holder.position.set(Math.sin(a)*R, 0, Math.cos(a)*R);
+    holder.rotation.y = a;
+    var mat = new THREE.MeshStandardMaterial({roughness:0.5, metalness:0.05});
+    var slab = new THREE.Mesh(slabGeo, mat);
+    var cv = document.createElement("canvas"); cv.width = 680; cv.height = 432;
+    var tex = new THREE.CanvasTexture(cv);
+    if(renderer.capabilities.getMaxAnisotropy) tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    var face = new THREE.Mesh(faceGeo, new THREE.MeshBasicMaterial({map:tex, transparent:true}));
+    face.position.z = D/2 + 0.045;
+    slab.userData.pi = face.userData.pi = i;
+    holder.add(slab); holder.add(face);
+    ring.add(holder);
+    tiles.push({holder:holder, slab:slab, mat:mat, cv:cv, tex:tex, k:0});
+  }
+
+  function drawTile(t, i, active){
+    var c = t.cv.getContext("2d"), sp = atelierSplit(st.vk, st.tk, i);
+    var txt = sp.aux || sp.end || sp.stem;
+    c.clearRect(0, 0, t.cv.width, t.cv.height);
+    c.fillStyle = active ? atCss("--accent-ink") : atCss("--ink-faint");
+    c.font = "600 46px 'Public Sans', sans-serif";
+    c.textAlign = "left"; c.textBaseline = "top";
+    c.fillText(AT_TILE_PRON[i], 48, 40);
+    var size = 190;
+    c.font = "italic 500 "+size+"px 'Newsreader', Georgia, serif";
+    while(c.measureText("-"+txt).width > 560 && size > 60){
+      size -= 8; c.font = "italic 500 "+size+"px 'Newsreader', Georgia, serif";
+    }
+    c.fillStyle = active ? atCss("--accent-ink") : atCss("--ink");
+    c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText((sp.aux || sp.whole ? "" : "-") + txt, 340, 250);
+    t.tex.needsUpdate = true;
+    t.mat.color.set(active ? atCss("--accent") : atCss("--paper-raised"));
+  }
+  function refresh(){ tiles.forEach(function(t, i){ drawTile(t, i, i === st.pi); }); }
+
+  var rot = -st.pi*STEP, target = rot;
+  function focus(i){
+    var k = -i*STEP;
+    while(k - target > Math.PI) k -= Math.PI*2;
+    while(target - k > Math.PI) k += Math.PI*2;
+    target = k;
+    refresh();
+  }
+
+  function resize(){
+    var w = stage.clientWidth, h = stage.clientHeight;
+    if(!w || !h) return;
+    renderer.setSize(w, h);
+    camera.aspect = w/h;
+    camera.position.set(0, 1.25, w < 560 ? 12 : 9.6);
+    camera.lookAt(0, -0.1, 0);
+    camera.updateProjectionMatrix();
+  }
+  var ro = window.ResizeObserver ? new ResizeObserver(resize) : null;
+  if(ro) ro.observe(stage); else window.addEventListener("resize", resize);
+  resize();
+
+  /* Ziehen dreht den Ring; loslassen rastet auf die nächste Person ein.
+     Ein Tippen ohne Bewegung wählt die getroffene Kachel. */
+  var cvs = renderer.domElement, drag = null, ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+  cvs.addEventListener("pointerdown", function(e){
+    drag = {x:e.clientX, start:target, moved:false};
+    cvs.setPointerCapture && cvs.setPointerCapture(e.pointerId);
+  });
+  cvs.addEventListener("pointermove", function(e){
+    if(!drag) return;
+    var dx = e.clientX - drag.x;
+    if(Math.abs(dx) > 4) drag.moved = true;
+    if(drag.moved) target = drag.start + dx*0.009;
+  });
+  function release(e){
+    if(!drag) return;
+    var d = drag; drag = null;
+    if(d.moved){
+      var idx = Math.round(-target/STEP);
+      setPerson(idx);
+      return;
+    }
+    var rect = cvs.getBoundingClientRect();
+    ptr.x = ((e.clientX - rect.left)/rect.width)*2 - 1;
+    ptr.y = -((e.clientY - rect.top)/rect.height)*2 + 1;
+    ray.setFromCamera(ptr, camera);
+    var hit = ray.intersectObjects(tiles.map(function(t){ return t.holder; }), true)[0];
+    if(hit && hit.object.userData.pi !== undefined) setPerson(hit.object.userData.pi);
+  }
+  cvs.addEventListener("pointerup", release);
+  cvs.addEventListener("pointercancel", function(){ drag = null; });
+
+  var scheme = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : null;
+  if(scheme && scheme.addEventListener) scheme.addEventListener("change", refresh);
+
+  var clock = new THREE.Clock(), raf = 0;
+  function dispose(){
+    cancelAnimationFrame(raf);
+    if(ro) ro.disconnect();
+    if(scheme && scheme.removeEventListener) scheme.removeEventListener("change", refresh);
+    tiles.forEach(function(t){ t.tex.dispose(); t.mat.dispose(); });
+    slabGeo.dispose(); faceGeo.dispose(); shadowTex.dispose();
+    renderer.dispose();
+  }
+  function frame(){
+    /* Tab gewechselt oder Seite verlassen: aufräumen statt weiterlaufen. */
+    if(!document.body.contains(cvs)){ dispose(); return; }
+    var t = clock.getElapsedTime();
+    rot += (target - rot) * (reduce ? 1 : 0.1);
+    ring.rotation.y = rot;
+    tiles.forEach(function(tile, i){
+      var on = i === st.pi ? 1 : 0;
+      tile.k += (on - tile.k) * (reduce ? 1 : 0.12);
+      var a = i*STEP, rr = R + tile.k*0.55;
+      tile.holder.position.set(Math.sin(a)*rr, (reduce ? 0 : Math.sin(t*1.1 + i)*0.05) + tile.k*0.12, Math.cos(a)*rr);
+      var s = 1 + tile.k*0.16;
+      tile.holder.scale.set(s, s, s);
+    });
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(frame);
+  }
+
+  refresh();
+  if(document.fonts && document.fonts.load){
+    Promise.all([
+      document.fonts.load("italic 500 100px Newsreader"),
+      document.fonts.load("600 34px 'Public Sans'")
+    ]).then(refresh, function(){});
+  }
+  frame();
+  return {refresh:refresh, focus:focus};
+}
+
 function renderVerbTrainer(body){
   var cfg = STATE.verbCfg;
   if(!cfg.tenses.length) cfg.tenses = TENSES.map(function(t){ return t.key; });
@@ -4891,6 +5293,8 @@ window.__VLKR_TEST__ = {
   subjectProgress: subjectProgress,
   REFERENCE: REFERENCE,
   VOC_PAGES: VOC_PAGES,
+  atelierSplit: atelierSplit,
+  renderVerbAtelier: renderVerbAtelier,
   TOPIC_LEDE: TOPIC_LEDE,
   STORE_KEY: STORE_KEY,
   VERBS: VERBS,
