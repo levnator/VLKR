@@ -59,8 +59,22 @@ function runChecks(W, T){
   });
 
   /* ---- Verbliste 24–33 ---- */
-  check("26 Verben in der Bibel", function(){
-    return Object.keys(T.VERBS).length === 26 ? true : "ist " + Object.keys(T.VERBS).length;
+  check("50 Verben in der Bibel", function(){
+    return Object.keys(T.VERBS).length === 50 ? true : "ist " + Object.keys(T.VERBS).length;
+  });
+  check("essuyer und die -re-Verben 41–63 sind da", function(){
+    var neu = ["essuyer","rompre","conclure","vendre","battre","mettre","prendre","suivre","vivre","craindre","produire","lire","suffire","plaire","croire","boire","ecrire","convaincre","naitre","connaitre","croitre","rire","dire","faire"];
+    var fehlt = neu.filter(function(k){ return !T.VERBS[k]; });
+    return fehlt.length === 0 ? true : "fehlt: " + fehlt.join(", ");
+  });
+  check("Trainer-Filter -re liefert nur die 23 -re-Verben", function(){
+    var k = T.verbKeysFor({filter:"re"});
+    return k.length === 23 && k.indexOf("faire") > -1 ? true : "ist " + k.length;
+  });
+  check("naître konjugiert mit être, faire hat vous faites", function(){
+    var n = T.VERBS.naitre.forms.pc[0], f = T.VERBS.faire.forms.pr[4];
+    if(String(Array.isArray(n) ? n[0] : n).indexOf("suis ") !== 0) return "naître: " + n;
+    return f === "faites" ? true : "faire vous: " + f;
   });
   check("Die zehn neuen Verben sind da", function(){
     var neu = ["dormir","mentir","servir","venir","tenir","cueillir","offrir","mourir","conquerir","bouillir"];

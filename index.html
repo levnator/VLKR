@@ -968,6 +968,15 @@ var VERBS = {
     co:[["paierais","payerais"],["paierais","payerais"],["paierait","payerait"],["paierions","payerions"],["paieriez","payeriez"],["paieraient","payeraient"]]
   },{pr:1,fu:1,co:1}, "y→i ist optional — beide Schreibweisen sind richtig (nie bei nous/vous)."),
 
+  essuyer: V("essuyer","abwischen, abtrocknen",{
+    pr:["essuie", "essuies", "essuie", "essuyons", "essuyez", "essuient"],
+    im:["essuyais", "essuyais", "essuyait", "essuyions", "essuyiez", "essuyaient"],
+    pc:["ai essuyé", "as essuyé", "a essuyé", "avons essuyé", "avez essuyé", "ont essuyé"],
+    pq:["avais essuyé", "avais essuyé", "avait essuyé", "avions essuyé", "aviez essuyé", "avaient essuyé"],
+    fu:["essuierai", "essuieras", "essuiera", "essuierons", "essuierez", "essuieront"],
+    co:["essuierais", "essuierais", "essuierait", "essuierions", "essuieriez", "essuieraient"]
+  },{pr:1,fu:1,co:1}, "y→i vor stummem e ist bei -uyer PFLICHT (wie envoyer): j'essuie, nous essuyons. Futur: essuierai."),
+
   envoyer: V("envoyer","schicken",{
     pr:["envoie","envoies","envoie","envoyons","envoyez","envoient"],
     im:["envoyais","envoyais","envoyait","envoyions","envoyiez","envoyaient"],
@@ -1103,16 +1112,225 @@ var VERBS = {
     pq:["avais bouilli","avais bouilli","avait bouilli","avions bouilli","aviez bouilli","avaient bouilli"],
     fu:["bouillirai","bouilliras","bouillira","bouillirons","bouillirez","bouilliront"],
     co:["bouillirais","bouillirais","bouillirait","bouillirions","bouilliriez","bouilliraient"]
-  },{pr:1}, "Auf deinem Blatt steht nur die 3. Person Singular — l'eau bout. Das ist auch die Form, die im Alltag zählt; die übrigen stehen hier der Vollständigkeit halber.")
+  },{pr:1}, "Auf deinem Blatt steht nur die 3. Person Singular — l'eau bout. Das ist auch die Form, die im Alltag zählt; die übrigen stehen hier der Vollständigkeit halber."),
+
+  rompre: V("rompre","brechen",{
+    pr:["romps", "romps", "rompt", "rompons", "rompez", "rompent"],
+    im:["rompais", "rompais", "rompait", "rompions", "rompiez", "rompaient"],
+    pc:["ai rompu", "as rompu", "a rompu", "avons rompu", "avez rompu", "ont rompu"],
+    pq:["avais rompu", "avais rompu", "avait rompu", "avions rompu", "aviez rompu", "avaient rompu"],
+    fu:["romprai", "rompras", "rompra", "romprons", "romprez", "rompront"],
+    co:["romprais", "romprais", "romprait", "romprions", "rompriez", "rompraient"]
+  },{pr:1}, "Achtung 3. Person Singular: il rompt mit -t (anders als vendre → il vend)."),
+
+  conclure: V("conclure","abschliessen, folgern",{
+    pr:["conclus", "conclus", "conclut", "concluons", "concluez", "concluent"],
+    im:["concluais", "concluais", "concluait", "concluions", "concluiez", "concluaient"],
+    pc:["ai conclu", "as conclu", "a conclu", "avons conclu", "avez conclu", "ont conclu"],
+    pq:["avais conclu", "avais conclu", "avait conclu", "avions conclu", "aviez conclu", "avaient conclu"],
+    fu:["conclurai", "concluras", "conclura", "conclurons", "conclurez", "concluront"],
+    co:["conclurais", "conclurais", "conclurait", "conclurions", "concluriez", "concluraient"]
+  },{}, "Ganz regelmässig nach dem Muster s · s · t; Partizip conclu."),
+
+  vendre: V("vendre","verkaufen",{
+    pr:["vends", "vends", "vend", "vendons", "vendez", "vendent"],
+    im:["vendais", "vendais", "vendait", "vendions", "vendiez", "vendaient"],
+    pc:["ai vendu", "as vendu", "a vendu", "avons vendu", "avez vendu", "ont vendu"],
+    pq:["avais vendu", "avais vendu", "avait vendu", "avions vendu", "aviez vendu", "avaient vendu"],
+    fu:["vendrai", "vendras", "vendra", "vendrons", "vendrez", "vendront"],
+    co:["vendrais", "vendrais", "vendrait", "vendrions", "vendriez", "vendraient"]
+  },{pr:1}, "Modell für -dre: il vend — ohne -t, das d bleibt. Partizip auf -u."),
+
+  battre: V("battre","schlagen",{
+    pr:["bats", "bats", "bat", "battons", "battez", "battent"],
+    im:["battais", "battais", "battait", "battions", "battiez", "battaient"],
+    pc:["ai battu", "as battu", "a battu", "avons battu", "avez battu", "ont battu"],
+    pq:["avais battu", "avais battu", "avait battu", "avions battu", "aviez battu", "avaient battu"],
+    fu:["battrai", "battras", "battra", "battrons", "battrez", "battront"],
+    co:["battrais", "battrais", "battrait", "battrions", "battriez", "battraient"]
+  },{pr:1}, "Im Singular nur ein t: je bats, il bat. Im Plural tt: nous battons."),
+
+  mettre: V("mettre","setzen, stellen, legen",{
+    pr:["mets", "mets", "met", "mettons", "mettez", "mettent"],
+    im:["mettais", "mettais", "mettait", "mettions", "mettiez", "mettaient"],
+    pc:["ai mis", "as mis", "a mis", "avons mis", "avez mis", "ont mis"],
+    pq:["avais mis", "avais mis", "avait mis", "avions mis", "aviez mis", "avaient mis"],
+    fu:["mettrai", "mettras", "mettra", "mettrons", "mettrez", "mettront"],
+    co:["mettrais", "mettrais", "mettrait", "mettrions", "mettriez", "mettraient"]
+  },{pr:1,pc:1,pq:1}, "Singular mit einem t (je mets), Plural mit tt. Partizip: mis."),
+
+  prendre: V("prendre","nehmen",{
+    pr:["prends", "prends", "prend", "prenons", "prenez", "prennent"],
+    im:["prenais", "prenais", "prenait", "prenions", "preniez", "prenaient"],
+    pc:["ai pris", "as pris", "a pris", "avons pris", "avez pris", "ont pris"],
+    pq:["avais pris", "avais pris", "avait pris", "avions pris", "aviez pris", "avaient pris"],
+    fu:["prendrai", "prendras", "prendra", "prendrons", "prendrez", "prendront"],
+    co:["prendrais", "prendrais", "prendrait", "prendrions", "prendriez", "prendraient"]
+  },{pr:1,pc:1,pq:1}, "Das d fällt im Plural weg: nous prenons, ils prennent (nn!). Partizip: pris.", true),
+
+  suivre: V("suivre","folgen",{
+    pr:["suis", "suis", "suit", "suivons", "suivez", "suivent"],
+    im:["suivais", "suivais", "suivait", "suivions", "suiviez", "suivaient"],
+    pc:["ai suivi", "as suivi", "a suivi", "avons suivi", "avez suivi", "ont suivi"],
+    pq:["avais suivi", "avais suivi", "avait suivi", "avions suivi", "aviez suivi", "avaient suivi"],
+    fu:["suivrai", "suivras", "suivra", "suivrons", "suivrez", "suivront"],
+    co:["suivrais", "suivrais", "suivrait", "suivrions", "suivriez", "suivraient"]
+  },{pr:1,pc:1,pq:1}, "Falle! je suis heisst auch „ich folge“ — gleich wie être. Partizip: suivi.", true),
+
+  vivre: V("vivre","leben",{
+    pr:["vis", "vis", "vit", "vivons", "vivez", "vivent"],
+    im:["vivais", "vivais", "vivait", "vivions", "viviez", "vivaient"],
+    pc:["ai vécu", "as vécu", "a vécu", "avons vécu", "avez vécu", "ont vécu"],
+    pq:["avais vécu", "avais vécu", "avait vécu", "avions vécu", "aviez vécu", "avaient vécu"],
+    fu:["vivrai", "vivras", "vivra", "vivrons", "vivrez", "vivront"],
+    co:["vivrais", "vivrais", "vivrait", "vivrions", "vivriez", "vivraient"]
+  },{pr:1,pc:1,pq:1}, "Singular ohne v: je vis. Partizip unregelmässig: vécu."),
+
+  craindre: V("craindre","fürchten",{
+    pr:["crains", "crains", "craint", "craignons", "craignez", "craignent"],
+    im:["craignais", "craignais", "craignait", "craignions", "craigniez", "craignaient"],
+    pc:["ai craint", "as craint", "a craint", "avons craint", "avez craint", "ont craint"],
+    pq:["avais craint", "avais craint", "avait craint", "avions craint", "aviez craint", "avaient craint"],
+    fu:["craindrai", "craindras", "craindra", "craindrons", "craindrez", "craindront"],
+    co:["craindrais", "craindrais", "craindrait", "craindrions", "craindriez", "craindraient"]
+  },{pr:1,im:1,pc:1,pq:1}, "-indre: im Plural und Imparfait wird nd zu gn: nous craignons, je craignais. Partizip: craint."),
+
+  produire: V("produire","herstellen, produzieren",{
+    pr:["produis", "produis", "produit", "produisons", "produisez", "produisent"],
+    im:["produisais", "produisais", "produisait", "produisions", "produisiez", "produisaient"],
+    pc:["ai produit", "as produit", "a produit", "avons produit", "avez produit", "ont produit"],
+    pq:["avais produit", "avais produit", "avait produit", "avions produit", "aviez produit", "avaient produit"],
+    fu:["produirai", "produiras", "produira", "produirons", "produirez", "produiront"],
+    co:["produirais", "produirais", "produirait", "produirions", "produiriez", "produiraient"]
+  },{pr:1,pc:1,pq:1}, "-uire: im Plural kommt ein s dazu: nous produisons. Partizip: produit."),
+
+  lire: V("lire","lesen",{
+    pr:["lis", "lis", "lit", "lisons", "lisez", "lisent"],
+    im:["lisais", "lisais", "lisait", "lisions", "lisiez", "lisaient"],
+    pc:["ai lu", "as lu", "a lu", "avons lu", "avez lu", "ont lu"],
+    pq:["avais lu", "avais lu", "avait lu", "avions lu", "aviez lu", "avaient lu"],
+    fu:["lirai", "liras", "lira", "lirons", "lirez", "liront"],
+    co:["lirais", "lirais", "lirait", "lirions", "liriez", "liraient"]
+  },{pr:1,pc:1,pq:1}, "Im Plural mit s: nous lisons. Partizip: lu."),
+
+  suffire: V("suffire","genügen",{
+    pr:["suffis", "suffis", "suffit", "suffisons", "suffisez", "suffisent"],
+    im:["suffisais", "suffisais", "suffisait", "suffisions", "suffisiez", "suffisaient"],
+    pc:["ai suffi", "as suffi", "a suffi", "avons suffi", "avez suffi", "ont suffi"],
+    pq:["avais suffi", "avais suffi", "avait suffi", "avions suffi", "aviez suffi", "avaient suffi"],
+    fu:["suffirai", "suffiras", "suffira", "suffirons", "suffirez", "suffiront"],
+    co:["suffirais", "suffirais", "suffirait", "suffirions", "suffiriez", "suffiraient"]
+  },{pr:1}, "Im Plural mit s: nous suffisons. Partizip suffi — ohne t!"),
+
+  plaire: V("plaire","gefallen",{
+    pr:["plais", "plais", "plaît", "plaisons", "plaisez", "plaisent"],
+    im:["plaisais", "plaisais", "plaisait", "plaisions", "plaisiez", "plaisaient"],
+    pc:["ai plu", "as plu", "a plu", "avons plu", "avez plu", "ont plu"],
+    pq:["avais plu", "avais plu", "avait plu", "avions plu", "aviez plu", "avaient plu"],
+    fu:["plairai", "plairas", "plaira", "plairons", "plairez", "plairont"],
+    co:["plairais", "plairais", "plairait", "plairions", "plairiez", "plairaient"]
+  },{pr:1,pc:1,pq:1}, "il plaît mit Accent circonflexe. Partizip: plu. — s'il vous plaît!"),
+
+  croire: V("croire","glauben",{
+    pr:["crois", "crois", "croit", "croyons", "croyez", "croient"],
+    im:["croyais", "croyais", "croyait", "croyions", "croyiez", "croyaient"],
+    pc:["ai cru", "as cru", "a cru", "avons cru", "avez cru", "ont cru"],
+    pq:["avais cru", "avais cru", "avait cru", "avions cru", "aviez cru", "avaient cru"],
+    fu:["croirai", "croiras", "croira", "croirons", "croirez", "croiront"],
+    co:["croirais", "croirais", "croirait", "croirions", "croiriez", "croiraient"]
+  },{pr:1}, "i → y bei nous und vous: nous croyons, je croyais. Partizip: cru."),
+
+  boire: V("boire","trinken",{
+    pr:["bois", "bois", "boit", "buvons", "buvez", "boivent"],
+    im:["buvais", "buvais", "buvait", "buvions", "buviez", "buvaient"],
+    pc:["ai bu", "as bu", "a bu", "avons bu", "avez bu", "ont bu"],
+    pq:["avais bu", "avais bu", "avait bu", "avions bu", "aviez bu", "avaient bu"],
+    fu:["boirai", "boiras", "boira", "boirons", "boirez", "boiront"],
+    co:["boirais", "boirais", "boirait", "boirions", "boiriez", "boiraient"]
+  },{pr:1,im:1,pc:1,pq:1}, "Drei Stämme: boi- / buv- / boiv-. Imparfait von nous buvons: je buvais. Partizip: bu.", true),
+
+  ecrire: V("écrire","schreiben",{
+    pr:["écris", "écris", "écrit", "écrivons", "écrivez", "écrivent"],
+    im:["écrivais", "écrivais", "écrivait", "écrivions", "écriviez", "écrivaient"],
+    pc:["ai écrit", "as écrit", "a écrit", "avons écrit", "avez écrit", "ont écrit"],
+    pq:["avais écrit", "avais écrit", "avait écrit", "avions écrit", "aviez écrit", "avaient écrit"],
+    fu:["écrirai", "écriras", "écrira", "écrirons", "écrirez", "écriront"],
+    co:["écrirais", "écrirais", "écrirait", "écririons", "écririez", "écriraient"]
+  },{pr:1,pc:1,pq:1}, "Im Plural mit v: nous écrivons. Partizip: écrit."),
+
+  convaincre: V("convaincre","überzeugen",{
+    pr:["convaincs", "convaincs", "convainc", "convainquons", "convainquez", "convainquent"],
+    im:["convainquais", "convainquais", "convainquait", "convainquions", "convainquiez", "convainquaient"],
+    pc:["ai convaincu", "as convaincu", "a convaincu", "avons convaincu", "avez convaincu", "ont convaincu"],
+    pq:["avais convaincu", "avais convaincu", "avait convaincu", "avions convaincu", "aviez convaincu", "avaient convaincu"],
+    fu:["convaincrai", "convaincras", "convaincra", "convaincrons", "convaincrez", "convaincront"],
+    co:["convaincrais", "convaincrais", "convaincrait", "convaincrions", "convaincriez", "convaincraient"]
+  },{pr:1,im:1}, "il convainc — ohne -t! Vor Vokal wird c zu qu: nous convainquons, je convainquais.", true),
+
+  naitre: V("naître","geboren werden",{
+    pr:["nais", "nais", "naît", "naissons", "naissez", "naissent"],
+    im:["naissais", "naissais", "naissait", "naissions", "naissiez", "naissaient"],
+    pc:[["suis né", "suis née"], ["es né", "es née"], ["est né", "est née"], ["sommes nés", "sommes nées"], ["êtes né", "êtes née", "êtes nés", "êtes nées"], ["sont nés", "sont nées"]],
+    pq:[["étais né", "étais née"], ["étais né", "étais née"], ["était né", "était née"], ["étions nés", "étions nées"], ["étiez né", "étiez née", "étiez nés", "étiez nées"], ["étaient nés", "étaient nées"]],
+    fu:["naîtrai", "naîtras", "naîtra", "naîtrons", "naîtrez", "naîtront"],
+    co:["naîtrais", "naîtrais", "naîtrait", "naîtrions", "naîtriez", "naîtraient"]
+  },{pr:1,pc:1,pq:1}, "Passé composé mit être: je suis né(e). il naît mit Accent circonflexe.", true),
+
+  connaitre: V("connaître","kennen",{
+    pr:["connais", "connais", "connaît", "connaissons", "connaissez", "connaissent"],
+    im:["connaissais", "connaissais", "connaissait", "connaissions", "connaissiez", "connaissaient"],
+    pc:["ai connu", "as connu", "a connu", "avons connu", "avez connu", "ont connu"],
+    pq:["avais connu", "avais connu", "avait connu", "avions connu", "aviez connu", "avaient connu"],
+    fu:["connaîtrai", "connaîtras", "connaîtra", "connaîtrons", "connaîtrez", "connaîtront"],
+    co:["connaîtrais", "connaîtrais", "connaîtrait", "connaîtrions", "connaîtriez", "connaîtraient"]
+  },{pr:1,pc:1,pq:1}, "il connaît mit Accent circonflexe, Plural mit ss. Partizip: connu."),
+
+  croitre: V("croître","wachsen",{
+    pr:["croîs", "croîs", "croît", "croissons", "croissez", "croissent"],
+    im:["croissais", "croissais", "croissait", "croissions", "croissiez", "croissaient"],
+    pc:["ai crû", "as crû", "a crû", "avons crû", "avez crû", "ont crû"],
+    pq:["avais crû", "avais crû", "avait crû", "avions crû", "aviez crû", "avaient crû"],
+    fu:["croîtrai", "croîtras", "croîtra", "croîtrons", "croîtrez", "croîtront"],
+    co:["croîtrais", "croîtrais", "croîtrait", "croîtrions", "croîtriez", "croîtraient"]
+  },{pr:1,pc:1,pq:1}, "Accent circonflexe im Singular (croîs) — zur Unterscheidung von croire. Partizip: crû."),
+
+  rire: V("rire","lachen",{
+    pr:["ris", "ris", "rit", "rions", "riez", "rient"],
+    im:["riais", "riais", "riait", "riions", "riiez", "riaient"],
+    pc:["ai ri", "as ri", "a ri", "avons ri", "avez ri", "ont ri"],
+    pq:["avais ri", "avais ri", "avait ri", "avions ri", "aviez ri", "avaient ri"],
+    fu:["rirai", "riras", "rira", "rirons", "rirez", "riront"],
+    co:["rirais", "rirais", "rirait", "ririons", "ririez", "riraient"]
+  },{im:1,pc:1,pq:1}, "Imparfait mit doppeltem i: nous riions, vous riiez. Partizip: ri."),
+
+  dire: V("dire","sagen",{
+    pr:["dis", "dis", "dit", "disons", "dites", "disent"],
+    im:["disais", "disais", "disait", "disions", "disiez", "disaient"],
+    pc:["ai dit", "as dit", "a dit", "avons dit", "avez dit", "ont dit"],
+    pq:["avais dit", "avais dit", "avait dit", "avions dit", "aviez dit", "avaient dit"],
+    fu:["dirai", "diras", "dira", "dirons", "direz", "diront"],
+    co:["dirais", "dirais", "dirait", "dirions", "diriez", "diraient"]
+  },{pr:1,pc:1,pq:1}, "Falle! vous dites — nicht „disez“. Partizip: dit.", true),
+
+  faire: V("faire","machen, tun",{
+    pr:["fais", "fais", "fait", "faisons", "faites", "font"],
+    im:["faisais", "faisais", "faisait", "faisions", "faisiez", "faisaient"],
+    pc:["ai fait", "as fait", "a fait", "avons fait", "avez fait", "ont fait"],
+    pq:["avais fait", "avais fait", "avait fait", "avions fait", "aviez fait", "avaient fait"],
+    fu:["ferai", "feras", "fera", "ferons", "ferez", "feront"],
+    co:["ferais", "ferais", "ferait", "ferions", "feriez", "feraient"]
+  },{pr:1,pc:1,pq:1,fu:1,co:1}, "vous faites, ils font. Futur mit Sonderstamm fer-: je ferai.", true)
 };
 
 var VERB_GROUPS = [
   {title:"Die Hilfsverben", sub:"Unregelmässig, aber unentbehrlich", verbs:["avoir","etre"]},
   {title:"Die Modell-Verben", sub:"100% regelmässig — dein Ankerpunkt", verbs:["parler","finir"]},
-  {title:"Kleine Stammänderung", sub:"Endungen bleiben immer normal", verbs:["lancer","manger","acheter","esperer","appeler","jeter","payer","envoyer"]},
+  {title:"Kleine Stammänderung", sub:"Endungen bleiben immer normal", verbs:["lancer","manger","acheter","esperer","appeler","jeter","payer","essuyer","envoyer"]},
   {title:"Komplett unregelmässig", sub:"Hier musst du am meisten auswendig lernen", verbs:["aller","hair","courir","fuir"]},
   {title:"Unregelmässige -ir-Verben", sub:"Liste 24–33 — kein -iss-, dafür Stammwechsel",
-   verbs:["dormir","mentir","servir","venir","tenir","cueillir","offrir","mourir","conquerir","bouillir"]}
+   verbs:["dormir","mentir","servir","venir","tenir","cueillir","offrir","mourir","conquerir","bouillir"]},
+  {title:"Die -re-Verben", sub:"Liste 41–63 — meist s · s · t (bzw. d) · ons · ez · ent",
+   verbs:["rompre","conclure","vendre","battre","mettre","prendre","suivre","vivre","craindre","produire","lire","suffire","plaire","croire","boire","ecrire","convaincre","naitre","connaitre","croitre","rire","dire","faire"]}
 ];
 
 var FEMININE_PATTERNS = [
@@ -1418,6 +1636,7 @@ function verbKeysFor(cfg){
   cfg = cfg || {};
   if(cfg.focus && VERBS[cfg.focus]) return [cfg.focus];
   if(cfg.filter === "aux") return ["avoir","etre"];
+  if(cfg.filter === "re") return VERB_GROUPS.filter(function(g){ return g.title === "Die -re-Verben"; })[0].verbs.slice();
   var keys = Object.keys(VERBS);
   if(cfg.filter === "exc") keys = keys.filter(function(k){ return Object.keys(VERBS[k].exc).length > 0; });
   return keys;
@@ -2123,7 +2342,7 @@ function buildVocSentences(){
    ================================================================ */
 var FR_TOPICS = [
   {key:"verbs", num:"01", label:"Verben", short:"Verben",
-   sub:"26 Verben × 6 Zeitformen", random:true, sets:[]},
+   sub:"50 Verben × 6 Zeitformen", random:true, sets:[]},
   {key:"gender", num:"02", label:"Genre &amp; Nombre", short:"Genre & Nombre",
    sub:"Feminin, Plural, unregelmässige Paare",
    sets:[{key:"all", label:"Alles gemischt", build:buildGenderBank}]},
@@ -3826,7 +4045,7 @@ function excDots(exc){
 function renderVerbsSection(el){
   var tab = curTab("verbs","reference");
   var html = '<span class="eyebrow">Thema 01</span><h1 class="page-title">Verben</h1>';
-  html += '<p class="page-lede">Alle 26 Verben in allen 6 Zeitformen. Rot markiert heisst: Besonderheit gegenüber dem regulären Muster.</p>';
+  html += '<p class="page-lede">Alle '+Object.keys(VERBS).length+' Verben in allen 6 Zeitformen. Rot markiert heisst: Besonderheit gegenüber dem regulären Muster.</p>';
   html += tabBar("verbs", [{key:"reference",label:"Referenz"},{key:"drill",label:"Trainer"},{key:"atelier",label:"Baukasten 3D"}], function(){ renderVerbsSection(el); });
   el.innerHTML = html + '<div id="secBody"></div>';
   var body = document.getElementById("secBody");
@@ -3913,9 +4132,10 @@ function loadThree(){
 }
 
 var AT_GROUPS = [
-  {key:"er", label:"-er", verbs:["parler","lancer","manger","acheter","esperer","appeler","jeter","payer","envoyer","aller"]},
+  {key:"er", label:"-er", verbs:["parler","lancer","manger","acheter","esperer","appeler","jeter","payer","essuyer","envoyer","aller"]},
   {key:"ir", label:"-ir", verbs:["finir","hair","courir","fuir","dormir","mentir","servir","venir","tenir","cueillir","offrir","mourir","conquerir","bouillir"]},
-  {key:"aux", label:"-oir · -re", verbs:["avoir","etre"]}
+  {key:"re", label:"-re", verbs:["etre","rompre","conclure","vendre","battre","mettre","prendre","suivre","vivre","craindre","produire","lire","suffire","plaire","croire","boire","ecrire","convaincre","naitre","connaitre","croitre","rire","dire","faire"]},
+  {key:"aux", label:"-oir", verbs:["avoir"]}
 ];
 var AT_PRON = ["je","tu","il","nous","vous","ils"];
 var AT_TILE_PRON = ["je","tu","il · elle · on","nous","vous","ils · elles"];
@@ -4256,8 +4476,8 @@ function renderVerbTrainer(body){
   if(focusVerb){
     html += '<button class="chip-btn active" data-vfilter="focus">Nur <i>'+focusVerb.inf+'</i> <span class="x">✕</span></button>';
   }
-  ["all","exc","aux"].forEach(function(f){
-    var lbl = f==="all" ? "Alle 16" : (f==="exc" ? "Nur Ausnahmen" : "Nur avoir + être");
+  ["all","exc","aux","re"].forEach(function(f){
+    var lbl = {all:"Alle "+Object.keys(VERBS).length, exc:"Nur Ausnahmen", aux:"Nur avoir + être", re:"Nur -re (41–63)"}[f];
     var active = !focusVerb && cfg.filter===f;
     html += '<button class="chip-btn'+(active?' active':'')+'" data-vfilter="'+f+'">'+lbl+'</button>';
   });
@@ -5293,6 +5513,7 @@ window.__VLKR_TEST__ = {
   subjectProgress: subjectProgress,
   REFERENCE: REFERENCE,
   VOC_PAGES: VOC_PAGES,
+  verbKeysFor: verbKeysFor,
   atelierSplit: atelierSplit,
   renderVerbAtelier: renderVerbAtelier,
   TOPIC_LEDE: TOPIC_LEDE,
