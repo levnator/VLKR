@@ -454,6 +454,22 @@ table.mini td.b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
 .mc-table td.fig{background:var(--accent-soft);}
 .mc-table th.th-fig{background:var(--accent-soft); color:var(--accent);}
 
+/* ============ VERBEN MIT STAMMWECHSEL ============ */
+.sf-groups{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:10px 0 14px 0;}
+@media (max-width:640px){.sf-groups{grid-template-columns:repeat(2,1fr);}}
+.sf-group{display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; cursor:pointer;
+  background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:10px 12px; color:var(--ink); font:inherit;}
+.sf-group.active{border-color:var(--accent); background:var(--accent-soft);}
+.sf-gnum{font-size:11px; color:var(--ink-soft);}
+.sf-gtitle{font-weight:600; font-size:15px;}
+.sf-gmodel{font-size:12.5px; color:var(--ink-soft); font-style:italic;}
+.sf-slide{font-style:italic; color:var(--ink-soft); font-size:13px; margin:2px 0 6px 0;}
+.sf-mark{color:var(--accent); font-weight:700;}
+.sf-ruletext{font-size:14px; line-height:1.55;}
+table.sf-conj td{font-size:15px;}
+.sf-reveal{font:inherit; font-size:12.5px; cursor:pointer; border:1px dashed var(--rule); background:none;
+  color:var(--ink-soft); border-radius:4px; padding:2px 10px;}
+
 /* ============ STEIGERUNG ============ */
 .comp-card{position:relative; padding-top:20px;}
 .comp-card .sign{position:absolute; top:12px; right:14px; font-family:'IBM Plex Mono',monospace; font-weight:600;
@@ -2337,6 +2353,177 @@ function buildVocSentences(){
   });
 }
 
+/* ---------- 10 VERBEN MIT STAMMWECHSEL ----------
+   Die fünf Regeln von der Folie „3 Grammaire“. Die Formen werden aus dem
+   Infinitiv gebaut — so steht jede Regel an genau einer Stelle. */
+var SF_GROUPS = [
+  {key:"e", model:"acheter", title:"e → è", tag:"acheter",
+   slide:"l'accent sur la dernière syllabe → e, l'accent sur l'avant-dernière → è",
+   rule:"Ist die Endung stumm (je, tu, il, ils), liegt die Betonung auf dem Stamm — aus <b>e</b> wird <b>è</b>. Bei nous und vous ist die Endung betont, das e bleibt.",
+   short:"je/tu/il/ils: e → è",
+   verbs:[["acheter","kaufen"],["enlever","wegnehmen, ausziehen"],["se promener","spazieren gehen"],["lever","heben"],
+          ["se lever","aufstehen"],["mener","führen"],["amener","mitbringen"],["emmener","mitnehmen"],["peser","wiegen"],["geler","frieren"]]},
+  {key:"g", model:"bouger", title:"g → ge", tag:"bouger",
+   slide:"devant a, o, u on prononce [g], devant e, i → on prononce [ʒ]",
+   rule:"Vor a, o, u spricht man g hart [g]. Damit es bei <b>nous</b> weich [ʒ] bleibt, kommt ein <b>e</b> dazu: nous boug<b>e</b>ons.",
+   short:"nous: -geons",
+   verbs:[["bouger","sich bewegen"],["manger","essen"],["engager","anstellen"],["nager","schwimmen"],["changer","ändern, wechseln"],
+          ["voyager","reisen"],["partager","teilen"],["ranger","aufräumen"],["mélanger","mischen"],["corriger","korrigieren"]]},
+  {key:"c", model:"commencer", title:"c → ç", tag:"commencer",
+   slide:"devant a, o, u on prononce [k], devant e, i → on prononce [s]",
+   rule:"Vor a, o, u spricht man c hart [k]. Damit es bei <b>nous</b> weich [s] bleibt, bekommt es eine Cedille: nous commen<b>ç</b>ons.",
+   short:"nous: -çons",
+   verbs:[["commencer","anfangen"],["annoncer","ankündigen"],["lancer","werfen, lancieren"],["placer","platzieren"],["avancer","vorwärtskommen"],
+          ["effacer","löschen"],["prononcer","aussprechen"],["remplacer","ersetzen"],["menacer","bedrohen"],["renoncer","verzichten"]]},
+  {key:"indre", model:"atteindre", title:"-indre → -gn-", tag:"atteindre",
+   slide:"-indre → au pluriel -gn-",
+   rule:"Im Singular fällt das d weg: j'attein<b>s</b>, il attein<b>t</b>. Im Plural wird aus -nd- ein <b>-gn-</b>: nous attei<b>gn</b>ons, ils attei<b>gn</b>ent.",
+   short:"Plural: -gn-",
+   verbs:[["atteindre","erreichen"],["craindre","fürchten"],["éteindre","ausschalten, löschen"],["peindre","malen"],["se plaindre","sich beklagen"],
+          ["plaindre","bemitleiden"],["joindre","verbinden, erreichen"],["rejoindre","treffen, nachkommen"],["teindre","färben"],["contraindre","zwingen"]]},
+  {key:"uire", model:"traduire", title:"-uire → -s-", tag:"traduire",
+   slide:"-(u)ire → au pluriel -s-",
+   rule:"Singular: je tradui<b>s</b>, il tradui<b>t</b>. Im Plural kommt ein <b>-s-</b> zwischen Stamm und Endung: nous tradui<b>s</b>ons, ils tradui<b>s</b>ent.",
+   short:"Plural: -s-",
+   verbs:[["traduire","übersetzen"],["conduire","fahren, lenken"],["construire","bauen"],["produire","herstellen"],["détruire","zerstören"],
+          ["réduire","reduzieren"],["introduire","einführen"],["cuire","kochen, backen"],["séduire","verführen"],["instruire","unterrichten"]]}
+];
+var SF_SUBJ = ["je","tu","il","nous","vous","ils"];
+var SF_SUBJ_LABEL = ["je","tu","il / elle / on","nous","vous","ils / elles"];
+var SF_REFL = ["me","te","se","nous","vous","se"];
+function sfGroup(k){
+  for(var i=0;i<SF_GROUPS.length;i++){ if(SF_GROUPS[i].key===k) return SF_GROUPS[i]; }
+  return null;
+}
+function sfStartsVowel(s){ return /^[aeiouyéèêh]/i.test(s); }
+/* Reflexivpronomen davor, mit Elision (je m'…). */
+function sfWrap(refl, p, verb){
+  if(!refl) return verb;
+  var r = SF_REFL[p];
+  return (sfStartsVowel(verb) && p!==3 && p!==4) ? r.charAt(0)+"'"+verb : r+" "+verb;
+}
+function sfFull(p, txt){
+  return (p===0 && sfStartsVowel(txt)) ? "j'"+txt : SF_SUBJ[p]+" "+txt;
+}
+/* Liefert die sechs Präsensformen. Jede Form: txt (ohne Subjekt),
+   full (mit Subjekt) und html (die Stelle der Regel markiert). */
+function sfForms(inf, gk){
+  var refl = inf.indexOf("se ") === 0, v = refl ? inf.slice(3) : inf, parts = [];
+  var END_ER = ["e","es","e","ons","ez","ent"], END_SG = ["s","s","t"], END_PL = ["ons","ez","ent"];
+  for(var p=0;p<6;p++){
+    var a, m, b, hot;
+    if(gk === "e"){
+      var base = v.slice(0,-2), i = base.lastIndexOf("e");
+      a = base.slice(0,i); m = (p<3 || p===5) ? "è" : "e"; b = base.slice(i+1) + END_ER[p]; hot = true;
+    } else if(gk === "g"){
+      a = v.slice(0,-2); m = p===3 ? "e" : ""; b = END_ER[p]; hot = p===3;
+    } else if(gk === "c"){
+      a = v.slice(0,-3); m = p===3 ? "ç" : "c"; b = END_ER[p]; hot = p===3;
+    } else if(gk === "indre"){
+      var st = v.slice(0,-4);
+      if(p<3){ a = st; m = "n"; b = END_SG[p]; hot = false; }
+      else { a = st; m = "gn"; b = END_PL[p-3]; hot = true; }
+    } else {
+      var su = v.slice(0,-2);
+      if(p<3){ a = su; m = ""; b = END_SG[p]; hot = false; }
+      else { a = su; m = "s"; b = END_PL[p-3]; hot = true; }
+    }
+    var verb = a + m + b, vhtml = a + (hot ? '<b class="sf-mark">'+m+'</b>' : m) + b;
+    parts.push({txt:sfWrap(refl, p, verb), full:sfFull(p, sfWrap(refl, p, verb)), html:sfWrap(refl, p, vhtml)});
+  }
+  return parts;
+}
+function sfAllVerbs(){
+  var out = [];
+  SF_GROUPS.forEach(function(g){ g.verbs.forEach(function(v){ out.push({inf:v[0], de:v[1], g:g}); }); });
+  return out;
+}
+/* Typische Fehler: Regel vergessen. */
+function sfWrong(inf, gk, p){
+  var refl = inf.indexOf("se ") === 0, v = refl ? inf.slice(3) : inf, w;
+  if(gk === "e") w = sfForms(v, gk)[p].txt.replace("è","e");
+  else if(gk === "g") w = v.slice(0,-2) + "ons";
+  else if(gk === "c") w = v.slice(0,-3) + "cons";
+  else if(gk === "indre") w = v.slice(0,-2) + (p<3 ? ["s","s","t"][p] : ["ons","ez","ent"][p-3]);
+  else w = p<3 ? v.slice(0,-1) + ["s","s","t"][p] : v.slice(0,-2) + ["ons","ez","ent"][p-3];
+  return sfFull(p, sfWrap(refl, p, w));
+}
+function sfExplain(g, inf, p){
+  return g.title + " (wie " + g.model + "): " + sfForms(inf, g.key)[p].full + ". " + g.short + ".";
+}
+function buildSfConj(){
+  var bank = [];
+  sfAllVerbs().forEach(function(v){
+    var f = sfForms(v.inf, v.g.key);
+    for(var p=0;p<6;p++){
+      bank.push(inputQ("ortho","Konjugieren", "<b>"+SF_SUBJ_LABEL[p]+"</b> · "+v.inf+" <span class=\"muted\">("+v.de+")</span>",
+        "Présent — mit oder ohne Pronomen.", [f[p].txt, f[p].full], f[p].full, sfExplain(v.g, v.inf, p)));
+    }
+  });
+  return bank;
+}
+/* Pro Verb die Person, an der die Regel sichtbar wird. */
+var SF_KEY_PERSONS = {e:[0,2,5], g:[3], c:[3], indre:[0,3,5], uire:[2,3,5]};
+function buildSfChoice(){
+  var bank = [];
+  sfAllVerbs().forEach(function(v){
+    SF_KEY_PERSONS[v.g.key].forEach(function(p){
+      var f = sfForms(v.inf, v.g.key)[p], ws = sfWrong(v.inf, v.g.key, p);
+      if(ws === f.full) return;
+      bank.push(choiceQ("ortho","Welche Form?", v.inf+" · <b>"+SF_SUBJ_LABEL[p]+"</b>", "Welche Form ist richtig?",
+        shuffle([f.full, ws]), f.full, sfExplain(v.g, v.inf, p)));
+    });
+  });
+  return bank;
+}
+function buildSfGroup(){
+  var titles = SF_GROUPS.map(function(g){ return g.title + " (" + g.model + ")"; });
+  return sfAllVerbs().map(function(v){
+    var ans = v.g.title + " (" + v.g.model + ")";
+    return choiceQ("ortho","Welche Regel?", v.inf+" <span class=\"muted\">("+v.de+")</span>", "Nach welchem Muster wird das Verb konjugiert?",
+      shuffle(titles.slice()), ans, v.inf+" geht wie "+v.g.model+": "+v.g.short+" — "+sfForms(v.inf, v.g.key)[3].full+".");
+  });
+}
+var SF_SENTENCES = [
+  ["Le samedi, j'___ du pain à la boulangerie.","acheter","achète","e"],
+  ["Nous nous ___ au bord du lac.","se promener","promenons","e"],
+  ["Il ___ sa veste parce qu'il fait chaud.","enlever","enlève","e"],
+  ["Vous ___ les enfants à l'école ?","emmener","emmenez","e"],
+  ["Ils se ___ à sept heures.","se lever","lèvent","e"],
+  ["Tu ___ ta valise ? Elle est lourde !","peser","pèses","e"],
+  ["Nous ___ à midi à la cantine.","manger","mangeons","g"],
+  ["Tu ___ trop, reste tranquille !","bouger","bouges","g"],
+  ["Nous ___ en train cet été.","voyager","voyageons","g"],
+  ["Elles ___ de place.","changer","changent","g"],
+  ["Nous ___ l'addition.","partager","partageons","g"],
+  ["Nous ___ nos chambres le dimanche.","ranger","rangeons","g"],
+  ["Nous ___ le cours à huit heures.","commencer","commençons","c"],
+  ["Le directeur ___ une bonne nouvelle.","annoncer","annonce","c"],
+  ["Nous ___ lentement dans les bouchons.","avancer","avançons","c"],
+  ["Vous ___ très bien le français.","prononcer","prononcez","c"],
+  ["Nous ___ le professeur malade.","remplacer","remplaçons","c"],
+  ["Nous ___ le ballon.","lancer","lançons","c"],
+  ["J'___ la lumière avant de dormir.","éteindre","éteins","indre"],
+  ["Nous ___ le sommet à midi.","atteindre","atteignons","indre"],
+  ["Ils ___ l'orage.","craindre","craignent","indre"],
+  ["Elle ___ un tableau.","peindre","peint","indre"],
+  ["Vous vous ___ toujours !","se plaindre","plaignez","indre"],
+  ["Nous vous ___ au restaurant.","rejoindre","rejoignons","indre"],
+  ["Je ___ le texte en allemand.","traduire","traduis","uire"],
+  ["Nous ___ prudemment.","conduire","conduisons","uire"],
+  ["Ils ___ une maison à la montagne.","construire","construisent","uire"],
+  ["L'usine ___ des voitures.","produire","produit","uire"],
+  ["Vous ___ les prix ?","réduire","réduisez","uire"],
+  ["Tu ___ le gâteau au four.","cuire","cuis","uire"]
+];
+function buildSfSentences(){
+  return SF_SENTENCES.map(function(s){
+    var g = sfGroup(s[3]);
+    return inputQ("ortho","Im Satz", s[0].replace("___","<b>___</b>")+" <span class=\"muted\">("+s[1]+")</span>",
+      "Setze das Verb im Présent ein.", [s[2]], s[2], s[0].replace("___", s[2])+" — "+g.title+" (wie "+g.model+").");
+  });
+}
+
 /* ================================================================
    THEMEN-REGISTER
    ================================================================ */
@@ -2387,7 +2574,15 @@ var FR_TOPICS = [
   {key:"voc", num:"09", label:"Vocabulaire · En route", short:"Vocabulaire",
    sub:"Dossier 02, Seiten 14–17",
    sets:VOC_PAGES.map(function(p){ return {key:p.key, label:p.label, build:vocBuilder(p)}; })
-     .concat([{key:"satz", label:"Im Satz", build:buildVocSentences}])}
+     .concat([{key:"satz", label:"Im Satz", build:buildVocSentences}])},
+  {key:"ortho", num:"10", label:"Verben mit Stammwechsel", short:"Stammwechsel",
+   sub:"acheter, bouger, commencer, atteindre, traduire",
+   sets:[
+     {key:"conj", label:"Konjugieren", build:buildSfConj},
+     {key:"choice", label:"Welche Form ist richtig?", build:buildSfChoice},
+     {key:"group", label:"Welche Regel?", build:buildSfGroup},
+     {key:"satz", label:"Im Satz", build:buildSfSentences}
+   ]}
 ];
 
 /* ================================================================
@@ -3307,6 +3502,7 @@ var FR_SECTIONS = [
   {key:"poss", label:"Possessifs"},
   {key:"neg", label:"Négation"},
   {key:"voc", label:"Vocabulaire"},
+  {key:"ortho", label:"Verben mit Stammwechsel"},
   {key:"test", label:"Prüfung"}
 ];
 
@@ -4540,6 +4736,7 @@ var TOPIC_LEDE = {
   etre: "Wer bildet das Passé composé mit être? Und wann braucht die Inversionsfrage ein -t-?",
   poss: "Begleiter vor dem Nomen (mon billet), Pronomen anstelle des Nomens (le mien) — geübt mit dem Wortschatz „En route“.",
   neg: "ne … pas und ihre Verwandten: plus, jamais, pas encore, rien, personne. Wo sie im Satz stehen und was mit dem Artikel passiert.",
+  ortho: "Fünf Muster, bei denen sich im Présent der Stamm ändert: e → è, -geons, -çons, -gn- und -s-. Erst das Muster verstehen, dann zehn Beispielverben pro Regel.",
   voc: "Vokabeltest vom 14. Oktober 2026: Dossier 02 – En route, Seiten 14–17. Deutsch → Französisch schreiben, Französisch → Deutsch erkennen.",
   "g-zeitstrahl": "Alle 26 Ereignisse deines Dossiers in der richtigen Reihenfolge. Wer die Reihenfolge kann, kann auch die Jahreszahlen.",
   "g-1848": "Vier Verfassungen in fünfzig Jahren, ein Bürgerkrieg im November 1847 — und am Ende der Schritt vom Staatenbund zum Bundesstaat.",
@@ -5202,6 +5399,69 @@ REFERENCE.voc = function(body){
   body.innerHTML = html;
 };
 
+/* Lernmodus: Muster wählen, Verb wählen, Formen ansehen oder abdecken. */
+var SF_UI = {g:"e", v:"acheter", hide:false, shown:{}};
+REFERENCE.ortho = function(body){
+  var g = sfGroup(SF_UI.g), forms = sfForms(SF_UI.v, g.key), html = '';
+  html += '<div class="section-title">1 · Muster wählen</div>';
+  html += '<div class="sf-groups">';
+  SF_GROUPS.forEach(function(x, i){
+    html += '<button class="sf-group'+(x.key===g.key?' active':'')+'" data-sfg="'+x.key+'">'
+      + '<span class="sf-gnum mono">'+(i+1)+'</span><span class="sf-gtitle">'+x.title+'</span>'
+      + '<span class="sf-gmodel">'+x.model+'</span></button>';
+  });
+  html += '</div>';
+  var m = sfForms(g.model, g.key);
+  html += '<div class="card sf-rule"><h4>'+g.model+' : '+m[0].full+', '+m[3].full+', '+m[5].full+'</h4>'
+    + '<div class="sf-slide">'+g.slide+'</div><p class="sf-ruletext">'+g.rule+'</p></div>';
+  html += '<div class="section-title">2 · Verb wählen</div><div class="controls-row sf-verbs">';
+  g.verbs.forEach(function(v){
+    html += '<button class="toggle'+(v[0]===SF_UI.v?' active':'')+'" data-sfv="'+v[0]+'">'+v[0]+'</button>';
+  });
+  html += '</div>';
+  var de = g.verbs.filter(function(v){ return v[0]===SF_UI.v; })[0][1];
+  html += '<div class="section-title">3 · Konjugation <span class="muted">· '+SF_UI.v+' = '+de+' · Présent</span></div>';
+  html += '<div class="controls-row"><button class="toggle'+(SF_UI.hide?' active':'')+'" data-sfhide="1">'
+    + (SF_UI.hide ? 'Abdecken: an' : 'Formen abdecken') + '</button>'
+    + (SF_UI.hide ? '<button class="toggle" data-sfall="1">Alle aufdecken</button>' : '') + '</div>';
+  html += '<div class="tablewrap"><table class="sf-conj"><tr><th>Person</th><th>Form</th></tr>';
+  forms.forEach(function(f, p){
+    var subj = (p===0 && /^j'/.test(f.full)) ? "j'" : SF_SUBJ_LABEL[p];
+    var cell = (SF_UI.hide && !SF_UI.shown[p])
+      ? '<button class="sf-reveal" data-sfp="'+p+'">aufdecken</button>'
+      : f.html;
+    html += '<tr><td class="sans muted">'+subj+'</td><td>'+cell+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<div class="section-title">Alle Beispielverben · '+g.title+'</div>';
+  html += '<div class="tablewrap"><table><tr><th>Infinitiv</th><th>Deutsch</th><th>je</th><th>nous</th><th>ils</th></tr>';
+  g.verbs.forEach(function(v){
+    var f = sfForms(v[0], g.key);
+    html += '<tr><td>'+v[0]+'</td><td class="sans muted">'+v[1]+'</td><td>'+f[0].html+'</td><td>'+f[3].html+'</td><td>'+f[5].html+'</td></tr>';
+  });
+  html += '</table></div>';
+  html += '<div class="callout tip"><b>Merkhilfe:</b> Bei <b>-ger</b> und <b>-cer</b> ändert sich nur die nous-Form — überall, wo ein a oder o folgt. '
+    + 'Darum auch im Imparfait: <span class="mono">je mangeais, je commençais</span>, aber <span class="mono">nous mangions, nous commencions</span> (vor i keine Änderung).</div>';
+  html += '<div class="callout ok"><b>Ziel:</b> Wähle ein Muster, deck die Formen ab und sag sie dir laut vor. Danach im Tab <b>Üben</b> prüfen.</div>';
+  body.innerHTML = html;
+  function redraw(){ REFERENCE.ortho(body); }
+  body.querySelectorAll("[data-sfg]").forEach(function(b){
+    b.onclick = function(){ SF_UI.g = b.getAttribute("data-sfg"); SF_UI.v = sfGroup(SF_UI.g).model; SF_UI.shown = {}; redraw(); };
+  });
+  body.querySelectorAll("[data-sfv]").forEach(function(b){
+    b.onclick = function(){ SF_UI.v = b.getAttribute("data-sfv"); SF_UI.shown = {}; redraw(); };
+  });
+  body.querySelectorAll("[data-sfhide]").forEach(function(b){
+    b.onclick = function(){ SF_UI.hide = !SF_UI.hide; SF_UI.shown = {}; redraw(); };
+  });
+  body.querySelectorAll("[data-sfall]").forEach(function(b){
+    b.onclick = function(){ for(var p=0;p<6;p++) SF_UI.shown[p] = true; redraw(); };
+  });
+  body.querySelectorAll("[data-sfp]").forEach(function(b){
+    b.onclick = function(){ SF_UI.shown[b.getAttribute("data-sfp")] = true; redraw(); };
+  });
+};
+
 /* ================================================================
    REFERENZ-SEITEN GESCHICHTE
    ================================================================ */
@@ -5513,6 +5773,7 @@ window.__VLKR_TEST__ = {
   subjectProgress: subjectProgress,
   REFERENCE: REFERENCE,
   VOC_PAGES: VOC_PAGES,
+  sfForms: sfForms,
   verbKeysFor: verbKeysFor,
   atelierSplit: atelierSplit,
   renderVerbAtelier: renderVerbAtelier,

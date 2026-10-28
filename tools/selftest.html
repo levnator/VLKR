@@ -44,9 +44,9 @@ function runChecks(W, T){
   check("Testzugang vorhanden", function(){
     return T ? true : "window.__VLKR_TEST__ fehlt";
   });
-  check("Französisch hat 9 Themen", function(){
+  check("Französisch hat 10 Themen", function(){
     var t = T.topicsOf("fr");
-    return (t && t.length === 9) ? true : "erwartet 9, ist " + (t ? t.length : "null");
+    return (t && t.length === 10) ? true : "erwartet 10, ist " + (t ? t.length : "null");
   });
   /* Fortschritt hängt an STORE_KEY und den Themenschlüsseln. Ändert sich
      eines davon, ist der bestehende Französisch-Stand verloren. */
@@ -303,6 +303,18 @@ function runChecks(W, T){
   bankCheck(T, "poss", 50);
   bankCheck(T, "neg", 50);
   bankCheck(T, "voc", 250);
+  bankCheck(T, "ortho", 400);
+  check("Stammwechsel: Formen der Folie", function(){
+    var cases = [["acheter","e",0,"achète"],["acheter","e",3,"achetons"],["acheter","e",5,"achètent"],
+                 ["bouger","g",3,"bougeons"],["commencer","c",3,"commençons"],["atteindre","indre",0,"atteins"],
+                 ["atteindre","indre",3,"atteignons"],["atteindre","indre",5,"atteignent"],["traduire","uire",3,"traduisons"],
+                 ["traduire","uire",5,"traduisent"],["se promener","e",3,"nous promenons"]];
+    for(var i=0;i<cases.length;i++){
+      var c = cases[i], f = T.sfForms(c[0], c[1])[c[2]].txt;
+      if(f !== c[3]) return c[0] + "/" + c[2] + " ergab " + f;
+    }
+    return true;
+  });
   check("Vokabeln: 133 Wörter auf vier Seiten", function(){
     var n = T.VOC_PAGES.reduce(function(a,p){ return a + p.words.length; }, 0);
     return n === 133 ? true : "ist " + n;
